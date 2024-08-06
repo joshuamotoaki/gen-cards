@@ -43,6 +43,7 @@
     "type": "module",
     "dependencies": {
         "@tauri-apps/api": "^1.6.0",
+        "@tauri-apps/plugin-sql": "^2.0.0-rc.0",
         "@vincjo/datatables": "^1.14.10"
     }
 }
