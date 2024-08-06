@@ -1,5 +1,4 @@
 <script lang="ts">
-    import "../../app.postcss";
     import Sidebar from "./Sidebar.svelte";
 </script>
 
