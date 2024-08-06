@@ -18,8 +18,8 @@
     <div class="card p-4 w-modal shadow-xl space-y-4">
         <header class="text-2xl font-bold">Settings</header>
         <article>
-            <TabGroup>
-                <Tab bind:group={tabSet} name="general" value={0}>
+            <div class="flex items-center gap-4 mb-4">
+                <button on:click={() => (tabSet = 0)} name="general">
                     <div class="flex items-center gap-1">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -40,8 +40,8 @@
 
                         General
                     </div>
-                </Tab>
-                <Tab bind:group={tabSet} name="general" value={1}>
+                </button>
+                <button on:click={() => (tabSet = 1)} name="general">
                     <div class="flex items-center gap-1">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -58,8 +58,8 @@
 
                         Config
                     </div>
-                </Tab>
-                <Tab bind:group={tabSet} name="general" value={2}>
+                </button>
+                <button on:click={() => (tabSet = 2)} name="general">
                     <div class="flex items-center gap-1">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -75,124 +75,117 @@
                         </svg>
                         Style
                     </div>
-                </Tab>
-                <svelte:fragment slot="panel">
-                    {#if tabSet === 0}
-                        General Settings
-                    {:else if tabSet === 1}
-                        Config Settings
-                    {:else if tabSet === 2}
-                        <div>
-                            <div class="flex gap-4 mb-4">
-                                <label for="light-switch" class="text-xl"
-                                    >Dark Mode</label>
-                                <LightSwitch />
-                            </div>
-                            <div class="mb-2">
-                                <label class="text-xl" for="theme">Theme</label>
-                            </div>
-                            <div class="grid grid-cols-3 gap-2">
-                                <button
-                                    class="card card-hover
+                </button>
+            </div>
+
+            {#if tabSet === 0}
+                General Settings
+            {:else if tabSet === 1}
+                Config Settings
+            {:else if tabSet === 2}
+                <div>
+                    <div class="flex gap-4 mb-4">
+                        <label for="light-switch" class="text-xl"
+                            >Dark Mode</label>
+                        <LightSwitch />
+                    </div>
+                    <div class="mb-2">
+                        <label class="text-xl" for="theme">Theme</label>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button
+                            class="card card-hover
                                     {$currentTheme === 'skeleton'
-                                        ? 'from-gray-600 to-blue-600 text-white'
-                                        : 'from-gray-200 to-blue-200 text-black'}
+                                ? 'from-gray-600 to-blue-600 text-white'
+                                : 'from-gray-200 to-blue-200 text-black'}
                                     "
-                                    on:click={() =>
-                                        currentTheme.set("skeleton")}>
-                                    💀 Skeleton
-                                </button>
-                                <button
-                                    class="card card-hover
+                            on:click={() => currentTheme.set("skeleton")}>
+                            💀 Skeleton
+                        </button>
+                        <button
+                            class="card card-hover
                                     {$currentTheme === 'wintry'
-                                        ? 'from-blue-600 to-blue-400 text-white'
-                                        : 'from-blue-200 to-white text-black'}
+                                ? 'from-blue-600 to-blue-400 text-white'
+                                : 'from-blue-200 to-white text-black'}
                                     "
-                                    on:click={() => currentTheme.set("wintry")}>
-                                    🌨️ Wintry
-                                </button>
-                                <button
-                                    class="card card-hover
+                            on:click={() => currentTheme.set("wintry")}>
+                            🌨️ Wintry
+                        </button>
+                        <button
+                            class="card card-hover
                                     {$currentTheme === 'modern'
-                                        ? 'from-pink-600 to-indigo-600 text-white'
-                                        : 'from-pink-200 to-indigo-200 text-black'}
+                                ? 'from-pink-600 to-indigo-600 text-white'
+                                : 'from-pink-200 to-indigo-200 text-black'}
                                     "
-                                    on:click={() => currentTheme.set("modern")}>
-                                    🤖 Modern
-                                </button>
-                                <button
-                                    class="card card-hover
+                            on:click={() => currentTheme.set("modern")}>
+                            🤖 Modern
+                        </button>
+                        <button
+                            class="card card-hover
                                     {$currentTheme === 'rocket'
-                                        ? 'from-red-600 to-blue-600 text-white'
-                                        : 'from-red-200 to-blue-200 text-black'}
+                                ? 'from-red-600 to-blue-600 text-white'
+                                : 'from-red-200 to-blue-200 text-black'}
                                     "
-                                    on:click={() => currentTheme.set("rocket")}>
-                                    🚀 Rocket
-                                </button>
-                                <button
-                                    class="card card-hover
+                            on:click={() => currentTheme.set("rocket")}>
+                            🚀 Rocket
+                        </button>
+                        <button
+                            class="card card-hover
                                     {$currentTheme === 'seafoam'
-                                        ? 'from-cyan-600 to-blue-600 text-white'
-                                        : 'from-cyan-200 to-blue-200 text-black'}
+                                ? 'from-cyan-600 to-blue-600 text-white'
+                                : 'from-cyan-200 to-blue-200 text-black'}
                                     "
-                                    on:click={() =>
-                                        currentTheme.set("seafoam")}>
-                                    🧜‍♀️ Seafoam
-                                </button>
-                                <button
-                                    class="card card-hover
+                            on:click={() => currentTheme.set("seafoam")}>
+                            🧜‍♀️ Seafoam
+                        </button>
+                        <button
+                            class="card card-hover
                                     {$currentTheme === 'vintage'
-                                        ? 'from-amber-600 to-orange-600 text-white'
-                                        : 'from-amber-200 to-orange-200 text-black'}
+                                ? 'from-amber-600 to-orange-600 text-white'
+                                : 'from-amber-200 to-orange-200 text-black'}
                                     "
-                                    on:click={() =>
-                                        currentTheme.set("vintage")}>
-                                    📺 Vintage
-                                </button>
-                                <button
-                                    class="card card-hover
+                            on:click={() => currentTheme.set("vintage")}>
+                            📺 Vintage
+                        </button>
+                        <button
+                            class="card card-hover
                                     {$currentTheme === 'sahara'
-                                        ? 'from-red-600 to-yellow-600 text-white'
-                                        : 'from-red-200 to-yellow-200 text-black'}
+                                ? 'from-red-600 to-yellow-600 text-white'
+                                : 'from-red-200 to-yellow-200 text-black'}
                                     "
-                                    on:click={() => currentTheme.set("sahara")}>
-                                    🏜️ Sahara
-                                </button>
-                                <button
-                                    class="card card-hover
+                            on:click={() => currentTheme.set("sahara")}>
+                            🏜️ Sahara
+                        </button>
+                        <button
+                            class="card card-hover
                                     {$currentTheme === 'hamlindigo'
-                                        ? 'from-indigo-600 to-purple-600 text-white'
-                                        : 'from-indigo-200 to-purple-200 text-black'}
+                                ? 'from-indigo-600 to-purple-600 text-white'
+                                : 'from-indigo-200 to-purple-200 text-black'}
                                     "
-                                    on:click={() =>
-                                        currentTheme.set("hamlindigo")}>
-                                    👔 Hamlindigo
-                                </button>
-                                <button
-                                    class="card card-hover
+                            on:click={() => currentTheme.set("hamlindigo")}>
+                            👔 Hamlindigo
+                        </button>
+                        <button
+                            class="card card-hover
                                     {$currentTheme === 'gold-nouveau'
-                                        ? 'from-yellow-600 to-red-600 text-white'
-                                        : 'from-yellow-200 to-red-200 text-black'}
+                                ? 'from-yellow-600 to-red-600 text-white'
+                                : 'from-yellow-200 to-red-200 text-black'}
                                     "
-                                    on:click={() =>
-                                        currentTheme.set("gold-nouveau")}>
-                                    💫 Gold Nouveau
-                                </button>
-                                <button
-                                    class="card card-hover
+                            on:click={() => currentTheme.set("gold-nouveau")}>
+                            💫 Gold Nouveau
+                        </button>
+                        <button
+                            class="card card-hover
                                     {$currentTheme === 'crimson'
-                                        ? 'from-red-600 to-pink-600 text-white'
-                                        : 'from-red-200 to-pink-200 text-black'}
+                                ? 'from-red-600 to-pink-600 text-white'
+                                : 'from-red-200 to-pink-200 text-black'}
                                     "
-                                    on:click={() =>
-                                        currentTheme.set("crimson")}>
-                                    ⭕ Crimson
-                                </button>
-                            </div>
-                        </div>
-                    {/if}
-                </svelte:fragment>
-            </TabGroup>
+                            on:click={() => currentTheme.set("crimson")}>
+                            ⭕ Crimson
+                        </button>
+                    </div>
+                </div>
+            {/if}
         </article>
         <footer class="modal-footer {parent.regionFooter}">
             <button
