@@ -3,7 +3,7 @@ import type { Config } from "tailwindcss";
 import { skeleton } from "@skeletonlabs/tw-plugin";
 
 export default {
-    darkMode: "class",
+    darkMode: "selector",
     content: [
         "./src/**/*.{html,js,svelte,ts}",
         join(
@@ -20,6 +20,14 @@ export default {
                 preset: [
                     {
                         name: "modern",
+                        enhancements: true
+                    },
+                    {
+                        name: "skeleton",
+                        enhancements: true
+                    },
+                    {
+                        name: "crimson",
                         enhancements: true
                     }
                 ]

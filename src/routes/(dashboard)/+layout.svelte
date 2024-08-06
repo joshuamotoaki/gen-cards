@@ -2,9 +2,23 @@
     import { onMount } from "svelte";
     import Sidebar from "./Sidebar.svelte";
     import { SyncLoader } from "svelte-loading-spinners";
+    import {
+        initializeStores,
+        Modal,
+        type ModalComponent
+    } from "@skeletonlabs/skeleton";
 
+    // Modal Imports
+    import ModalExampleForm from "$lib/components/modals/ModalExampleForm.svelte";
+
+    // Modal Components
+    initializeStores();
+    const modalRegistry: Record<string, ModalComponent> = {
+        settings: { ref: ModalExampleForm }
+    };
+
+    // Initial loading state
     let isReady = false;
-
     onMount(async () => {
         setTimeout(() => {
             isReady = true;
@@ -12,6 +26,7 @@
     });
 </script>
 
+<Modal components={modalRegistry} />
 <div class="flex h-screen overflow-hidden">
     {#if isReady}
         <Sidebar />

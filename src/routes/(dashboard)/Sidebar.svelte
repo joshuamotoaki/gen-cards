@@ -1,5 +1,12 @@
 <script lang="ts">
     import { page } from "$app/stores";
+    import { getModalStore, type ModalSettings } from "@skeletonlabs/skeleton";
+
+    const modalStore = getModalStore();
+    const settingsModal: ModalSettings = {
+        type: "component",
+        component: "settings"
+    };
 </script>
 
 <aside
@@ -59,7 +66,9 @@
     </div>
 
     <div>
-        <button class="btn w-full gap-2 items-center variant-soft-secondary">
+        <button
+            class="btn w-full gap-2 items-center variant-soft-secondary"
+            on:click={() => modalStore.trigger(settingsModal)}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
