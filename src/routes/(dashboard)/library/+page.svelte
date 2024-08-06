@@ -4,7 +4,6 @@
     import Search from "$lib/components/datatable/Search.svelte";
     import ThSort from "$lib/components/datatable/ThSort.svelte";
     import RowCount from "$lib/components/datatable/RowCount.svelte";
-    import RowsPerPage from "$lib/components/datatable/RowsPerPage.svelte";
     import Pagination from "$lib/components/datatable/Pagination.svelte";
 
     const handler = new DataHandler(SAMPLE_DECKS, { rowsPerPage: 10 });
@@ -15,10 +14,9 @@
     <section>
         <h2 class="text-2xl font-semibold">All Decks</h2>
 
-        <div class="table-container space-y-4">
+        <div class="table-container rounded-none space-y-4">
             <div class="flex justify-between">
                 <Search {handler} />
-                <RowsPerPage {handler} />
             </div>
             <table class="table table-hover table-compact table-auto w-full">
                 <thead>

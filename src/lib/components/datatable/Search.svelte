@@ -5,7 +5,8 @@
 </script>
 
 <div
-    class="input-group input-group-divider grid-cols-[auto_1fr] w-40 sm:w-64 lg:w-80">
+    class="input-group input-group-divider grid-cols-[auto_1fr] w-40 sm:w-64 lg:w-80
+    focus:border-none hover:border-none border-none">
     <div class="input-group-shim">
         <svg
             xmlns="http://www.w3.org/2000/svg"
