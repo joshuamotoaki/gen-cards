@@ -56,10 +56,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 675,
         "resizable": true,
         "title": "Simple Spaced Cards",
-        "width": 800
+        "width": 1200
       }
     ]
   }
