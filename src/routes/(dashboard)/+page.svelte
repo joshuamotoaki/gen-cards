@@ -1,6 +1,7 @@
 <script lang="ts">
     import RecentDisplay from "$lib/components/RecentDisplay.svelte";
     import type { DeckInfo } from "$lib/types";
+    import { onMount } from "svelte";
 
     const RECENT_DECKS: DeckInfo[] = [
         {
@@ -46,6 +47,10 @@
             lastStudied: new Date().toISOString()
         }
     ];
+
+    onMount(async () => {
+        // Fetch recent decks from the server
+    });
 
     const RECENT_DECKS_VARIANTS = [
         "variant-glass-primary",

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import type { DeckInfo } from "$lib/types";
 
     export let props: DeckInfo = {
@@ -11,9 +12,11 @@
     export let variant: string = "variant-glass-surface";
 </script>
 
-<a
+<button
     class="block card card-hover overflow-clip {variant}"
-    href={`decks/${props.id}`}>
+    on:click={() => {
+        goto("/deck");
+    }}>
     <!-- <header class="card-header h-12 bg-red-500">
         {#if props.imageUrl}
             <img src={props.imageUrl} alt={props.title} />
@@ -31,4 +34,4 @@
             Last studied: {new Date(props.lastStudied).toLocaleDateString()}
         </span>
     </footer>
-</a>
+</button>
