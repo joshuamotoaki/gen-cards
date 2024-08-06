@@ -3,7 +3,7 @@
 </script>
 
 <aside
-    class="h-full px-2 py-4 flex justify-between
+    class="h-full p-4 flex justify-between
     flex-col w-1/6 min-w-44 bg-surface-50-900-token border-r border-surface-500/30">
     <div class="space-y-4">
         <a href="/" class="flex items-center gap-2 w-12">
