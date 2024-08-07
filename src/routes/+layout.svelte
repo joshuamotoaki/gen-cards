@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { onMount, setContext } from "svelte";
+    import { getContext, onMount, setContext } from "svelte";
     import "../app.postcss";
-    import Database from "@tauri-apps/plugin-sql";
+    import Database from "tauri-plugin-sql-api";
     import { currentTheme } from "$lib/config";
     import { browser } from "$app/environment";
     import { initializeStores, Modal } from "@skeletonlabs/skeleton";
@@ -10,6 +10,7 @@
     // Modal imports
     import Settings from "$lib/components/modals/Settings.svelte";
     import { SyncLoader } from "svelte-loading-spinners";
+    import { db } from "$lib/db";
 
     // Theme change
     $: {
@@ -27,12 +28,11 @@
     let isReady = false;
 
     onMount(async () => {
-        // const db = await Database.load("sqlite:sqlite-1.db");
-        // setContext("db", db);
+        console.log(db.isReady());
+        console.log(await db.init());
+        console.log(db.isReady());
 
-        setTimeout(() => {
-            isReady = true;
-        }, 0);
+        isReady = true;
     });
 </script>
 
