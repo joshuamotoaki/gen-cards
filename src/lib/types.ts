@@ -14,6 +14,8 @@ export type DeckInfo = {
     id: string;
     title: string;
     description: string;
-    totalCards: number;
-    lastStudied: string;
+    created_at: string;
+    edited_at: string;
+    studied_at: string | null;
+    card_count: number;
 };

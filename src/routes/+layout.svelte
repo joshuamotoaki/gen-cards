@@ -1,7 +1,6 @@
 <script lang="ts">
-    import { getContext, onMount, setContext } from "svelte";
+    import { onMount } from "svelte";
     import "../app.postcss";
-    import Database from "tauri-plugin-sql-api";
     import { currentTheme } from "$lib/config";
     import { browser } from "$app/environment";
     import { initializeStores, Modal } from "@skeletonlabs/skeleton";
@@ -31,6 +30,7 @@
         console.log(db.isReady());
         console.log(await db.init());
         console.log(db.isReady());
+        console.log(await db.getAllDecks());
 
         isReady = true;
     });
