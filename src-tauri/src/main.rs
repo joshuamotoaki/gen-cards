@@ -24,7 +24,7 @@ fn main() {
                     schema TEXT NOT NULL,
                     cards TEXT,
                     deck_id INTEGER,
-                    FOREIGN KEY (deck_id) REFERENCES decks(id)
+                    FOREIGN KEY (deck_id) REFERENCES decks(id) ON DELETE CASCADE
                 );
             ",
     }];
@@ -32,7 +32,7 @@ fn main() {
     tauri::Builder::default()
         .plugin(
             tauri_plugin_sql::Builder::default()
-                .add_migrations("sqlite:main.db", migrations)
+                .add_migrations("sqlite:app.db", migrations)
                 .build(),
         )
         .run(tauri::generate_context!())
