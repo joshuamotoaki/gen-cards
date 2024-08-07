@@ -170,7 +170,7 @@ const createDB = () => {
          * @param deckId ID of the deck
          * @returns Deck cards for the given deck ID
          */
-        getDeckCards: async (deckId: string): Promise<DeckCards> => {
+        getDeckCards: async (deckId: number): Promise<DeckCards> => {
             checkDB();
             const res = await get(store)?.select<DeckCardsDB[]>(
                 "SELECT * FROM deck_cards WHERE deck_id = $1 LIMIT 1",
@@ -220,7 +220,7 @@ const createDB = () => {
          * @param deckId ID of the deck
          * @returns The result of the query
          */
-        deleteDeck: async (deckId: string): Promise<QueryResult> => {
+        deleteDeck: async (deckId: number): Promise<QueryResult> => {
             checkDB();
             const res = get(store)?.execute("DELETE FROM decks WHERE id = $1", [
                 deckId

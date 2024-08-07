@@ -2,7 +2,6 @@
     import RecentDisplay from "$lib/components/RecentDisplay.svelte";
     import { decks } from "$lib/state";
     import type { DeckInfo } from "$lib/types";
-    import { onMount } from "svelte";
 
     const getSixMostRecentDecks = (decks: DeckInfo[]): DeckInfo[] => {
         const sortedDecks = decks.toSorted((a, b) => {
