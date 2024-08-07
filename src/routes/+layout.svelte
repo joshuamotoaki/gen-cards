@@ -8,7 +8,7 @@
 
     // Modal imports
     import Settings from "$lib/components/modals/Settings.svelte";
-    import { SyncLoader } from "svelte-loading-spinners";
+    // import { SyncLoader } from "svelte-loading-spinners";
     import { db } from "$lib/db";
 
     // Theme change
@@ -27,10 +27,7 @@
     let isReady = false;
 
     onMount(async () => {
-        console.log(db.isReady());
-        console.log(await db.init());
-        console.log(db.isReady());
-        console.log(await db.getAllDecks());
+        await db.init();
 
         isReady = true;
     });
@@ -39,7 +36,9 @@
 <Modal components={modalRegistry} />
 {#if isReady}
     <slot />
-{:else}
+
+    <!-- This can be added if there's substansial init delay (there isn't right now )-->
+    <!-- {:else}
     <div class="flex items-center flex-col justify-center h-screen gap-4">
         <div class="flex items-center gap-4">
             <img src="logo.webp" class="h-24 w-24" alt="GenCards Logo" />
@@ -48,5 +47,5 @@
         <div>
             <SyncLoader color="#DA2602" />
         </div>
-    </div>
+    </div> -->
 {/if}

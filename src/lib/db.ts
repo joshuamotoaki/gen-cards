@@ -1,6 +1,6 @@
 import { get, writable } from "svelte/store";
 import Database, { type QueryResult } from "tauri-plugin-sql-api";
-import { type DeckCards, type DeckInfo } from "./types";
+import { type DeckCards, type DeckInfo, type Schema } from "./types";
 
 type DeckCardsDB = {
     id: number;
@@ -12,6 +12,10 @@ type DeckCardsDB = {
 const createDB = () => {
     const store = writable<Database | null>(null);
     let isReady = false;
+
+    const checkDB = () => {
+        if (!isReady) throw new Error("Database not ready");
+    };
 
     return {
         set: store.set,
@@ -55,7 +59,7 @@ const createDB = () => {
          * @returns The result of the query.
          */
         execute: async (query: string, params: unknown[] = []) => {
-            if (!isReady) throw new Error("Database not ready");
+            checkDB();
             return get(store)?.execute(query, params);
         },
 
@@ -66,7 +70,7 @@ const createDB = () => {
          * @returns The result of the query.
          */
         select: async (query: string, params: unknown[] = []) => {
-            if (!isReady) throw new Error("Database not ready");
+            checkDB();
             return get(store)?.select(query, params);
         },
 
@@ -79,7 +83,7 @@ const createDB = () => {
          * @returns All decks in the database.
          */
         getAllDecks: async (): Promise<DeckInfo[]> => {
-            if (!isReady) throw new Error("Database not ready");
+            checkDB();
             const res = await get(store)?.select<DeckInfo[]>(
                 "SELECT * FROM decks"
             );
@@ -96,9 +100,9 @@ const createDB = () => {
         createDeck: async (
             title: string,
             description: string = "",
-            schema: string
+            schema: Schema
         ): Promise<QueryResult> => {
-            if (!isReady) throw new Error("Database not ready");
+            checkDB();
             const res = get(store)?.execute(
                 `
                 BEGIN TRANSACTION;
@@ -106,9 +110,34 @@ const createDB = () => {
                 INSERT INTO deck_cards (deck_id, schema, cards) VALUES (last_insert_rowid(), $4, $5);
                 COMMIT;
                 `,
-                [title, description, 0, schema, JSON.stringify([])]
+                [
+                    title,
+                    description,
+                    0,
+                    JSON.stringify(schema),
+                    JSON.stringify([])
+                ]
             );
             if (res === undefined) throw new Error("Failed to create deck");
+            return res;
+        },
+
+        updateDeck: async (deckInfo: DeckInfo) => {
+            checkDB();
+            const res = get(store)?.execute(
+                `
+                UPDATE decks SET title = $1, description = $2, edited_at = CURRENT_TIMESTAMP, card_count = $3, 
+                WHERE id = $4"
+                `,
+                [
+                    deckInfo.title,
+                    deckInfo.description,
+                    deckInfo.card_count,
+                    deckInfo.id
+                ]
+            );
+
+            if (res === undefined) throw new Error("Failed to update deck");
             return res;
         },
 
@@ -118,7 +147,7 @@ const createDB = () => {
          * @returns Deck cards for the given deck ID
          */
         getDeckCards: async (deckId: string): Promise<DeckCards> => {
-            if (!isReady) throw new Error("Database not ready");
+            checkDB();
             const res = await get(store)?.select<DeckCardsDB[]>(
                 "SELECT * FROM deck_cards WHERE deck_id = $1 LIMIT 1",
                 [deckId]
@@ -142,12 +171,20 @@ const createDB = () => {
          * @returns The result of the query
          */
         updateDeckCards: async (deckCards: DeckCards): Promise<QueryResult> => {
-            if (!isReady) throw new Error("Database not ready");
+            checkDB();
             const res = get(store)?.execute(
                 `
+                BEGIN TRANSACTION;
                 UPDATE deck_cards SET schema = $1, cards = $2 WHERE id = $3;
+                UPDATE decks SET edited_at = CURRENT_TIMESTAMP WHERE id = $4;
+                COMMIT;
                 `,
-                [deckCards.schema, deckCards.cards, deckCards.id]
+                [
+                    deckCards.schema,
+                    deckCards.cards,
+                    deckCards.id,
+                    deckCards.deck_id
+                ]
             );
             if (res === undefined)
                 throw new Error("Failed to update deck cards");
@@ -160,7 +197,7 @@ const createDB = () => {
          * @returns The result of the query
          */
         deleteDeck: async (deckId: string): Promise<QueryResult> => {
-            if (!isReady) throw new Error("Database not ready");
+            checkDB();
             const res = get(store)?.execute("DELETE FROM decks WHERE id = $1", [
                 deckId
             ]);
