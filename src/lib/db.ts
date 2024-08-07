@@ -43,7 +43,6 @@ const createDB = () => {
         },
 
         /**
-         * Whether the database is ready.
          * @returns Whether the database is ready.
          */
         isReady: () => isReady,
@@ -56,7 +55,6 @@ const createDB = () => {
          * Execute a SQL query.
          * @param query The SQL query to execute.
          * @param params The parameters to pass to the query.
-         * @returns The result of the query.
          */
         execute: async (
             query: string,
@@ -72,7 +70,6 @@ const createDB = () => {
          * Execute a SELECT query.
          * @param query The SELECT query to execute.
          * @param params The parameters to pass to the query.
-         * @returns The result of the query.
          */
         select: async (
             query: string,
@@ -84,7 +81,6 @@ const createDB = () => {
 
         /**
          * !DANGEROUS! Delete all data from the database.
-         * @returns The result of the query
          */
         deleteEverything: async (): Promise<QueryResult> => {
             checkDB();
@@ -102,24 +98,12 @@ const createDB = () => {
         // Application-specific database functions
         //--------------------------------------------------------------
 
-        /**
-         * Get all decks in the database.
-         * @returns All decks in the database.
-         */
-        getAllDecks: async (): Promise<DeckInfo[]> => {
-            checkDB();
-            const res = await get(store)?.select<DeckInfo[]>(
-                "SELECT * FROM decks"
-            );
-            if (res === undefined) throw new Error("Failed to get decks");
-            return res;
-        },
+        // ! Create
 
         /**
          * Create a new deck.
          * @param title The title of the deck
          * @param description The description of the deck
-         * @returns The result of the query
          */
         createDeck: async (
             title: string,
@@ -129,11 +113,11 @@ const createDB = () => {
             checkDB();
             const res = get(store)?.execute(
                 `
-                BEGIN TRANSACTION;
-                INSERT INTO decks (title, description, card_count) VALUES ($1, $2, $3);
-                INSERT INTO deck_cards (deck_id, schema, cards) VALUES (last_insert_rowid(), $4, $5);
-                COMMIT;
-                `,
+                        BEGIN TRANSACTION;
+                        INSERT INTO decks (title, description, card_count) VALUES ($1, $2, $3);
+                        INSERT INTO deck_cards (deck_id, schema, cards) VALUES (last_insert_rowid(), $4, $5);
+                        COMMIT;
+                        `,
                 [
                     title,
                     description,
@@ -146,7 +130,49 @@ const createDB = () => {
             return res;
         },
 
-        updateDeck: async (deckInfo: DeckInfo) => {
+        // ! Read
+
+        /**
+         * Get all decks in the database.
+         * @returns All decks in the database.
+         */
+        getAllDeckInfos: async (): Promise<DeckInfo[]> => {
+            checkDB();
+            const res = await get(store)?.select<DeckInfo[]>(
+                "SELECT * FROM decks"
+            );
+            if (res === undefined) throw new Error("Failed to get decks");
+            return res;
+        },
+
+        /**
+         * Get a deck cards and schema by its ID.
+         * @param deckId ID of the deck
+         */
+        getDeckCards: async (deckId: number): Promise<DeckCards> => {
+            checkDB();
+            const res = await get(store)?.select<DeckCardsDB[]>(
+                "SELECT * FROM deck_cards WHERE deck_id = $1 LIMIT 1",
+                [deckId]
+            );
+            if (res === undefined) throw new Error("Failed to get deck cards");
+            const cards = res[0];
+
+            return {
+                id: cards.id,
+                deck_id: cards.deck_id,
+                schema: JSON.parse(cards.schema),
+                cards: JSON.parse(cards.cards)
+            } as DeckCards;
+        },
+
+        // ! Update
+
+        /**
+         * Update a deck's information.
+         * @param deckInfo Updated deck information
+         */
+        updateDeckInfo: async (deckInfo: DeckInfo) => {
             checkDB();
             const res = get(store)?.execute(
                 `
@@ -166,33 +192,8 @@ const createDB = () => {
         },
 
         /**
-         * Get a deck cards and schema by its ID.
-         * @param deckId ID of the deck
-         * @returns Deck cards for the given deck ID
-         */
-        getDeckCards: async (deckId: number): Promise<DeckCards> => {
-            checkDB();
-            const res = await get(store)?.select<DeckCardsDB[]>(
-                "SELECT * FROM deck_cards WHERE deck_id = $1 LIMIT 1",
-                [deckId]
-            );
-            if (res === undefined) throw new Error("Failed to get deck cards");
-            const cards = res[0];
-
-            return {
-                id: cards.id,
-                deck_id: cards.deck_id,
-                schema: JSON.parse(cards.schema),
-                cards: JSON.parse(cards.cards)
-            } as DeckCards;
-        },
-
-        /**
-         * Update the cards of a deck.
-         * @param deckId ID of the deck
-         * @param schema Schema of the deck
-         * @param cards Cards of the deck
-         * @returns The result of the query
+         * Update the cards of a deck due to editing.
+         * @param deckCards Updated deck cards
          */
         updateDeckCards: async (deckCards: DeckCards): Promise<QueryResult> => {
             checkDB();
@@ -216,9 +217,32 @@ const createDB = () => {
         },
 
         /**
+         * Update the cards of a deck due to studying.
+         * @param deckCards Updated deck cards
+         */
+        updateDeckCardsStudy: async (
+            deckCards: DeckCards
+        ): Promise<QueryResult> => {
+            checkDB();
+            const res = get(store)?.execute(
+                `
+                BEGIN TRANSACTION;
+                UPDATE deck_cards SET cards = $1 WHERE id = $2;
+                UPDATE decks SET studied_at = CURRENT_TIMESTAMP WHERE id = $3;
+                COMMIT;
+                `,
+                [deckCards.cards, deckCards.id, deckCards.deck_id]
+            );
+            if (res === undefined)
+                throw new Error("Failed to update deck cards");
+            return res;
+        },
+
+        // ! Delete
+
+        /**
          * Delete a deck by its ID.
          * @param deckId ID of the deck
-         * @returns The result of the query
          */
         deleteDeck: async (deckId: number): Promise<QueryResult> => {
             checkDB();

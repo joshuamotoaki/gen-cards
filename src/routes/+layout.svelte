@@ -26,28 +26,49 @@
     };
 
     let isReady = false;
+    let errorMessage = "";
 
     onMount(async () => {
-        await db.init();
-        decks.set(await db.getAllDecks());
-
-        isReady = true;
+        try {
+            await db.init();
+            decks.set(await db.getAllDeckInfos());
+            isReady = true;
+        } catch (e: unknown) {
+            console.error("Error:", e);
+            if (e instanceof Error) {
+                errorMessage = e.message;
+            } else {
+                errorMessage = "An unknown error occurred.";
+            }
+        }
     });
 </script>
 
 <Modal components={modalRegistry} />
-{#if isReady}
-    <slot />
-
-    <!-- This can be added if there's substansial init delay (there isn't right now )-->
-    <!-- {:else}
+{#if errorMessage}
     <div class="flex items-center flex-col justify-center h-screen gap-4">
         <div class="flex items-center gap-4">
             <img src="logo.webp" class="h-24 w-24" alt="GenCards Logo" />
             <h1 class="text-7xl font-light">GenCards</h1>
         </div>
-        <div>
-            <SyncLoader color="#DA2602" />
+        <div class="flex flex-col items-center p-4">
+            <p class="text-2xl mb-2">
+                Something went wrong while initializing the app.
+            </p>
+            <p class="text-lg mb-8">
+                Error: {errorMessage}
+            </p>
+            <button
+                class="btn btn-lg variant-filled-primary mx-auto"
+                on:click={() => {
+                    location.reload();
+                }}>
+                Reload App
+            </button>
         </div>
-    </div> -->
+    </div>
+{/if}
+
+{#if isReady}
+    <slot />
 {/if}
