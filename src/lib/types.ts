@@ -47,3 +47,8 @@ export type DeckCards = {
     schema: Schema;
     cards: string;
 };
+
+export type Deck = {
+    info: DeckInfo;
+    cards: DeckCards;
+};

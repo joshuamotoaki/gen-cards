@@ -1,11 +1,5 @@
 import { writable } from "svelte/store";
+import type { Deck, DeckInfo } from "./types";
 
-const createCurrentDeck = () => {
-    const store = writable(null);
-    return {
-        set: store.set,
-        update: store.update,
-        subscribe: store.subscribe
-    };
-};
-export const currentDeck = createCurrentDeck();
+export const decks = writable<DeckInfo[]>([]);
+export const currentDeck = writable<Deck | null>(null);

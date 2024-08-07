@@ -58,9 +58,14 @@ const createDB = () => {
          * @param params The parameters to pass to the query.
          * @returns The result of the query.
          */
-        execute: async (query: string, params: unknown[] = []) => {
+        execute: async (
+            query: string,
+            params: unknown[] = []
+        ): Promise<QueryResult> => {
             checkDB();
-            return get(store)?.execute(query, params);
+            const res = get(store)?.execute(query, params);
+            if (res === undefined) throw new Error("Failed to execute query");
+            return res;
         },
 
         /**
@@ -69,9 +74,28 @@ const createDB = () => {
          * @param params The parameters to pass to the query.
          * @returns The result of the query.
          */
-        select: async (query: string, params: unknown[] = []) => {
+        select: async (
+            query: string,
+            params: unknown[] = []
+        ): Promise<unknown> => {
             checkDB();
             return get(store)?.select(query, params);
+        },
+
+        /**
+         * !DANGEROUS! Delete all data from the database.
+         * @returns The result of the query
+         */
+        deleteEverything: async (): Promise<QueryResult> => {
+            checkDB();
+            const res = get(store)?.execute(`
+                BEGIN TRANSACTION;
+                DELETE FROM decks;
+                DELETE FROM deck_cards;
+                COMMIT;
+            `);
+            if (res === undefined) throw new Error("Failed to clear database");
+            return res;
         },
 
         //--------------------------------------------------------------

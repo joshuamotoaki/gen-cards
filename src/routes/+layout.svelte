@@ -10,6 +10,7 @@
     import Settings from "$lib/components/modals/Settings.svelte";
     // import { SyncLoader } from "svelte-loading-spinners";
     import { db } from "$lib/db";
+    import { decks } from "$lib/state";
 
     // Theme change
     $: {
@@ -28,6 +29,7 @@
 
     onMount(async () => {
         await db.init();
+        decks.set(await db.getAllDecks());
 
         isReady = true;
     });

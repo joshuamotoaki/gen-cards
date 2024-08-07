@@ -1,14 +1,9 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { decks } from "$lib/state";
     import type { DeckInfo } from "$lib/types";
 
-    export let props: DeckInfo = {
-        id: "1",
-        title: "Deck 1",
-        description: "This is a description of the deck",
-        totalCards: 20,
-        lastStudied: new Date().toISOString()
-    };
+    export let props: DeckInfo;
     export let variant: string = "variant-glass-surface";
 </script>
 
@@ -28,10 +23,10 @@
     </section>
     <footer class="card-footer flex justify-between items-center font-normal">
         <span class="text-sm">
-            {props.totalCards} cards
+            {props.card_count} cards
         </span>
         <span class="text-sm">
-            Last studied: {new Date(props.lastStudied).toLocaleDateString()}
+            Last studied: {props.studied_at || "Never"}
         </span>
     </footer>
 </button>
