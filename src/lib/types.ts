@@ -1,12 +1,12 @@
 // Config types
 export type Theme =
+    | "gengoko"
     | "skeleton"
     | "wintry"
     | "modern"
     | "rocket"
     | "seafoam"
     | "vintage"
-    | "sahara"
     | "hamlindigo"
     | "gold-nouveau"
     | "crimson";

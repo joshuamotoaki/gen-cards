@@ -1,6 +1,7 @@
 import { join } from "path";
 import type { Config } from "tailwindcss";
 import { skeleton } from "@skeletonlabs/tw-plugin";
+import { gengokoStyle } from "./gengokoStyle";
 
 export default {
     darkMode: "selector",
@@ -17,6 +18,7 @@ export default {
     plugins: [
         skeleton({
             themes: {
+                custom: [gengokoStyle],
                 preset: [
                     {
                         name: "skeleton",
@@ -40,10 +42,6 @@ export default {
                     },
                     {
                         name: "vintage",
-                        enhancements: false
-                    },
-                    {
-                        name: "sahara",
                         enhancements: false
                     },
                     {

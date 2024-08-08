@@ -25,6 +25,15 @@
         <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-2">
             <button
                 class="card card-hover
+                    {$currentTheme === 'gengoko'
+                    ? 'from-orange-600 to-blue-600 text-white'
+                    : 'from-orange-200 to-blue-200 text-black'}
+                    "
+                on:click={() => currentTheme.set("gengoko")}>
+                ⭐ Gengoko
+            </button>
+            <button
+                class="card card-hover
                         {$currentTheme === 'skeleton'
                     ? 'from-gray-600 to-blue-600 text-white'
                     : 'from-gray-200 to-blue-200 text-black'}
@@ -76,15 +85,6 @@
                         "
                 on:click={() => currentTheme.set("vintage")}>
                 📺 Vintage
-            </button>
-            <button
-                class="card card-hover
-                        {$currentTheme === 'sahara'
-                    ? 'from-red-600 to-yellow-600 text-white'
-                    : 'from-red-200 to-yellow-200 text-black'}
-                        "
-                on:click={() => currentTheme.set("sahara")}>
-                🏜️ Sahara
             </button>
             <button
                 class="card card-hover
