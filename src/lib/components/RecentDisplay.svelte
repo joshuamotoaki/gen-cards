@@ -20,13 +20,10 @@
 
         goto("/deck");
     }}>
-    <!-- <header class="card-header h-12 bg-red-500">
-        {#if props.imageUrl}
-            <img src={props.imageUrl} alt={props.title} />
-        {/if}
-    </header> -->
     <section class="p-4 text-left">
-        <h2 class="text-xl font-semibold">{props.title}</h2>
+        <h2 class="text-xl font-semibold">
+            {props.title ? props.title : "(no title)"}
+        </h2>
         <p class="mt-1 text-sm font-normal">
             {props.description}
         </p>

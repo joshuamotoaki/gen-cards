@@ -55,7 +55,7 @@
                     <tbody>
                         {#each $rows as row}
                             <tr>
-                                <td>{row.title}</td>
+                                <td>{row.title ? row.title : "(no title)"}</td>
                                 <td>{row.card_count}</td>
                                 <td>
                                     {row.studied_at === null

@@ -80,7 +80,9 @@
                     </button>
 
                     <h1 class="text-2xl font-semibold">
-                        {$currentDeck?.info.title}
+                        {$currentDeck?.info.title
+                            ? $currentDeck.info.title
+                            : "(no title)"}
                     </h1>
                 </div>
                 <button class="btn btn-icon">

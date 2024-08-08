@@ -172,8 +172,8 @@ const createDB = () => {
             checkDB();
             const res = get(store)?.execute(
                 `
-                UPDATE decks SET title = $1, description = $2, edited_at = CURRENT_TIMESTAMP, card_count = $3, 
-                WHERE id = $4"
+                UPDATE decks SET title = $1, description = $2, edited_at = CURRENT_TIMESTAMP, card_count = $3 
+                WHERE id = $4;
                 `,
                 [
                     deckInfo.title,
