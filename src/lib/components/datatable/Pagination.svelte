@@ -25,20 +25,22 @@
 
 <!-- Mobile buttons -->
 <section class="lg:hidden">
-    <button
-        type="button"
-        class="btn variant-ghost-surface mr-2 mb-2 hover:variant-soft-primary"
-        class:disabled={$pageNumber === 1}
-        on:click={() => handler.setPage("previous")}>
-        ←
-    </button>
-    <button
-        type="button"
-        class="btn variant-ghost-surface mb-2 hover:variant-soft-primary"
-        class:disabled={$pageNumber === $pageCount}
-        on:click={() => handler.setPage("next")}>
-        →
-    </button>
+    {#if $pages.length > 1}
+        <button
+            type="button"
+            class="btn variant-ghost-surface mr-2 mb-2 hover:variant-soft-primary"
+            class:disabled={$pageNumber === 1}
+            on:click={() => handler.setPage("previous")}>
+            ←
+        </button>
+        <button
+            type="button"
+            class="btn variant-ghost-surface mb-2 hover:variant-soft-primary"
+            class:disabled={$pageNumber === $pageCount}
+            on:click={() => handler.setPage("next")}>
+            →
+        </button>
+    {/if}
 </section>
 
 <style lang="postcss">
