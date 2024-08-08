@@ -62,7 +62,7 @@
                         class="btn btn-icon"
                         on:click={() => {
                             currentDeck.set(null);
-                            goto("/");
+                            goto("/library");
                         }}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +78,7 @@
                         </svg>
                     </button>
 
-                    <h1 class="text-3xl font-semibold">
+                    <h1 class="text-2xl font-semibold">
                         {$currentDeck?.info.title}
                     </h1>
                 </div>

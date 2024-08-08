@@ -37,7 +37,8 @@
             <a
                 href="/library"
                 class="btn link-button
-                {$page.url.pathname.startsWith('/library')
+                {$page.url.pathname.startsWith('/library') ||
+                $page.url.pathname.startsWith('/deck')
                     ? 'bg-primary-500/60'
                     : 'hover:bg-primary-500/10'}
             ">
