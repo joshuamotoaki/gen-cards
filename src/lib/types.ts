@@ -1,3 +1,4 @@
+// Config types
 export type Theme =
     | "skeleton"
     | "wintry"
@@ -10,6 +11,14 @@ export type Theme =
     | "gold-nouveau"
     | "crimson";
 
+export type StudyVariables = {
+    windowSize: number;
+    repeatRatio: number;
+    repetitionSpacing: number;
+    baseRepetitionInHours: number;
+};
+
+// DB types
 export type DeckInfo = {
     id: number;
     title: string;

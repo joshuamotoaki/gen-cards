@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import type { Theme } from "./types";
+import type { StudyVariables, Theme } from "./types";
 
 const createPersistedWritable = <T>(key: string, initialValue: T) => {
     const store = writable<T>(
@@ -19,4 +19,14 @@ const createPersistedWritable = <T>(key: string, initialValue: T) => {
 export const currentTheme = createPersistedWritable<Theme>(
     "currentTheme",
     "rocket"
+);
+
+export const studyVariables = createPersistedWritable<StudyVariables>(
+    "studyVariables",
+    {
+        windowSize: 20,
+        repeatRatio: 0.9,
+        repetitionSpacing: 4,
+        baseRepetitionInHours: 1
+    }
 );
