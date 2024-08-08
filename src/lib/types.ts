@@ -54,7 +54,7 @@ export type DeckCards = {
     id: number;
     deck_id: number;
     schema: Schema;
-    cards: string;
+    cards: Card[];
 };
 
 export type Deck = {
