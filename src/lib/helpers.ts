@@ -54,4 +54,5 @@ export const createNewCard = async (deck: Deck) => {
     };
     deck.cards.cards.push(newCard);
     await db.updateDeckCards(deck.cards);
+    currentDeck.set(deck);
 };
