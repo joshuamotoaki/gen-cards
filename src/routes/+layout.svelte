@@ -3,7 +3,7 @@
     import "../app.postcss";
     import { currentTheme } from "$lib/config";
     import { browser } from "$app/environment";
-    import { initializeStores, Modal } from "@skeletonlabs/skeleton";
+    import { initializeStores, Modal, Toast } from "@skeletonlabs/skeleton";
     import type { ModalComponent } from "@skeletonlabs/skeleton";
 
     // Modal imports
@@ -41,6 +41,7 @@
     });
 </script>
 
+<Toast />
 <Modal components={modalRegistry} />
 {#if errorMessage}
     <div class="flex items-center flex-col justify-center h-screen gap-4">

@@ -18,7 +18,7 @@ const createPersistedWritable = <T>(key: string, initialValue: T) => {
 
 export const currentTheme = createPersistedWritable<Theme>(
     "currentTheme",
-    "rocket"
+    "skeleton"
 );
 
 export const studyVariables = createPersistedWritable<StudyVariables>(

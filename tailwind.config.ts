@@ -20,43 +20,43 @@ export default {
                 preset: [
                     {
                         name: "skeleton",
-                        enhancements: true
+                        enhancements: false
                     },
                     {
                         name: "wintry",
-                        enhancements: true
+                        enhancements: false
                     },
                     {
                         name: "modern",
-                        enhancements: true
+                        enhancements: false
                     },
                     {
                         name: "rocket",
-                        enhancements: true
+                        enhancements: false
                     },
                     {
                         name: "seafoam",
-                        enhancements: true
+                        enhancements: false
                     },
                     {
                         name: "vintage",
-                        enhancements: true
+                        enhancements: false
                     },
                     {
                         name: "sahara",
-                        enhancements: true
+                        enhancements: false
                     },
                     {
                         name: "hamlindigo",
-                        enhancements: true
+                        enhancements: false
                     },
                     {
                         name: "gold-nouveau",
-                        enhancements: true
+                        enhancements: false
                     },
                     {
                         name: "crimson",
-                        enhancements: true
+                        enhancements: false
                     }
                 ]
             }
