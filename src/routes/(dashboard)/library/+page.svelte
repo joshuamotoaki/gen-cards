@@ -13,6 +13,8 @@
     const handler = new DataHandler($decks, { rowsPerPage: 10 });
     const rows = handler.getRows();
 
+    $: handler.setRows($decks);
+
     const gotoDeck = async (row: DeckInfo) => {
         const deckCards = await db.getDeckCards(row.id);
 
