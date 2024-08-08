@@ -4,7 +4,8 @@
     import { decks } from "$lib/state";
     import type { DeckInfo } from "$lib/types";
 
-    const getSixMostRecentDecks = (decks: DeckInfo[]): DeckInfo[] => {
+    const NUMBER_OF_RECENT_DECKS = 6;
+    const getMostRecentDecks = (decks: DeckInfo[], n: number): DeckInfo[] => {
         const sortedDecks = decks.toSorted((a, b) => {
             const aStudiedAt = a.studied_at
                 ? new Date(a.studied_at)
@@ -17,10 +18,10 @@
                 return a.id - b.id;
             } else return bStudiedAt.getTime() - aStudiedAt.getTime();
         });
-        return sortedDecks.slice(0, 6);
+        return sortedDecks.slice(0, n);
     };
 
-    $: recentDecks = getSixMostRecentDecks($decks);
+    $: recentDecks = getMostRecentDecks($decks, NUMBER_OF_RECENT_DECKS);
 
     const RECENT_DECKS_VARIANTS = [
         "variant-glass-primary",
@@ -36,7 +37,7 @@
     <section class="w-full">
         <h2 class="text-2xl mb-2">Recent Decks</h2>
         {#if recentDecks.length > 0}
-            <div class="grid grid-cols-3 w-full gap-4">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 w-full gap-4">
                 {#each recentDecks as deck, i}
                     <RecentDisplay
                         props={deck}
