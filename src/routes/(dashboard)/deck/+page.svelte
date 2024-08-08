@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { currentDeck } from "$lib/state";
+    import { currentDeck, prevRoute } from "$lib/state";
     import { getToastStore, type ToastSettings } from "@skeletonlabs/skeleton";
     import DeckWarning from "./DeckWarning.svelte";
     import { onMount } from "svelte";
@@ -63,7 +63,9 @@
                         class="btn btn-icon"
                         on:click={() => {
                             currentDeck.set(null);
-                            goto("/library");
+                            if ($prevRoute) goto($prevRoute);
+                            else goto("/library");
+                            prevRoute.set(null);
                         }}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

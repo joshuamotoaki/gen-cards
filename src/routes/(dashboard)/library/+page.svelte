@@ -4,7 +4,7 @@
     import ThSort from "$lib/components/datatable/ThSort.svelte";
     import RowCount from "$lib/components/datatable/RowCount.svelte";
     import Pagination from "$lib/components/datatable/Pagination.svelte";
-    import { currentDeck, decks } from "$lib/state";
+    import { currentDeck, decks, prevRoute } from "$lib/state";
     import { createNewDeck } from "$lib/helpers";
     import { db } from "$lib/db";
     import { goto } from "$app/navigation";
@@ -21,6 +21,7 @@
             cards: deckCards
         });
 
+        prevRoute.set("/library");
         goto("/deck");
     };
 </script>

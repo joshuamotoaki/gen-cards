@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { db } from "$lib/db";
-    import { currentDeck } from "$lib/state";
+    import { currentDeck, prevRoute } from "$lib/state";
     import type { DeckInfo } from "$lib/types";
 
     export let props: DeckInfo;
@@ -18,6 +18,7 @@
             cards: deckCards
         });
 
+        prevRoute.set("/");
         goto("/deck");
     }}>
     <section class="p-4 text-left">
