@@ -58,9 +58,11 @@
                                 <td>{row.title}</td>
                                 <td>{row.card_count}</td>
                                 <td>
-                                    {new Date(
-                                        row.studied_at
-                                    ).toLocaleDateString()}
+                                    {row.studied_at === null
+                                        ? "Never"
+                                        : new Date(
+                                              row.studied_at
+                                          ).toLocaleDateString()}
                                 </td>
                             </tr>
                         {/each}

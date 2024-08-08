@@ -1,6 +1,6 @@
 import { get, writable } from "svelte/store";
 import Database, { type QueryResult } from "tauri-plugin-sql-api";
-import { type DeckCards, type DeckInfo, type Schema } from "./types";
+import { type DeckCards, type DeckInfo } from "./types";
 
 type DeckCardsDB = {
     id: number;
@@ -105,11 +105,7 @@ const createDB = () => {
          * @param title The title of the deck
          * @param description The description of the deck
          */
-        createDeck: async (
-            title: string,
-            description: string = "",
-            schema: Schema
-        ): Promise<QueryResult> => {
+        createDeck: async (): Promise<QueryResult> => {
             checkDB();
             const res = get(store)?.execute(
                 `
@@ -119,10 +115,10 @@ const createDB = () => {
                         COMMIT;
                         `,
                 [
-                    title,
-                    description,
+                    "My Deck",
+                    "",
                     0,
-                    JSON.stringify(schema),
+                    JSON.stringify({ fields: [], relationships: [] }),
                     JSON.stringify([])
                 ]
             );
