@@ -18,12 +18,30 @@
             <h1 class="text-2xl font-light">GenCards</h1>
         </a>
 
+        <button
+            on:click={() => {}}
+            class="btn w-full variant-filled-success flex gap-2 items-center">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6">
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            New Deck
+        </button>
+
         <nav class="space-y-1">
             <a
                 href="/"
                 class="btn link-button
                     {$page.url.pathname === '/'
-                    ? 'variant-filled-primary'
+                    ? 'bg-primary-500/60'
                     : 'hover:bg-primary-500/10'}
                 ">
                 <svg
@@ -44,7 +62,7 @@
                 href="/library"
                 class="btn link-button
                 {$page.url.pathname.startsWith('/library')
-                    ? 'variant-filled-primary'
+                    ? 'bg-primary-500/60'
                     : 'hover:bg-primary-500/10'}
             ">
                 <svg
