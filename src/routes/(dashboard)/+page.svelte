@@ -1,5 +1,6 @@
 <script lang="ts">
     import RecentDisplay from "$lib/components/RecentDisplay.svelte";
+    import { createNewDeck } from "$lib/helpers";
     import { decks } from "$lib/state";
     import type { DeckInfo } from "$lib/types";
 
@@ -48,7 +49,7 @@
             </p>
             <button
                 class="btn variant-filled-success flex gap-2 items-center"
-                on:click={() => {}}>
+                on:click={createNewDeck}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { page } from "$app/stores";
+    import { createNewDeck } from "$lib/helpers";
     import { getModalStore, type ModalSettings } from "@skeletonlabs/skeleton";
 
     const modalStore = getModalStore();
@@ -19,7 +20,7 @@
         </a>
 
         <button
-            on:click={() => {}}
+            on:click={createNewDeck}
             class="btn w-full variant-filled-success flex gap-2 items-center">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
