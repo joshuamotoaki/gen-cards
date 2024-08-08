@@ -4,11 +4,25 @@
     import ThSort from "$lib/components/datatable/ThSort.svelte";
     import RowCount from "$lib/components/datatable/RowCount.svelte";
     import Pagination from "$lib/components/datatable/Pagination.svelte";
-    import { decks } from "$lib/state";
+    import { currentDeck, decks } from "$lib/state";
     import { createNewDeck } from "$lib/helpers";
+    import { db } from "$lib/db";
+    import { goto } from "$app/navigation";
+    import type { DeckInfo } from "$lib/types";
 
     const handler = new DataHandler($decks, { rowsPerPage: 10 });
     const rows = handler.getRows();
+
+    const gotoDeck = async (row: DeckInfo) => {
+        const deckCards = await db.getDeckCards(row.id);
+
+        currentDeck.set({
+            info: row,
+            cards: deckCards
+        });
+
+        goto("/deck");
+    };
 </script>
 
 <div class="flex-1 p-4 overflow-auto">
@@ -54,7 +68,13 @@
                     </thead>
                     <tbody>
                         {#each $rows as row}
-                            <tr>
+                            <tr
+                                tabindex="0"
+                                class="cursor-pointer"
+                                on:keydown={async e => {
+                                    if (e.key === "Enter") await gotoDeck(row);
+                                }}
+                                on:click={async () => await gotoDeck(row)}>
                                 <td>{row.title ? row.title : "(no title)"}</td>
                                 <td>{row.card_count}</td>
                                 <td>
