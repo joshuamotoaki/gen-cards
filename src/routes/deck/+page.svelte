@@ -5,7 +5,8 @@
 
 {#if !$currentDeck}
     <div class="p-4">
-        <h2 class="text-2xl mb-2">Something went wrong :(</h2>
+        <h2 class="text-2xl">Something went wrong :(</h2>
+        <p class="mb-2">We couldn't find the deck you're looking for.</p>
         <button
             class="btn variant-filled-warning gap-2"
             on:click={() => {
