@@ -7,7 +7,6 @@
     import type { ModalComponent } from "@skeletonlabs/skeleton";
 
     // Modal imports
-    import Settings from "$lib/components/modals/Settings.svelte";
     // import { SyncLoader } from "svelte-loading-spinners";
     import { db } from "$lib/db";
     import { decks } from "$lib/state";
@@ -21,9 +20,7 @@
 
     // Modal Components
     initializeStores();
-    const modalRegistry: Record<string, ModalComponent> = {
-        settings: { ref: Settings }
-    };
+    const modalRegistry: Record<string, ModalComponent> = {};
 
     let isReady = false;
     let errorMessage = "";
