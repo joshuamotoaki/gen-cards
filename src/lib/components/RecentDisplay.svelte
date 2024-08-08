@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { db } from "$lib/db";
-    import { currentDeck, decks } from "$lib/state";
+    import { currentDeck } from "$lib/state";
     import type { DeckInfo } from "$lib/types";
 
     export let props: DeckInfo;
