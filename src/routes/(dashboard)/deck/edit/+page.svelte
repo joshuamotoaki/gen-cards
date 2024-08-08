@@ -66,7 +66,7 @@
                         modalStore.trigger(deleteConfirm);
                     }}
                     id="delete-button"
-                    class="btn variant-filled-error gap-1 btn-icon">
+                    class="btn variant-filled-warning gap-1 btn-icon rounded-container-token">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
