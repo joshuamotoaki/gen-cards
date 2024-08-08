@@ -149,10 +149,12 @@
 
         <!-- Schema-->
         <div>
-            <h2 class="text-xl font-semibold mt-4">Schema</h2>
+            <h2 class="text-lg font-semibold mt-4">Schema</h2>
             {#each $currentDeck.cards.schema.relationships as relationship}
-                <div style={gridStyleColumns} class="w-full grid grid-cols-2">
-                    <div class="font-semibold">
+                <div
+                    style={gridStyleColumns}
+                    class="w-full grid grid-cols-2 text-sm">
+                    <div>
                         <span class="font-semibold"> From: </span>
                         {relationship.from}
                     </div>
@@ -162,18 +164,20 @@
                     </div>
                 </div>
             {:else}
-                <p>No schema found. Please add a schema before studying.</p>
+                <p class="text-sm">
+                    No schema found. Please add a schema before studying.
+                </p>
             {/each}
         </div>
 
         <!-- Cards -->
         <div>
-            <h2 class="text-xl font-semibold mt-4">
+            <h2 class="text-lg font-semibold mt-4">
                 {$currentDeck.cards.cards.length}
                 Card{$currentDeck.cards.cards.length === 1 ? "" : "s"}
             </h2>
             {#if $currentDeck.cards.cards.length > 0}
-                <div id="card-grid" class="w-full grid">
+                <div id="card-grid" class="w-full grid text-sm">
                     {#each fields as field}
                         <div class="font-semibold">{field}</div>
                     {/each}
@@ -230,7 +234,9 @@
                     {/each}
                 </div>
             {:else}
-                <p>No cards found. Please add cards before studying.</p>
+                <p class="text-sm">
+                    No cards found. Please add cards before studying.
+                </p>
             {/if}
         </div>
     </div>
