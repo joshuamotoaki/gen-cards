@@ -15,7 +15,12 @@
             <LightSwitch />
         </div>
         <div class="mb-2">
-            <label class="text-lg" for="theme">Theme</label>
+            <span class="text-lg">
+                Theme (current: {$currentTheme
+                    .split("-")
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")})
+            </span>
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-2">
             <button
