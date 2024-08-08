@@ -34,14 +34,16 @@
 <div class="flex-1 p-4">
     <section class="w-full">
         <h2 class="text-2xl mb-2">Recent Decks</h2>
-        <div class="grid grid-cols-3 w-full gap-4">
-            {#each recentDecks as deck, i}
-                <RecentDisplay
-                    props={deck}
-                    variant={RECENT_DECKS_VARIANTS[i % 6]} />
-            {:else}
-                <p>No decks found. Create a new deck to get started.</p>
-            {/each}
-        </div>
+        {#if recentDecks.length > 0}
+            <div class="grid grid-cols-3 w-full gap-4">
+                {#each recentDecks as deck, i}
+                    <RecentDisplay
+                        props={deck}
+                        variant={RECENT_DECKS_VARIANTS[i % 6]} />
+                {/each}
+            </div>
+        {:else}
+            <p>No decks found. Create a new deck to get started!</p>
+        {/if}
     </section>
 </div>
