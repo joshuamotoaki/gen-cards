@@ -1,8 +1,22 @@
 <script lang="ts">
+    // @ts-nocheck
     import { goto } from "$app/navigation";
     import { db } from "$lib/db";
-    import { currentDeck } from "$lib/state";
+    import { currentDeck, decks } from "$lib/state";
+    import {
+        getModalStore,
+        getToastStore,
+        type ToastSettings
+    } from "@skeletonlabs/skeleton";
     import DeckWarning from "../DeckWarning.svelte";
+
+    const toastStore = getToastStore();
+    const deleteToast: ToastSettings = {
+        message: "Deck successfully deleted.",
+        background: "variant-filled-success"
+    };
+
+    const modalStore = getModalStore();
 </script>
 
 {#if !$currentDeck}
@@ -32,7 +46,27 @@
                 <h1 class="text-2xl font-bold">Edit Deck</h1>
             </div>
             <div class="flex items-center gap-2">
-                <button class="btn variant-filled-error gap-1 btn-icon">
+                <button
+                    on:click={() => {
+                        const deleteConfirm = {
+                            type: "confirm",
+                            title: "Delete Deck",
+                            body: `Are you sure you want to delete deck ${$currentDeck.info.title}?`,
+                            response: async confirm => {
+                                if (confirm) {
+                                    if (!$currentDeck?.info) return;
+                                    goto("/library");
+                                    await db.deleteDeck($currentDeck.info.id);
+                                    currentDeck.set(null);
+                                    decks.set(await db.getAllDeckInfos());
+                                    toastStore.trigger(deleteToast);
+                                }
+                            }
+                        };
+                        modalStore.trigger(deleteConfirm);
+                    }}
+                    id="delete-button"
+                    class="btn variant-filled-error gap-1 btn-icon">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
