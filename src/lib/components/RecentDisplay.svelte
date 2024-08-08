@@ -26,8 +26,10 @@
         {/if}
     </header> -->
     <section class="p-4 text-left">
-        <h3 class="text-xl font-semibold">{props.title}</h3>
-        <p class="mt-1 text-sm font-normal">{props.description}</p>
+        <h2 class="text-xl font-semibold">{props.title}</h2>
+        <p class="mt-1 text-sm font-normal">
+            {props.description}
+        </p>
     </section>
     <footer class="card-footer flex justify-between items-center font-normal">
         <span class="text-sm">
