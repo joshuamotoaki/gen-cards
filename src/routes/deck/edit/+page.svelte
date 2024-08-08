@@ -1,13 +1,14 @@
 <script>
     import { goto } from "$app/navigation";
     import { currentDeck } from "$lib/state";
-    import DeckWarning from "./DeckWarning.svelte";
+    import DeckWarning from "../DeckWarning.svelte";
 </script>
 
 {#if !$currentDeck}
     <DeckWarning />
 {:else}
     <div>
+        EDIT DECK
         <h1>
             {$currentDeck?.info.title}
         </h1>

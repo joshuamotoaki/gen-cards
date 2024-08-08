@@ -15,5 +15,5 @@ export const createNewDeck = async () => {
         cards: deckCards
     });
 
-    goto("/deck");
+    goto("/deck/edit");
 };
