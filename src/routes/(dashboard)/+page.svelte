@@ -15,7 +15,7 @@
                 : new Date(0);
 
             if (aStudiedAt.getTime() === bStudiedAt.getTime()) {
-                return a.id - b.id;
+                return b.id - a.id;
             } else return bStudiedAt.getTime() - aStudiedAt.getTime();
         });
         return sortedDecks.slice(0, n);
