@@ -9,6 +9,7 @@
         type ToastSettings
     } from "@skeletonlabs/skeleton";
     import DeckWarning from "../DeckWarning.svelte";
+    import { createNewCard } from "$lib/helpers";
 
     const toastStore = getToastStore();
     const deleteToast: ToastSettings = {
@@ -22,7 +23,7 @@
 {#if !$currentDeck}
     <DeckWarning />
 {:else}
-    <div class="flex-1 p-4">
+    <div class="flex-1 p-4 overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-2">
                 <button
@@ -119,6 +120,52 @@
                     title="description"
                     placeholder="Input a description" />
             </label>
+
+            <!-- Cards-->
+            <section class="mb-4">
+                <h2 class="text-lg mb-2">
+                    Cards ({$currentDeck.cards.cards.length})
+                </h2>
+                <div>
+                    <div>
+                        {#each $currentDeck.cards.cards as card, index}
+                            <div class="w-full">
+                                {card}
+                            </div>
+                        {/each}
+                    </div>
+                    <button
+                        class="btn variant-filled-primary w-full gap-2"
+                        on:click={async () => {
+                            if (!$currentDeck.info) return;
+                            await createNewCard($currentDeck);
+                        }}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-6">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+
+                        New Card
+                    </button>
+                </div>
+            </section>
+            <div>
+                <button
+                    class="btn variant-filled-success"
+                    on:click={() => {
+                        goto("/deck");
+                    }}>
+                    Done
+                </button>
+            </div>
         </form>
     </div>
 {/if}
