@@ -42,6 +42,7 @@
     };
 
     let fields: string[] = [];
+    $: gridStyleColumns = `grid-template-columns: repeat(${fields.length + 1}, 1fr);`;
 
     onMount(() => {
         if ($currentDeck) {
@@ -124,13 +125,12 @@
             </div>
         </div>
         <div class="space-y-1">
-            <p class="text-sm">
-                <span class="font-semibold"> Description: </span>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Mollitia
-                est nemo molestias aliquid ut aspernatur, neque rem voluptatum nihil
-                veritatis reiciendis dignissimos magnam magni tempora. Sit deleniti
-                unde ratione. Ut?
-            </p>
+            {#if $currentDeck.info.description}
+                <p class="text-sm">
+                    <span class="font-semibold"> Description: </span>
+                    <span>{$currentDeck.info.description}</span>
+                </p>
+            {/if}
             <p class="text-sm">
                 <span class="font-semibold"> Last studied: </span>
                 <span>
@@ -147,7 +147,7 @@
         <div>
             <h2 class="text-xl font-semibold mt-4">Schema</h2>
             {#each $currentDeck.cards.schema.relationships as relationship}
-                <div class="w-full grid grid-cols-2">
+                <div style={gridStyleColumns} class="w-full grid grid-cols-2">
                     <div class="font-semibold">
                         <span class="font-semibold"> From: </span>
                         {relationship.from}
@@ -231,3 +231,9 @@
         </div>
     </div>
 {/if}
+
+<style lang="postcss">
+    #card-grid {
+        grid-template-columns: var(--grid-template-columns);
+    }
+</style>
