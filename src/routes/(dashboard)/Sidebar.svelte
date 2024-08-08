@@ -8,7 +8,7 @@
     flex-col w-1/5 min-w-48 bg-surface-50-900-token border-r border-surface-500/30">
     <div class="space-y-4">
         <a href="/" class="flex items-center gap-2 w-12">
-            <img src="logo.webp" class="h-8 w-8" alt="GenCards Logo" />
+            <img src="/logo.webp" class="h-8 w-8" alt="GenCards Logo" />
             <h1 class="text-2xl font-light">GenCards</h1>
         </a>
 

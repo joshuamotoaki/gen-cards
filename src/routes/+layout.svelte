@@ -46,7 +46,7 @@
 {#if errorMessage}
     <div class="flex items-center flex-col justify-center h-screen gap-4">
         <div class="flex items-center gap-4">
-            <img src="logo.webp" class="h-24 w-24" alt="GenCards Logo" />
+            <img src="/logo.webp" class="h-24 w-24" alt="GenCards Logo" />
             <h1 class="text-7xl font-light">GenCards</h1>
         </div>
         <div class="flex flex-col items-center p-4">
