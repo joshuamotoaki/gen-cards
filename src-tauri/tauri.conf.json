@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "simple-spaced-cards",
+    "productName": "GenCards",
     "version": "0.1.0"
   },
   "tauri": {
@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 675,
         "resizable": true,
-        "title": "Simple Spaced Cards",
+        "title": "GenCards",
         "width": 1200
       }
     ]
