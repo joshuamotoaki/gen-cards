@@ -12,7 +12,7 @@
 
 <aside
     class="h-full p-4 flex justify-between
-    flex-col w-1/6 min-w-44 bg-surface-50-900-token border-r border-surface-500/30">
+    flex-col w-1/5 min-w-44 bg-surface-50-900-token border-r border-surface-500/30">
     <div class="space-y-4">
         <a href="/" class="flex items-center gap-2 w-12">
             <img src="logo.webp" class="h-8 w-8" alt="GenCards Logo" />
@@ -28,7 +28,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="size-6">
+                class="size-6 flex-shrink-0">
                 <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -111,10 +111,14 @@
 
 <style lang="postcss">
     .icon {
-        @apply w-6 h-6;
+        @apply w-6 h-6 flex-shrink-0;
     }
 
     .link-button {
-        @apply w-full justify-start items-center gap-2;
+        @apply w-full justify-start gap-2;
+    }
+
+    .btn {
+        @apply overflow-hidden;
     }
 </style>
