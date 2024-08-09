@@ -213,7 +213,9 @@
               <h2 class="text-lg font-semibold">Relationships</h2>
               <div class="space-y-2">
                 {#each $currentDeck.cards.schema.relationships as rel, index}
-                  <div class="flex gap-2">
+                  <div
+                    class="flex gap-2"
+                    transition:slide={{ axis: "y", duration: 100 }}>
                     <div class="grid grid-cols-2 gap-4 w-full">
                       <div class="flex items-center gap-2">
                         <h3>From:</h3>
