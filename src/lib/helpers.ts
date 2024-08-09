@@ -147,15 +147,21 @@ export const removeFieldFromSchema = async (deck: Deck, index: number) => {
   const field = deck.cards.schema.fields[index];
   deck.cards.schema.fields.splice(index, 1);
 
-  // Remove the field from all cards
-  deck.cards.cards.forEach(card => {
-    delete card.fields[field];
-  });
+  // Delete all cards if there are no fields left
+  if (deck.cards.schema.fields.length === 0) {
+    deck.cards.cards = [];
+    deck.cards.schema.relationships = [];
+  } else {
+    // Remove the field from all cards
+    deck.cards.cards.forEach(card => {
+      delete card.fields[field];
+    });
 
-  // Delete all relationships that involve the field
-  deck.cards.schema.relationships = deck.cards.schema.relationships.filter(
-    rel => rel.from !== field && rel.to !== field
-  );
+    // Delete all relationships that involve the field
+    deck.cards.schema.relationships = deck.cards.schema.relationships.filter(
+      rel => rel.from !== field && rel.to !== field
+    );
+  }
 
   await db.updateDeckCards(deck.cards);
   currentDeck.set(deck);
