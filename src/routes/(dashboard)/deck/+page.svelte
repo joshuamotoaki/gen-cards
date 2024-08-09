@@ -54,7 +54,7 @@
 {#if !$currentDeck}
     <DeckWarning />
 {:else}
-    <div class="p-4 w-full flex-1">
+    <div class="p-4 w-full flex-1 overflow-y-auto">
         <!-- Header Info -->
         <div class="mb-4 space-y-2">
             <div class="flex justify-between items-center">
@@ -87,6 +87,7 @@
                             : "(no title)"}
                     </h1>
                 </div>
+                <!-- ! Menu for settings dropdown in the future -->
                 <!-- <button class="btn btn-icon">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -192,7 +193,7 @@
                         <div>
                             <button
                                 class="btn btn-icon"
-                                on:click={() => {
+                                on:click={async () => {
                                     $currentDeck.cards.cards[index].priority ===
                                     0
                                         ? ($currentDeck.cards.cards[
@@ -202,7 +203,9 @@
                                               index
                                           ].priority = 0);
 
-                                    db.updateDeckCards($currentDeck.cards);
+                                    await db.updateDeckCards(
+                                        $currentDeck.cards
+                                    );
                                 }}>
                                 {#if card.priority === 0}
                                     <svg

@@ -3,7 +3,7 @@
     import { LightSwitch } from "@skeletonlabs/skeleton";
 </script>
 
-<div class="p-4 flex-1">
+<div class="p-4 flex-1 overflow-y-auto">
     <section>
         <h2>General</h2>
         <p>Coming soon.</p>

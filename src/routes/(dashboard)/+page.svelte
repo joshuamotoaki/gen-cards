@@ -33,7 +33,7 @@
     ].sort(() => Math.random() - 0.5);
 </script>
 
-<div class="flex-1 p-4">
+<div class="flex-1 p-4 overflow-y-auto">
     <section class="w-full">
         <h2 class="text-2xl mb-2">Recent Decks</h2>
         {#if recentDecks.length > 0}

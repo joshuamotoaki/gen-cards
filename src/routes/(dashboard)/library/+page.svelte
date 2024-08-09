@@ -28,7 +28,7 @@
     };
 </script>
 
-<div class="flex-1 p-4 overflow-auto">
+<div class="flex-1 p-4 overflow-y-auto">
     <section>
         <h2 class="text-2xl mb-2">All Decks</h2>
 
