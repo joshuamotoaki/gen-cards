@@ -93,7 +93,7 @@
     <!-- ! Metadata-->
     <form>
       <div class="space-y-2 mb-4">
-        <label class="label space-y-0">
+        <label class="label space-y-1">
           <span class="text-lg font-semibold"> Title </span>
           <input
             value={$currentDeck.info.title}
@@ -107,7 +107,7 @@
             type="text"
             placeholder="Input a title" />
         </label>
-        <label class="label space-y-0">
+        <label class="label space-y-1">
           <span class="text-lg font-semibold"> Description </span>
           <textarea
             value={$currentDeck.info.description}
@@ -142,7 +142,7 @@
           <div transition:slide={{ axis: "y", duration: 250 }}>
             <!-- Fields -->
             <div>
-              <h2 class="text-lg font-semibold">Fields</h2>
+              <h2 class="text-lg font-semibold mb-1">Fields</h2>
               <div>
                 <div class="space-y-2">
                   {#each $currentDeck.cards.schema.fields as field, index}
@@ -217,7 +217,7 @@
                           type: "component",
                           component: "addField"
                         })}
-                      class="btn variant-soft-primary gap-2">
+                      class="btn variant-soft-primary gap-2 mt-2">
                       <PlusIcon />
                       New Field
                     </button>
@@ -228,7 +228,7 @@
 
             <!-- Relationships -->
             <div>
-              <h2 class="text-lg font-semibold">Relationships</h2>
+              <h2 class="text-lg font-semibold mb-1">Relationships</h2>
               <div class="space-y-2">
                 {#each $currentDeck.cards.schema.relationships as rel, index}
                   <div
@@ -285,7 +285,7 @@
                     on:click={async () => {
                       addRelationshipToSchema($currentDeck);
                     }}
-                    class="btn variant-soft-primary gap-2">
+                    class="btn variant-soft-primary gap-2 mt-2">
                     <PlusIcon />
                     New Relationship
                   </button>
