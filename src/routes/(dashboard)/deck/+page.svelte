@@ -4,6 +4,7 @@
   import { getToastStore, type ToastSettings } from "@skeletonlabs/skeleton";
   import DeckWarning from "./DeckWarning.svelte";
   import { db } from "$lib/db";
+  import EditIcon from "$lib/components/icons/EditIcon.svelte";
 
   // Toast handling
   const toastStore = getToastStore();
@@ -234,6 +235,13 @@
               </div>
             </div>
           {/each}
+
+          <button
+            class="w-full btn gap-2 variant-soft-primary"
+            on:click={() => goto("/deck/edit")}>
+            <EditIcon />
+            Edit Cards
+          </button>
         </div>
       {:else}
         <p class="text-sm">No cards found. Please add cards before studying.</p>
