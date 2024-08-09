@@ -82,12 +82,12 @@ export const addFieldToSchema = async (deck: Deck, field: string) => {
 };
 
 /**
- * Modify the name of a field in a deck's schema.
- * @param deck Deck to modify the field name in
- * @param index Index of the field to modify
+ * Update the name of a field in a deck's schema.
+ * @param deck Deck to update the field name in
+ * @param index Index of the field to update
  * @param newName New name for the field
  */
-export const modifyFieldName = async (
+export const updateFieldName = async (
   deck: Deck,
   index: number,
   newName: string

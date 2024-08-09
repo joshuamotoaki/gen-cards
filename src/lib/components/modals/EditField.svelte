@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { currentDeck } from "$lib/state";
-  import { addFieldToSchema, modifyFieldName } from "$lib/helpers";
+  import { updateFieldName } from "$lib/helpers";
 
   const modalStore = getModalStore();
 
@@ -27,7 +27,7 @@
   const onFormSubmit = async () => {
     if (!$currentDeck) return;
     if (!validateField(fieldName)) return;
-    await modifyFieldName($currentDeck, index, fieldName);
+    await updateFieldName($currentDeck, index, fieldName);
     modalStore.close();
   };
 
