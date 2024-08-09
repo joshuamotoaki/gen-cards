@@ -96,3 +96,21 @@ export const removeFieldFromSchema = async (deck: Deck, index: number) => {
     await db.updateDeckCards(deck.cards);
     currentDeck.set(deck);
 };
+
+export const addRelationshipToSchema = async (deck: Deck) => {
+    deck.cards.schema.relationships.push({
+        from: "",
+        to: ""
+    });
+    await db.updateDeckCards(deck.cards);
+    currentDeck.set(deck);
+};
+
+export const removeRelationshipFromSchema = async (
+    deck: Deck,
+    index: number
+) => {
+    deck.cards.schema.relationships.splice(index, 1);
+    await db.updateDeckCards(deck.cards);
+    currentDeck.set(deck);
+};
