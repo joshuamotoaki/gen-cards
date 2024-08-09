@@ -347,7 +347,12 @@
               <div></div>
             </div>
             {#each $currentDeck.cards.cards as card, index}
-              <div class="flex gap-2 items-center">
+              <div
+                class="flex gap-2 items-center"
+                transition:slide={{
+                  duration: 100,
+                  axis: "y"
+                }}>
                 <div
                   style={gridCSS}
                   class="grid p-2 flex-1
