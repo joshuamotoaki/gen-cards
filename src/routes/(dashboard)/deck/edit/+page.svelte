@@ -1,374 +1,353 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
-    import {
-        BackIcon,
-        ChevronDownIcon,
-        ChevronUpIcon,
-        PlusIcon,
-        TrashIcon,
-        UploadIcon
-    } from "$lib/components/icons/icons";
-    import { db } from "$lib/db";
-    import {
-        addFieldToSchema,
-        addRelationshipToSchema,
-        createNewCard,
-        refreshDecks,
-        removeFieldFromSchema,
-        removeRelationshipFromSchema
-    } from "$lib/helpers";
-    import { currentDeck } from "$lib/state";
-    import {
-        getModalStore,
-        getToastStore,
-        type ToastSettings
-    } from "@skeletonlabs/skeleton";
-    import Select from "svelte-select";
-    import { slide } from "svelte/transition";
-    import DeckWarning from "../DeckWarning.svelte";
+  import { goto } from "$app/navigation";
+  import {
+    BackIcon,
+    ChevronDownIcon,
+    ChevronUpIcon,
+    PlusIcon,
+    TrashIcon,
+    UploadIcon
+  } from "$lib/components/icons/icons";
+  import { db } from "$lib/db";
+  import {
+    addFieldToSchema,
+    addRelationshipToSchema,
+    createNewCard,
+    refreshDecks,
+    removeFieldFromSchema,
+    removeRelationshipFromSchema
+  } from "$lib/helpers";
+  import { currentDeck } from "$lib/state";
+  import {
+    getModalStore,
+    getToastStore,
+    type ToastSettings
+  } from "@skeletonlabs/skeleton";
+  import Select from "svelte-select";
+  import { slide } from "svelte/transition";
+  import DeckWarning from "../DeckWarning.svelte";
 
-    // UI State
-    let schemaOpen = true;
-    let cardUploadOpen = false;
+  // UI State
+  let schemaOpen = true;
+  let cardUploadOpen = false;
 
-    const toastStore = getToastStore();
-    const deleteToast: ToastSettings = {
-        message: "Deck successfully deleted.",
-        background: "variant-filled-success"
-    };
+  const toastStore = getToastStore();
+  const deleteToast: ToastSettings = {
+    message: "Deck successfully deleted.",
+    background: "variant-filled-success"
+  };
 
-    const modalStore = getModalStore();
+  const modalStore = getModalStore();
 
-    const validateField = (name: string) => {
-        if (!$currentDeck) return false;
+  const validateField = (name: string) => {
+    if (!$currentDeck) return false;
 
-        if (!name || name.length > 100) {
-            toastStore.trigger({
-                message: "Field name must be between 1 and 100 characters.",
-                background: "variant-filled-error"
-            });
-            return false;
-        }
+    if (!name || name.length > 100) {
+      toastStore.trigger({
+        message: "Field name must be between 1 and 100 characters.",
+        background: "variant-filled-error"
+      });
+      return false;
+    }
 
-        const currentFields = $currentDeck.cards.schema.fields;
-        if (currentFields.includes(name)) {
-            toastStore.trigger({
-                message: "Field name already exists.",
-                background: "variant-filled-error"
-            });
-            return false;
-        }
+    const currentFields = $currentDeck.cards.schema.fields;
+    if (currentFields.includes(name)) {
+      toastStore.trigger({
+        message: "Field name already exists.",
+        background: "variant-filled-error"
+      });
+      return false;
+    }
 
-        return true;
-    };
+    return true;
+  };
 </script>
 
 {#if !$currentDeck}
-    <DeckWarning />
+  <DeckWarning />
 {:else}
-    <div class="flex-1 p-4 overflow-y-auto">
-        <!-- Header Actions -->
-        <div class="flex justify-between items-center mb-4">
-            <div class="flex items-center gap-2">
-                <button
-                    class="btn btn-icon"
-                    on:click={() => {
-                        goto("/deck");
-                    }}>
-                    <BackIcon />
-                </button>
-                <h1 class="text-2xl font-bold">Edit Deck</h1>
-            </div>
-            <div class="flex items-center gap-2">
-                <button
-                    on:click={() => {
-                        modalStore.trigger({
+  <div class="flex-1 p-4 overflow-y-auto">
+    <!-- Header Actions -->
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center gap-2">
+        <button
+          class="btn btn-icon"
+          on:click={() => {
+            goto("/deck");
+          }}>
+          <BackIcon />
+        </button>
+        <h1 class="text-2xl font-bold">Edit Deck</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          on:click={() => {
+            modalStore.trigger({
+              type: "confirm",
+              title: "Delete Deck",
+              body: `Are you sure you want to delete deck "${$currentDeck.info.title}"?`,
+              response: async confirm => {
+                if (confirm) {
+                  if (!$currentDeck?.info) return;
+                  goto("/library");
+                  await db.deleteDeck($currentDeck.info.id);
+                  currentDeck.set(null);
+                  await refreshDecks();
+                  toastStore.trigger(deleteToast);
+                }
+              }
+            });
+          }}
+          id="delete-button"
+          class="btn variant-filled-warning gap-1 btn-icon rounded-container-token">
+          <TrashIcon />
+        </button>
+        <button
+          class="btn variant-filled-success"
+          on:click={() => {
+            goto("/deck");
+          }}>
+          Done
+        </button>
+      </div>
+    </div>
+
+    <!-- ! Metadata-->
+    <form>
+      <div class="space-y-2 mb-4">
+        <label class="label space-y-0">
+          <span class="text-lg font-semibold"> Title </span>
+          <input
+            value={$currentDeck.info.title}
+            on:input={e => {
+              if (!$currentDeck.info) return;
+              $currentDeck.info.title = e.target.value;
+              db.updateDeckInfo($currentDeck.info);
+            }}
+            class="input p-2"
+            title="title"
+            type="text"
+            placeholder="Input a title" />
+        </label>
+        <label class="label space-y-0">
+          <span class="text-lg font-semibold"> Description </span>
+          <textarea
+            value={$currentDeck.info.description}
+            on:input={e => {
+              if (!$currentDeck.info) return;
+              $currentDeck.info.description = e.target.value;
+              db.updateDeckInfo($currentDeck.info);
+            }}
+            class="textarea p-2"
+            rows="2"
+            title="description"
+            placeholder="Input a description" />
+        </label>
+      </div>
+
+      <!-- ! Schema -->
+      <section class="mb-4 space-y-4 border-b border-surface-500/30 pb-4">
+        <button
+          class="flex items-center btn variant-filled-secondary btn-sm gap-1"
+          on:click={() => {
+            schemaOpen = !schemaOpen;
+          }}>
+          {#if schemaOpen}
+            <ChevronUpIcon />
+          {:else}
+            <ChevronDownIcon />
+          {/if}
+          <h2 class="text-base">Edit Schema</h2>
+        </button>
+        {#if schemaOpen}
+          <div transition:slide={{ axis: "y", duration: 250 }}>
+            <div>
+              <h2 class="text-lg font-semibold">Fields</h2>
+              <div>
+                <div class="space-y-2">
+                  {#each $currentDeck.cards.schema.fields as field, index}
+                    <div class="flex gap-2">
+                      <h3
+                        class="flex-1 bg-surface-300-600-token rounded-container-token
+                                                p-2 flex items-center">
+                        {field || "(no name)"}
+                      </h3>
+                      <button
+                        class="btn variant-filled-warning gap-1 btn-icon rounded-container-token"
+                        on:click={() => {
+                          modalStore.trigger({
                             type: "confirm",
                             title: "Delete Deck",
-                            body: `Are you sure you want to delete deck "${$currentDeck.info.title}"?`,
+                            body: `Are you sure you want to delete field "${field}"?`,
                             response: async confirm => {
-                                if (confirm) {
-                                    if (!$currentDeck?.info) return;
-                                    goto("/library");
-                                    await db.deleteDeck($currentDeck.info.id);
-                                    currentDeck.set(null);
-                                    await refreshDecks();
-                                    toastStore.trigger(deleteToast);
-                                }
+                              if (confirm) {
+                                await removeFieldFromSchema(
+                                  $currentDeck,
+                                  index
+                                );
+                              }
                             }
+                          });
+                        }}>
+                        <TrashIcon />
+                      </button>
+                    </div>
+                  {:else}
+                    <p>No fields found.</p>
+                  {/each}
+
+                  <div class="flex justify-end">
+                    <button
+                      on:click={async () => {
+                        modalStore.trigger({
+                          type: "prompt",
+                          title: "New Field",
+                          body: "Enter the name of the new field.",
+                          response: async name => {
+                            if (!validateField(name)) return;
+                            await addFieldToSchema($currentDeck, name);
+                          }
                         });
-                    }}
-                    id="delete-button"
-                    class="btn variant-filled-warning gap-1 btn-icon rounded-container-token">
-                    <TrashIcon />
-                </button>
-                <button
-                    class="btn variant-filled-success"
-                    on:click={() => {
-                        goto("/deck");
-                    }}>
-                    Done
-                </button>
+                      }}
+                      class="btn variant-filled-primary gap-2">
+                      <PlusIcon />
+                      New Field
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
+            <div>
+              <h2 class="text-lg font-semibold">Relationships</h2>
+              <div class="space-y-2">
+                {#each $currentDeck.cards.schema.relationships as rel, index}
+                  <div class="flex gap-2">
+                    <div class="grid grid-cols-2 gap-4 w-full">
+                      <div class="flex items-center gap-2">
+                        <h3>From:</h3>
+                        <Select
+                          on:select={async e => {
+                            rel.from = e.detail.value;
+                            await db.updateDeckCards($currentDeck.cards);
+                          }}
+                          items={$currentDeck.cards.schema.fields}
+                          value={rel.from}
+                          placeholder="Select a field" />
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <h3>To:</h3>
+                        <Select
+                          on:select={async e => {
+                            rel.to = e.detail.value;
+                            await db.updateDeckCards($currentDeck.cards);
+                          }}
+                          items={$currentDeck.cards.schema.fields}
+                          value={rel.to}
+                          placeholder="Select a field" />
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        on:click={async () => {
+                          await removeRelationshipFromSchema(
+                            $currentDeck,
+                            index
+                          );
+                        }}
+                        class="btn variant-filled-warning gap-1 btn-icon
+                        rounded-container-token">
+                        <TrashIcon />
+                      </button>
+                    </div>
+                  </div>
+                {:else}
+                  <p>No relationships found.</p>
+                {/each}
+
+                <div class="flex justify-end">
+                  <button
+                    on:click={async () => {
+                      addRelationshipToSchema($currentDeck);
+                    }}
+                    class="btn variant-filled-primary gap-2">
+                    <PlusIcon />
+                    New Relationship
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        {/if}
+      </section>
+
+      <!-- ! Cards-->
+      <section class="mb-4">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-lg font-semibold">
+            Cards ({$currentDeck.cards.cards.length})
+          </h2>
+          <button
+            class="btn btn-sm variant-filled-secondary gap-1"
+            on:click={() => {
+              cardUploadOpen = !cardUploadOpen;
+            }}>
+            {#if cardUploadOpen}
+              <ChevronUpIcon />
+            {:else}
+              <UploadIcon />
+            {/if}
+
+            Upload Cards
+          </button>
         </div>
 
-        <!-- ! Metadata-->
-        <form>
-            <div class="space-y-2 mb-4">
-                <label class="label space-y-0">
-                    <span class="text-lg font-semibold"> Title </span>
-                    <input
-                        value={$currentDeck.info.title}
-                        on:input={e => {
-                            if (!$currentDeck.info) return;
-                            $currentDeck.info.title = e.target.value;
-                            db.updateDeckInfo($currentDeck.info);
-                        }}
-                        class="input p-2"
-                        title="title"
-                        type="text"
-                        placeholder="Input a title" />
-                </label>
-                <label class="label space-y-0">
-                    <span class="text-lg font-semibold"> Description </span>
-                    <textarea
-                        value={$currentDeck.info.description}
-                        on:input={e => {
-                            if (!$currentDeck.info) return;
-                            $currentDeck.info.description = e.target.value;
-                            db.updateDeckInfo($currentDeck.info);
-                        }}
-                        class="textarea p-2"
-                        rows="2"
-                        title="description"
-                        placeholder="Input a description" />
-                </label>
-            </div>
+        <!-- Card Upload -->
+        {#if cardUploadOpen}
+          <div transition:slide={{ axis: "y", duration: 250 }} class="mb-4">
+            <form
+              class="flex justify-between gap-2"
+              on:submit|preventDefault={() => {
+                console.log("submit");
+              }}>
+              <input class="input" type="file" />
+              <button type="submit" class="btn variant-filled-primary"
+                >Add</button>
+            </form>
+          </div>
+        {/if}
 
-            <!-- ! Schema -->
-            <section class="mb-4 space-y-4 border-b border-surface-500/30 pb-4">
-                <button
-                    class="flex items-center btn variant-filled-secondary btn-sm gap-1"
-                    on:click={() => {
-                        schemaOpen = !schemaOpen;
-                    }}>
-                    {#if schemaOpen}
-                        <ChevronUpIcon />
-                    {:else}
-                        <ChevronDownIcon />
-                    {/if}
-                    <h2 class="text-base">Edit Schema</h2>
-                </button>
-                {#if schemaOpen}
-                    <div transition:slide={{ axis: "y", duration: 250 }}>
-                        <div>
-                            <h2 class="text-lg font-semibold">Fields</h2>
-                            <div>
-                                <div class="space-y-2">
-                                    {#each $currentDeck.cards.schema.fields as field, index}
-                                        <div class="flex gap-2">
-                                            <h3
-                                                class="flex-1 bg-surface-300-600-token rounded-container-token
-                                                p-2 flex items-center">
-                                                {field || "(no name)"}
-                                            </h3>
-                                            <button
-                                                class="btn variant-filled-warning gap-1 btn-icon rounded-container-token"
-                                                on:click={() => {
-                                                    modalStore.trigger({
-                                                        type: "confirm",
-                                                        title: "Delete Deck",
-                                                        body: `Are you sure you want to delete field "${field}"?`,
-                                                        response:
-                                                            async confirm => {
-                                                                if (confirm) {
-                                                                    await removeFieldFromSchema(
-                                                                        $currentDeck,
-                                                                        index
-                                                                    );
-                                                                }
-                                                            }
-                                                    });
-                                                }}>
-                                                <TrashIcon />
-                                            </button>
-                                        </div>
-                                    {:else}
-                                        <p>No fields found.</p>
-                                    {/each}
+        <!-- Card List -->
+        <div>
+          <div>
+            {#each $currentDeck.cards.cards as card, index}
+              <div class="w-full">
+                {card}
+              </div>
+            {/each}
+          </div>
 
-                                    <div class="flex justify-end">
-                                        <button
-                                            on:click={async () => {
-                                                modalStore.trigger({
-                                                    type: "prompt",
-                                                    title: "New Field",
-                                                    body: "Enter the name of the new field.",
-                                                    response: async name => {
-                                                        if (
-                                                            !validateField(name)
-                                                        )
-                                                            return;
-                                                        await addFieldToSchema(
-                                                            $currentDeck,
-                                                            name
-                                                        );
-                                                    }
-                                                });
-                                            }}
-                                            class="btn variant-filled-primary gap-2">
-                                            <PlusIcon />
-                                            New Field
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <h2 class="text-lg font-semibold">Relationships</h2>
-                            <div class="space-y-2">
-                                {#each $currentDeck.cards.schema.relationships as rel, index}
-                                    <div class="flex gap-2">
-                                        <div
-                                            class="grid grid-cols-2 gap-4 w-full">
-                                            <div
-                                                class="flex items-center gap-2">
-                                                <h3>From:</h3>
-                                                <Select
-                                                    on:select={async e => {
-                                                        rel.from =
-                                                            e.detail.value;
-                                                        await db.updateDeckCards(
-                                                            $currentDeck.cards
-                                                        );
-                                                    }}
-                                                    items={$currentDeck.cards
-                                                        .schema.fields}
-                                                    value={rel.from}
-                                                    placeholder="Select a field" />
-                                            </div>
-                                            <div
-                                                class="flex items-center gap-2">
-                                                <h3>To:</h3>
-                                                <Select
-                                                    on:select={async e => {
-                                                        rel.to = e.detail.value;
-                                                        await db.updateDeckCards(
-                                                            $currentDeck.cards
-                                                        );
-                                                    }}
-                                                    items={$currentDeck.cards
-                                                        .schema.fields}
-                                                    value={rel.to}
-                                                    placeholder="Select a field" />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <button
-                                                on:click={async () => {
-                                                    await removeRelationshipFromSchema(
-                                                        $currentDeck,
-                                                        index
-                                                    );
-                                                }}
-                                                class="btn variant-filled-warning gap-1 btn-icon rounded-container-token">
-                                                <TrashIcon />
-                                            </button>
-                                        </div>
-                                    </div>
-                                {:else}
-                                    <p>No relationships found.</p>
-                                {/each}
+          <button
+            class="btn w-full variant-filled-primary gap-2 mt-2"
+            on:click={async () => {
+              if (!$currentDeck.info) return;
+              await createNewCard($currentDeck);
+            }}>
+            <PlusIcon />
+            New Card
+          </button>
+        </div>
+      </section>
 
-                                <div class="flex justify-end">
-                                    <button
-                                        on:click={async () => {
-                                            addRelationshipToSchema(
-                                                $currentDeck
-                                            );
-                                        }}
-                                        class="btn variant-filled-primary gap-2">
-                                        <PlusIcon />
-                                        New Relationship
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {/if}
-            </section>
-
-            <!-- ! Cards-->
-            <section class="mb-4">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-lg font-semibold">
-                        Cards ({$currentDeck.cards.cards.length})
-                    </h2>
-                    <button
-                        class="btn btn-sm variant-filled-secondary gap-1"
-                        on:click={() => {
-                            cardUploadOpen = !cardUploadOpen;
-                        }}>
-                        {#if cardUploadOpen}
-                            <ChevronUpIcon />
-                        {:else}
-                            <UploadIcon />
-                        {/if}
-
-                        Upload Cards
-                    </button>
-                </div>
-
-                <!-- Card Upload -->
-                {#if cardUploadOpen}
-                    <div
-                        transition:slide={{ axis: "y", duration: 250 }}
-                        class="mb-4">
-                        <form
-                            class="flex justify-between gap-2"
-                            on:submit|preventDefault={() => {
-                                console.log("submit");
-                            }}>
-                            <input class="input" type="file" />
-                            <button
-                                type="submit"
-                                class="btn variant-filled-primary">Add</button>
-                        </form>
-                    </div>
-                {/if}
-
-                <!-- Card List -->
-                <div>
-                    <div>
-                        {#each $currentDeck.cards.cards as card, index}
-                            <div class="w-full">
-                                {card}
-                            </div>
-                        {/each}
-                    </div>
-
-                    <button
-                        class="btn w-full variant-filled-primary gap-2 mt-2"
-                        on:click={async () => {
-                            if (!$currentDeck.info) return;
-                            await createNewCard($currentDeck);
-                        }}>
-                        <PlusIcon />
-                        New Card
-                    </button>
-                </div>
-            </section>
-
-            <!-- Footer Actions -->
-            <div>
-                <button
-                    class="btn variant-filled-success"
-                    on:click={() => {
-                        goto("/deck");
-                    }}>
-                    Done
-                </button>
-            </div>
-        </form>
-    </div>
+      <!-- Footer Actions -->
+      <div>
+        <button
+          class="btn variant-filled-success"
+          on:click={() => {
+            goto("/deck");
+          }}>
+          Done
+        </button>
+      </div>
+    </form>
+  </div>
 {/if}

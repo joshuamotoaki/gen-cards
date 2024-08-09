@@ -4,60 +4,60 @@ import { skeleton } from "@skeletonlabs/tw-plugin";
 import { gengokoStyle } from "./gengokoStyle";
 
 export default {
-    darkMode: "selector",
-    content: [
-        "./src/**/*.{html,js,svelte,ts}",
-        join(
-            require.resolve("@skeletonlabs/skeleton"),
-            "../**/*.{html,js,svelte,ts}"
-        )
-    ],
-    theme: {
-        extend: {}
-    },
-    plugins: [
-        skeleton({
-            themes: {
-                custom: [gengokoStyle],
-                preset: [
-                    {
-                        name: "skeleton",
-                        enhancements: false
-                    },
-                    {
-                        name: "wintry",
-                        enhancements: false
-                    },
-                    {
-                        name: "modern",
-                        enhancements: false
-                    },
-                    {
-                        name: "rocket",
-                        enhancements: false
-                    },
-                    {
-                        name: "seafoam",
-                        enhancements: false
-                    },
-                    {
-                        name: "vintage",
-                        enhancements: false
-                    },
-                    {
-                        name: "hamlindigo",
-                        enhancements: false
-                    },
-                    {
-                        name: "gold-nouveau",
-                        enhancements: false
-                    },
-                    {
-                        name: "crimson",
-                        enhancements: false
-                    }
-                ]
-            }
-        })
-    ]
+  darkMode: "selector",
+  content: [
+    "./src/**/*.{html,js,svelte,ts}",
+    join(
+      require.resolve("@skeletonlabs/skeleton"),
+      "../**/*.{html,js,svelte,ts}"
+    )
+  ],
+  theme: {
+    extend: {}
+  },
+  plugins: [
+    skeleton({
+      themes: {
+        custom: [gengokoStyle],
+        preset: [
+          {
+            name: "skeleton",
+            enhancements: false
+          },
+          {
+            name: "wintry",
+            enhancements: false
+          },
+          {
+            name: "modern",
+            enhancements: false
+          },
+          {
+            name: "rocket",
+            enhancements: false
+          },
+          {
+            name: "seafoam",
+            enhancements: false
+          },
+          {
+            name: "vintage",
+            enhancements: false
+          },
+          {
+            name: "hamlindigo",
+            enhancements: false
+          },
+          {
+            name: "gold-nouveau",
+            enhancements: false
+          },
+          {
+            name: "crimson",
+            enhancements: false
+          }
+        ]
+      }
+    })
+  ]
 } satisfies Config;
