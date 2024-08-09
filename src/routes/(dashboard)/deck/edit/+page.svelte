@@ -62,7 +62,7 @@
                         modalStore.trigger({
                             type: "confirm",
                             title: "Delete Deck",
-                            body: `Are you sure you want to delete deck ${$currentDeck.info.title}?`,
+                            body: `Are you sure you want to delete deck "${$currentDeck.info.title}"?`,
                             response: async confirm => {
                                 if (confirm) {
                                     if (!$currentDeck?.info) return;
@@ -167,7 +167,7 @@
                                                     modalStore.trigger({
                                                         type: "confirm",
                                                         title: "Delete Deck",
-                                                        body: `Are you sure you want to delete field ${field || "(no name)"}?`,
+                                                        body: `Are you sure you want to delete field "${field || "(no name)"}"?`,
                                                         response:
                                                             async confirm => {
                                                                 if (confirm) {
