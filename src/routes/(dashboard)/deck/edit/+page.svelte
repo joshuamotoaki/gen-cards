@@ -14,7 +14,8 @@
     createNewCard,
     refreshDecks,
     removeFieldFromSchema,
-    removeRelationshipFromSchema
+    removeRelationshipFromSchema,
+    updateFieldIndex
   } from "$lib/helpers";
   import { currentDeck } from "$lib/state";
   import {
@@ -147,6 +148,22 @@
                     <div
                       class="flex gap-2"
                       transition:slide={{ axis: "y", duration: 100 }}>
+                      <button
+                        on:click={async () =>
+                          updateFieldIndex($currentDeck, index, "up")}
+                        disabled={index === 0}
+                        class="btn btn-icon gap-1 variant-filled-surface hover:variant-filled-secondary rounded-container-token">
+                        <ChevronUpIcon />
+                      </button>
+                      <button
+                        on:click={async () =>
+                          updateFieldIndex($currentDeck, index, "down")}
+                        disabled={index ===
+                          $currentDeck.cards.schema.fields.length - 1}
+                        class="btn btn-icon gap-1 variant-filled-surface hover:variant-filled-secondary rounded-container-token">
+                        <ChevronDownIcon />
+                      </button>
+
                       <h3
                         class="flex-1 bg-surface-300-600-token rounded-container-token
                                                 p-2 flex items-center">

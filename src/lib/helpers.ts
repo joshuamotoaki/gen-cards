@@ -113,6 +113,32 @@ export const modifyFieldName = async (
 };
 
 /**
+ * Update the index of a field in a deck's schema.
+ * @param deck Deck to update the field index in
+ * @param oldIndex Index of the field to update
+ * @param direction Direction to move the field in
+ */
+export const updateFieldIndex = async (
+  deck: Deck,
+  oldIndex: number,
+  direction: "up" | "down"
+) => {
+  // Validate the index
+  if (direction === "up" && oldIndex === 0) return;
+  if (direction === "down" && oldIndex === deck.cards.schema.fields.length - 1)
+    return;
+
+  // Swap the fields' positions
+  const newIndex = direction === "up" ? oldIndex - 1 : oldIndex + 1;
+  const temp = deck.cards.schema.fields[oldIndex];
+  deck.cards.schema.fields[oldIndex] = deck.cards.schema.fields[newIndex];
+  deck.cards.schema.fields[newIndex] = temp;
+
+  await db.updateDeckCards(deck.cards);
+  currentDeck.set(deck);
+};
+
+/**
  * Remove a field from a deck's schema.
  * @param deck Deck to remove a field from
  * @param index Index of the field to remove
