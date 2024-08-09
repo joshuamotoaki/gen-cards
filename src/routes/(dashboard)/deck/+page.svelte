@@ -150,7 +150,7 @@
 
         <!-- Schema-->
         <div>
-            <h2 class="text-lg font-semibold mt-4">Schema</h2>
+            <h2 class="text-lg font-semibold mt-4">Relationships</h2>
             {#each $currentDeck.cards.schema.relationships as relationship}
                 <div
                     style={gridStyleColumns}
@@ -166,7 +166,8 @@
                 </div>
             {:else}
                 <p class="text-sm">
-                    No schema found. Please add a schema before studying.
+                    No relationship found. Please add field relationships before
+                    studying.
                 </p>
             {/each}
         </div>
