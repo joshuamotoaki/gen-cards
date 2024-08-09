@@ -11,6 +11,7 @@
     import DeckWarning from "../DeckWarning.svelte";
     import { createNewCard, refreshDecks } from "$lib/helpers";
     import { slide } from "svelte/transition";
+    import Select from "svelte-select";
 
     let cardUploadOpen = false;
 
@@ -129,7 +130,7 @@
             </div>
 
             <!-- ! Schema -->
-            <section class="mb-4 space-y-2 border-b border-surface-500/30 pb-2">
+            <section class="mb-4 space-y-4 border-b border-surface-500/30 pb-2">
                 <div>
                     <h2 class="text-lg font-semibold">Fields</h2>
                     <div>
@@ -195,6 +196,42 @@
                 </div>
                 <div>
                     <h2 class="text-lg font-semibold">Relationships</h2>
+                    <div class="space-y-2">
+                        {#each $currentDeck.cards.schema.relationships as rel}
+                            <div class="grid grid-cols-2 gap-4 w-full">
+                                <div class="flex items-center gap-2">
+                                    <h3>From:</h3>
+                                    <Select
+                                        items={$currentDeck.cards.schema.fields}
+                                        value={rel.from}
+                                        placeholder="Select a field" />
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <h3>To:</h3>
+                                    <Select
+                                        items={$currentDeck.cards.schema.fields}
+                                        value={rel.to}
+                                        placeholder="Select a field" />
+                                </div>
+                            </div>
+                        {/each}
+
+                        <button class="btn variant-filled-primary gap-2">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="size-6">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            New Relationship
+                        </button>
+                    </div>
                 </div>
             </section>
 
