@@ -231,9 +231,3 @@
     </div>
   </div>
 {/if}
-
-<style lang="postcss">
-  #card-grid {
-    grid-template-columns: var(--grid-template-columns);
-  }
-</style>

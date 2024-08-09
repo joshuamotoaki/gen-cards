@@ -39,6 +39,8 @@
   };
 
   const modalStore = getModalStore();
+
+  $: gridCSS = `grid-template-columns: repeat(${$currentDeck.cards.schema.fields.length}, 1fr);`;
 </script>
 
 {#if !$currentDeck}
@@ -334,13 +336,37 @@
 
         <!-- Card List -->
         <div>
-          <div>
+          <main class="space-y-2">
+            <div style={gridCSS} class="grid p-2">
+              {#each $currentDeck.cards.schema.fields as field}
+                <div class="font-semibold">
+                  {field}
+                </div>
+              {/each}
+              <div></div>
+            </div>
             {#each $currentDeck.cards.cards as card, index}
-              <div class="w-full">
-                {card}
+              <div class="flex gap-2 items-center">
+                <div
+                  style={gridCSS}
+                  class="grid p-2 flex-1
+                bg-surface-300-600-token rounded-container-token gap-2
+              ">
+                  {#each $currentDeck.cards.schema.fields as field}
+                    <div class="flex items-center">
+                      <input type="text" class="input p-1" />
+                    </div>
+                  {/each}
+                </div>
+                <div class="flex items-center justify-end">
+                  <button
+                    class="btn btn-icon variant-filled-surface rounded-container-token">
+                    <TrashIcon />
+                  </button>
+                </div>
               </div>
             {/each}
-          </div>
+          </main>
 
           <button
             class="btn w-full variant-filled-primary gap-2 mt-2"
