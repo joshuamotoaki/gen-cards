@@ -31,7 +31,7 @@
     </section>
     <footer class="card-footer flex justify-between items-center font-normal">
         <span class="text-sm">
-            {props.card_count} cards
+            {props.card_count} card{props.card_count === 1 ? "" : "s"}
         </span>
         <span class="text-sm">
             Last studied: {props.studied_at || "Never"}
