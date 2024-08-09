@@ -38,6 +38,29 @@
     };
 
     const modalStore = getModalStore();
+
+    const validateField = (name: string) => {
+        if (!$currentDeck) return false;
+
+        if (!name || name.length > 100) {
+            toastStore.trigger({
+                message: "Field name must be between 1 and 100 characters.",
+                background: "variant-filled-error"
+            });
+            return false;
+        }
+
+        const currentFields = $currentDeck.cards.schema.fields;
+        if (currentFields.includes(name)) {
+            toastStore.trigger({
+                message: "Field name already exists.",
+                background: "variant-filled-error"
+            });
+            return false;
+        }
+
+        return true;
+    };
 </script>
 
 {#if !$currentDeck}
@@ -144,30 +167,18 @@
                                 <div class="space-y-2">
                                     {#each $currentDeck.cards.schema.fields as field, index}
                                         <div class="flex gap-2">
-                                            <input
-                                                value={field}
-                                                on:input={e => {
-                                                    if (
-                                                        !$currentDeck.cards
-                                                            .schema.fields
-                                                    )
-                                                        return;
-                                                    $currentDeck.cards.schema.fields[
-                                                        index
-                                                    ] = e.target.value;
-                                                    db.updateDeckCards(
-                                                        $currentDeck.cards
-                                                    );
-                                                }}
-                                                class="input p-2"
-                                                type="text"
-                                                placeholder="Input a field" />
+                                            <h3
+                                                class="flex-1 bg-surface-300-600-token rounded-container-token
+                                                p-2 flex items-center">
+                                                {field || "(no name)"}
+                                            </h3>
                                             <button
+                                                class="btn variant-filled-warning gap-1 btn-icon rounded-container-token"
                                                 on:click={() => {
                                                     modalStore.trigger({
                                                         type: "confirm",
                                                         title: "Delete Deck",
-                                                        body: `Are you sure you want to delete field "${field || "(no name)"}"?`,
+                                                        body: `Are you sure you want to delete field "${field}"?`,
                                                         response:
                                                             async confirm => {
                                                                 if (confirm) {
@@ -178,20 +189,32 @@
                                                                 }
                                                             }
                                                     });
-                                                }}
-                                                class="btn variant-filled-warning gap-1 btn-icon rounded-container-token">
+                                                }}>
                                                 <TrashIcon />
                                             </button>
                                         </div>
+                                    {:else}
+                                        <p>No fields found.</p>
                                     {/each}
 
                                     <div class="flex justify-end">
                                         <button
                                             on:click={async () => {
-                                                await addFieldToSchema(
-                                                    $currentDeck,
-                                                    ""
-                                                );
+                                                modalStore.trigger({
+                                                    type: "prompt",
+                                                    title: "New Field",
+                                                    body: "Enter the name of the new field.",
+                                                    response: async name => {
+                                                        if (
+                                                            !validateField(name)
+                                                        )
+                                                            return;
+                                                        await addFieldToSchema(
+                                                            $currentDeck,
+                                                            name
+                                                        );
+                                                    }
+                                                });
                                             }}
                                             class="btn variant-filled-primary gap-2">
                                             <PlusIcon />
@@ -253,6 +276,8 @@
                                             </button>
                                         </div>
                                     </div>
+                                {:else}
+                                    <p>No relationships found.</p>
                                 {/each}
 
                                 <div class="flex justify-end">
