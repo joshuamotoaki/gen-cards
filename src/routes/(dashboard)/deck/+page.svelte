@@ -150,7 +150,9 @@
 
         <!-- Schema-->
         <div>
-            <h2 class="text-lg font-semibold mt-4">Relationships</h2>
+            <h2 class="text-lg font-semibold mt-4">
+                Relationships ({$currentDeck.cards.schema.relationships.length})
+            </h2>
             {#each $currentDeck.cards.schema.relationships as relationship}
                 <div
                     style={gridStyleColumns}
@@ -175,8 +177,7 @@
         <!-- Cards -->
         <div>
             <h2 class="text-lg font-semibold mt-4">
-                {$currentDeck.cards.cards.length}
-                Card{$currentDeck.cards.cards.length === 1 ? "" : "s"}
+                Cards ({$currentDeck.cards.cards.length})
             </h2>
             {#if $currentDeck.cards.cards.length > 0}
                 <div id="card-grid" class="w-full grid text-sm">
