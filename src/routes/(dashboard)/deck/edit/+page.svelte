@@ -171,11 +171,13 @@
                         <TrashIcon />
                       </button>
                     </div>
-                  {:else}
+                  {/each}
+
+                  {#if $currentDeck.cards.schema.fields.length < 2}
                     <p class="text-red-500">
                       Warning: Decks must have at least two fields.
                     </p>
-                  {/each}
+                  {/if}
 
                   <div class="flex justify-end">
                     <button
@@ -237,11 +239,13 @@
                       </button>
                     </div>
                   </div>
-                {:else}
+                {/each}
+
+                {#if !$currentDeck.cards.schema.relationships.length}
                   <p class="text-red-500">
                     Warning: Decks must have at least one relationship.
                   </p>
-                {/each}
+                {/if}
 
                 <div class="flex justify-end">
                   <button
