@@ -29,7 +29,7 @@
   import EditIcon from "$lib/components/icons/EditIcon.svelte";
 
   // UI State
-  let schemaOpen = true;
+  let schemaOpen = false;
   let cardUploadOpen = false;
 
   const toastStore = getToastStore();
@@ -129,7 +129,7 @@
       <!-- ! Schema -->
       <section class="mb-4 space-y-4 border-b border-surface-500/30 pb-4">
         <button
-          class="flex items-center btn variant-filled-surface hover:variant-filled-secondary btn-sm gap-1"
+          class="flex items-center btn variant-filled-secondary btn-sm gap-1"
           on:click={() => {
             schemaOpen = !schemaOpen;
           }}>
@@ -306,7 +306,7 @@
             Cards ({$currentDeck.cards.cards.length})
           </h2>
           <button
-            class="btn btn-sm variant-filled-surface hover:variant-filled-secondary gap-1"
+            class="btn btn-sm variant-filled-secondary gap-1"
             on:click={() => {
               cardUploadOpen = !cardUploadOpen;
             }}>
@@ -315,7 +315,6 @@
             {:else}
               <UploadIcon />
             {/if}
-
             Upload Cards
           </button>
         </div>
@@ -337,45 +336,47 @@
 
         <!-- Card List -->
         <div>
-          <main class="space-y-2">
-            <div style={gridCSS} class="grid p-2">
-              {#each $currentDeck.cards.schema.fields as field}
-                <h4 class="font-semibold">
-                  {field}
-                </h4>
-              {/each}
-              <div></div>
-            </div>
-            {#each $currentDeck.cards.cards as card, index}
-              <div
-                class="flex gap-2 items-center"
-                transition:slide={{
-                  duration: 100,
-                  axis: "y"
-                }}>
+          {#if $currentDeck.cards.cards.length > 0}
+            <main class="space-y-2">
+              <div style={gridCSS} class="grid p-2">
+                {#each $currentDeck.cards.schema.fields as field}
+                  <h4 class="font-semibold">
+                    {field}
+                  </h4>
+                {/each}
+                <div></div>
+              </div>
+              {#each $currentDeck.cards.cards as card, index}
                 <div
-                  style={gridCSS}
-                  class="grid p-2 flex-1
+                  class="flex gap-2 items-center"
+                  transition:slide={{
+                    duration: 100,
+                    axis: "y"
+                  }}>
+                  <div
+                    style={gridCSS}
+                    class="grid p-2 flex-1
                 bg-surface-300-600-token rounded-container-token gap-2
               ">
-                  {#each $currentDeck.cards.schema.fields as field}
-                    <div class="flex items-center">
-                      <input
-                        type="text"
-                        class="input p-1"
-                        placeholder={"Enter " + field} />
-                    </div>
-                  {/each}
+                    {#each $currentDeck.cards.schema.fields as field}
+                      <div class="flex items-center">
+                        <input
+                          type="text"
+                          class="input p-1"
+                          placeholder={"Enter " + field} />
+                      </div>
+                    {/each}
+                  </div>
+                  <div class="flex items-center justify-end">
+                    <button
+                      class="btn btn-icon variant-filled-surface rounded-container-token">
+                      <TrashIcon />
+                    </button>
+                  </div>
                 </div>
-                <div class="flex items-center justify-end">
-                  <button
-                    class="btn btn-icon variant-filled-surface rounded-container-token">
-                    <TrashIcon />
-                  </button>
-                </div>
-              </div>
-            {/each}
-          </main>
+              {/each}
+            </main>
+          {/if}
 
           <button
             class="btn w-full variant-filled-primary gap-2 mt-2"

@@ -115,7 +115,15 @@ const createDB = () => {
           "My Deck",
           "",
           0,
-          JSON.stringify({ fields: [], relationships: [] }),
+          JSON.stringify({
+            fields: ["Term", "Definition"],
+            relationships: [
+              {
+                from: "Definition",
+                to: "Term"
+              }
+            ]
+          }),
           JSON.stringify([])
         ]
       );
