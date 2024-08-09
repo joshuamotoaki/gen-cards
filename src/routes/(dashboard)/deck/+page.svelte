@@ -107,7 +107,7 @@
             <!-- Action Buttons -->
             <div class="grid grid-cols-3 gap-2 mb-4">
                 <button
-                    class="card card-hover p-1 variant-filled-primary"
+                    class="card card-hover p-1 variant-filled-primary overflow-hidden"
                     on:click={() => {
                         if (isDeckError()) return;
                         goto("/deck/study");
@@ -115,7 +115,7 @@
                     Study
                 </button>
                 <button
-                    class="card card-hover p-1 variant-filled-secondary"
+                    class="card card-hover p-1 variant-filled-secondary overflow-hidden"
                     on:click={() => {
                         if (isDeckError()) return;
                         goto("/deck/flashcards");
@@ -123,7 +123,7 @@
                     Flashcards
                 </button>
                 <button
-                    class="card card-hover p-1 variant-filled-surface"
+                    class="card card-hover p-1 variant-filled-surface overflow-hidden"
                     on:click={() => goto("/deck/edit")}>
                     Edit
                 </button>

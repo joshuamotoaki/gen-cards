@@ -11,11 +11,11 @@
     <section>
         <h2>Style</h2>
         <div class="flex gap-4 mb-2">
-            <label for="light-switch" class="text-lg">Dark Mode</label>
+            <label for="light-switch">Dark Mode</label>
             <LightSwitch />
         </div>
         <div class="mb-2">
-            <span class="text-lg">
+            <span>
                 Theme (current: {$currentTheme
                     .split("-")
                     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -127,10 +127,10 @@
     }
 
     h2 {
-        @apply text-2xl mb-2;
+        @apply text-2xl font-semibold mb-2;
     }
 
     .card {
-        @apply p-2 bg-gradient-to-br;
+        @apply p-2 bg-gradient-to-br overflow-hidden;
     }
 </style>
