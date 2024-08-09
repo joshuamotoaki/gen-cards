@@ -54,10 +54,7 @@
           type="button"
           class="btn variant-filled-surface"
           on:click={modalStore.close}>Cancel</button>
-        <button
-          type="submit"
-          class="btn variant-filled-success"
-          on:click={onFormSubmit}>Submit</button>
+        <button type="submit" class="btn variant-filled-success">Submit</button>
       </footer>
     </form>
   </div>
