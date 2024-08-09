@@ -40,7 +40,8 @@
 
   const modalStore = getModalStore();
 
-  const gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
+  // Reactive in order to update on schema changes
+  $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
 </script>
 
 {#if !$currentDeck}
