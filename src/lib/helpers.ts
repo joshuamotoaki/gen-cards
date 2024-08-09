@@ -5,11 +5,19 @@ import { currentDeck, decks } from "./state";
 import type { Deck } from "./types";
 
 /**
+ * Refresh the deck infos. This should be called whenever any deck
+ * info is updated.
+ */
+export const refreshDecks = async () => {
+    decks.set(await db.getAllDeckInfos());
+};
+
+/**
  * Create a new deck and navigate to the edit page.
  */
 export const createNewDeck = async () => {
     const id = (await db.createDeck()).lastInsertId;
-    decks.set(await db.getAllDeckInfos());
+    await refreshDecks();
 
     const deckInfo = get(decks).find(deck => deck.id === id);
     if (deckInfo === undefined) throw new Error("Failed to find deck");
@@ -54,5 +62,6 @@ export const createNewCard = async (deck: Deck) => {
     };
     deck.cards.cards.push(newCard);
     await db.updateDeckCards(deck.cards);
+    await refreshDecks();
     currentDeck.set(deck);
 };

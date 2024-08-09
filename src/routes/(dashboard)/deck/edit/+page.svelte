@@ -9,7 +9,7 @@
         type ToastSettings
     } from "@skeletonlabs/skeleton";
     import DeckWarning from "../DeckWarning.svelte";
-    import { createNewCard } from "$lib/helpers";
+    import { createNewCard, refreshDecks } from "$lib/helpers";
     import { slide } from "svelte/transition";
 
     let cardUploadOpen = false;
@@ -62,7 +62,7 @@
                                     goto("/library");
                                     await db.deleteDeck($currentDeck.info.id);
                                     currentDeck.set(null);
-                                    decks.set(await db.getAllDeckInfos());
+                                    await refreshDecks();
                                     toastStore.trigger(deleteToast);
                                 }
                             }

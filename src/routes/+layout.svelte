@@ -10,6 +10,7 @@
     // import { SyncLoader } from "svelte-loading-spinners";
     import { db } from "$lib/db";
     import { decks } from "$lib/state";
+    import { refreshDecks } from "$lib/helpers";
 
     // Theme change
     $: {
@@ -28,7 +29,7 @@
     onMount(async () => {
         try {
             await db.init();
-            decks.set(await db.getAllDeckInfos());
+            await refreshDecks();
             isReady = true;
         } catch (e: unknown) {
             console.error("Error:", e);

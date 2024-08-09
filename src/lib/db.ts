@@ -197,13 +197,15 @@ const createDB = () => {
                 `
                 BEGIN TRANSACTION;
                 UPDATE deck_cards SET schema = $1, cards = $2 WHERE id = $3;
-                UPDATE decks SET edited_at = CURRENT_TIMESTAMP WHERE id = $4;
+                UPDATE decks SET edited_at = CURRENT_TIMESTAMP, card_count = $4
+                WHERE id = $5;
                 COMMIT;
                 `,
                 [
                     deckCards.schema,
                     deckCards.cards,
                     deckCards.id,
+                    deckCards.cards.length,
                     deckCards.deck_id
                 ]
             );
