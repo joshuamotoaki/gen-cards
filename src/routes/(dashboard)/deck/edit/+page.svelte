@@ -4,6 +4,7 @@
     BackIcon,
     ChevronDownIcon,
     ChevronUpIcon,
+    DocumentUpSolidIcon,
     PlusIcon,
     TrashIcon,
     UploadIcon
@@ -19,6 +20,7 @@
   } from "$lib/helpers";
   import { currentDeck } from "$lib/state";
   import {
+    FileDropzone,
     getModalStore,
     getToastStore,
     type ToastSettings
@@ -142,7 +144,10 @@
           {/if}
         </button>
         {#if schemaOpen}
-          <div transition:slide={{ axis: "y", duration: 250 }}>
+          <div
+            class="bg-surface-100-800-token border border-surface-300-600-token
+            p-4 rounded-container-token"
+            transition:slide={{ axis: "y", duration: 250 }}>
             <!-- Fields -->
             <div>
               <h2 class="text-lg font-semibold mb-1">Fields</h2>
@@ -321,16 +326,27 @@
 
         <!-- Card Upload -->
         {#if cardUploadOpen}
-          <div transition:slide={{ axis: "y", duration: 250 }} class="mb-4">
-            <form
-              class="flex justify-between gap-2"
-              on:submit|preventDefault={() => {
-                console.log("submit");
-              }}>
-              <input class="input" type="file" />
-              <button type="submit" class="btn variant-filled-primary"
-                >Add</button>
-            </form>
+          <div
+            transition:slide={{ axis: "y", duration: 250 }}
+            class="mb-4 bg-surface-100-800-token border border-surface-300-600-token
+            p-4 rounded-container-token">
+            <FileDropzone accept=".csv,.json" name="upload">
+              <svelte:fragment slot="lead">
+                <div class="flex items-center justify-center">
+                  <DocumentUpSolidIcon className="size-8" />
+                </div>
+              </svelte:fragment>
+              <svelte:fragment slot="message">
+                <h3 class="text-lg font-semibold text-center">
+                  Upload a deckfile to magically add cards.
+                </h3>
+              </svelte:fragment>
+              <svelte:fragment slot="meta">
+                <p class="text-sm text-surface-600-300-token">
+                  CSV and JSON allowed.
+                </p>
+              </svelte:fragment>
+            </FileDropzone>
           </div>
         {/if}
 
