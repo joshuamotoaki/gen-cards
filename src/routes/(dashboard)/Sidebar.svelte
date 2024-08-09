@@ -1,7 +1,9 @@
 <script lang="ts">
     import { page } from "$app/stores";
-    import { createNewDeck } from "$lib/helpers";
+    import { createNewDeck, refreshDecks } from "$lib/helpers";
     import { PlusIcon } from "$lib/components/icons/icons";
+    import { db } from "$lib/db";
+    import { goto } from "$app/navigation";
 </script>
 
 <aside
@@ -86,7 +88,17 @@
         </nav>
     </div>
 
-    <div>
+    <div class="space-y-4">
+        <!-- TODO: Remove in production-->
+        <button
+            class="btn w-full variant-filled-error"
+            on:click={async () => {
+                await db.deleteEverything();
+                await refreshDecks();
+                goto("/");
+            }}>
+            Clear Data
+        </button>
         <button
             class="btn w-full gap-2 items-center variant-soft-secondary"
             on:click={createNewDeck}>
