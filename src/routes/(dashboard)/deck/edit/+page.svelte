@@ -10,7 +10,6 @@
   } from "$lib/components/icons/icons";
   import { db } from "$lib/db";
   import {
-    addFieldToSchema,
     addRelationshipToSchema,
     createNewCard,
     refreshDecks,
@@ -38,29 +37,6 @@
   };
 
   const modalStore = getModalStore();
-
-  const validateField = (name: string) => {
-    if (!$currentDeck) return false;
-
-    if (!name || name.length > 100) {
-      toastStore.trigger({
-        message: "Field name must be between 1 and 100 characters.",
-        background: "variant-filled-error"
-      });
-      return false;
-    }
-
-    const currentFields = $currentDeck.cards.schema.fields;
-    if (currentFields.includes(name)) {
-      toastStore.trigger({
-        message: "Field name already exists.",
-        background: "variant-filled-error"
-      });
-      return false;
-    }
-
-    return true;
-  };
 </script>
 
 {#if !$currentDeck}
@@ -161,16 +137,19 @@
         </button>
         {#if schemaOpen}
           <div transition:slide={{ axis: "y", duration: 250 }}>
+            <!-- Fields -->
             <div>
               <h2 class="text-lg font-semibold">Fields</h2>
               <div>
                 <div class="space-y-2">
                   {#each $currentDeck.cards.schema.fields as field, index}
-                    <div class="flex gap-2">
+                    <div
+                      class="flex gap-2"
+                      transition:slide={{ axis: "y", duration: 100 }}>
                       <h3
                         class="flex-1 bg-surface-300-600-token rounded-container-token
                                                 p-2 flex items-center">
-                        {field || "(no name)"}
+                        {field}
                       </h3>
                       <button
                         class="btn variant-filled-warning gap-1 btn-icon rounded-container-token"
@@ -193,22 +172,18 @@
                       </button>
                     </div>
                   {:else}
-                    <p>No fields found.</p>
+                    <p class="text-red-500">
+                      Warning: Decks must have at least two fields.
+                    </p>
                   {/each}
 
                   <div class="flex justify-end">
                     <button
-                      on:click={async () => {
+                      on:click={() =>
                         modalStore.trigger({
-                          type: "prompt",
-                          title: "New Field",
-                          body: "Enter the name of the new field.",
-                          response: async name => {
-                            if (!validateField(name)) return;
-                            await addFieldToSchema($currentDeck, name);
-                          }
-                        });
-                      }}
+                          type: "component",
+                          component: "addField"
+                        })}
                       class="btn variant-filled-primary gap-2">
                       <PlusIcon />
                       New Field
@@ -217,6 +192,8 @@
                 </div>
               </div>
             </div>
+
+            <!-- Relationships -->
             <div>
               <h2 class="text-lg font-semibold">Relationships</h2>
               <div class="space-y-2">
@@ -261,7 +238,9 @@
                     </div>
                   </div>
                 {:else}
-                  <p>No relationships found.</p>
+                  <p class="text-red-500">
+                    Warning: Decks must have at least one relationship.
+                  </p>
                 {/each}
 
                 <div class="flex justify-end">

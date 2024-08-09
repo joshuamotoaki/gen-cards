@@ -9,8 +9,8 @@
   // Modal imports
   // import { SyncLoader } from "svelte-loading-spinners";
   import { db } from "$lib/db";
-  import { decks } from "$lib/state";
   import { refreshDecks } from "$lib/helpers";
+  import AddField from "$lib/components/modals/AddField.svelte";
 
   // Theme change
   $: {
@@ -21,7 +21,9 @@
 
   // Modal Components
   initializeStores();
-  const modalRegistry: Record<string, ModalComponent> = {};
+  const modalRegistry: Record<string, ModalComponent> = {
+    addField: { ref: AddField }
+  };
 
   let isReady = false;
   let errorMessage = "";
