@@ -10,6 +10,9 @@
     } from "@skeletonlabs/skeleton";
     import DeckWarning from "../DeckWarning.svelte";
     import { createNewCard } from "$lib/helpers";
+    import { slide } from "svelte/transition";
+
+    let cardUploadOpen = false;
 
     const toastStore = getToastStore();
     const deleteToast: ToastSettings = {
@@ -92,34 +95,38 @@
         </div>
 
         <form>
-            <label class="label space-y-0 mb-2">
-                <span class="text-lg font-semibold"> Title </span>
-                <input
-                    value={$currentDeck.info.title}
-                    on:input={e => {
-                        if (!$currentDeck.info) return;
-                        $currentDeck.info.title = e.target.value;
-                        db.updateDeckInfo($currentDeck.info);
-                    }}
-                    class="input p-2"
-                    title="title"
-                    type="text"
-                    placeholder="Input a title" />
-            </label>
-            <label class="label space-y-0 mb-2">
-                <span class="text-lg font-semibold"> Description </span>
-                <textarea
-                    value={$currentDeck.info.description}
-                    on:input={e => {
-                        if (!$currentDeck.info) return;
-                        $currentDeck.info.description = e.target.value;
-                        db.updateDeckInfo($currentDeck.info);
-                    }}
-                    class="textarea p-2"
-                    rows="3"
-                    title="description"
-                    placeholder="Input a description" />
-            </label>
+            <div
+                class="border-b border-surface-500/30 space-y-2 mb-4
+            pb-2">
+                <label class="label space-y-0">
+                    <span class="text-lg font-semibold"> Title </span>
+                    <input
+                        value={$currentDeck.info.title}
+                        on:input={e => {
+                            if (!$currentDeck.info) return;
+                            $currentDeck.info.title = e.target.value;
+                            db.updateDeckInfo($currentDeck.info);
+                        }}
+                        class="input p-2"
+                        title="title"
+                        type="text"
+                        placeholder="Input a title" />
+                </label>
+                <label class="label space-y-0">
+                    <span class="text-lg font-semibold"> Description </span>
+                    <textarea
+                        value={$currentDeck.info.description}
+                        on:input={e => {
+                            if (!$currentDeck.info) return;
+                            $currentDeck.info.description = e.target.value;
+                            db.updateDeckInfo($currentDeck.info);
+                        }}
+                        class="textarea p-2"
+                        rows="3"
+                        title="description"
+                        placeholder="Input a description" />
+                </label>
+            </div>
 
             <!-- Cards-->
             <section class="mb-4">
@@ -127,23 +134,60 @@
                     <h2 class="text-lg font-semibold">
                         Cards ({$currentDeck.cards.cards.length})
                     </h2>
-                    <button class="btn btn-sm variant-filled-secondary gap-1">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            stroke="currentColor"
-                            class="size-6">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
-                        </svg>
+                    <button
+                        class="btn btn-sm variant-filled-secondary gap-1"
+                        on:click={() => {
+                            cardUploadOpen = !cardUploadOpen;
+                        }}>
+                        {#if cardUploadOpen}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="size-6">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                            </svg>
+                        {:else}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="size-6">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
+                            </svg>
+                        {/if}
 
                         Upload Cards
                     </button>
                 </div>
+
+                {#if cardUploadOpen}
+                    <div
+                        transition:slide={{ axis: "y", duration: 250 }}
+                        class="mb-4">
+                        <form
+                            class="flex justify-between gap-2"
+                            on:submit|preventDefault={() => {
+                                console.log("submit");
+                            }}>
+                            <input class="input" type="file" />
+                            <button
+                                type="submit"
+                                class="btn variant-filled-primary">Add</button>
+                        </form>
+                    </div>
+                {/if}
+
                 <div>
                     <div>
                         {#each $currentDeck.cards.cards as card, index}
@@ -153,7 +197,7 @@
                         {/each}
                     </div>
                     <button
-                        class="btn variant-filled-primary w-full gap-2"
+                        class="btn variant-filled-primary w-full gap-2 mt-2"
                         on:click={async () => {
                             if (!$currentDeck.info) return;
                             await createNewCard($currentDeck);
