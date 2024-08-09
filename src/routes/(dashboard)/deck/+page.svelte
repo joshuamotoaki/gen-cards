@@ -181,6 +181,7 @@
           {#each $currentDeck.cards.cards as card, index}
             {#each fields as field}
               <div>
+                {field}:
                 {card.fields[field]}
               </div>
             {/each}

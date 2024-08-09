@@ -346,6 +346,15 @@
             class="btn w-full variant-filled-primary gap-2 mt-2"
             on:click={async () => {
               if (!$currentDeck.info) return;
+
+              if ($currentDeck.cards.schema.fields.length < 2) {
+                toastStore.trigger({
+                  message: "Decks must have at least two fields.",
+                  background: "variant-filled-error"
+                });
+                return;
+              }
+
               await createNewCard($currentDeck);
             }}>
             <PlusIcon />
