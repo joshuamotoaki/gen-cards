@@ -107,7 +107,7 @@
             class="input p-2"
             title="title"
             type="text"
-            placeholder="Input a title" />
+            placeholder="Enter a title" />
         </label>
         <label class="label space-y-1">
           <span class="text-lg font-semibold"> Description </span>
@@ -121,7 +121,7 @@
             class="textarea p-2"
             rows="2"
             title="description"
-            placeholder="Input a description" />
+            placeholder="Enter a description" />
         </label>
       </div>
 
@@ -354,7 +354,10 @@
               ">
                   {#each $currentDeck.cards.schema.fields as field}
                     <div class="flex items-center">
-                      <input type="text" class="input p-1" />
+                      <input
+                        type="text"
+                        class="input p-1"
+                        placeholder={"Enter " + field} />
                     </div>
                   {/each}
                 </div>
