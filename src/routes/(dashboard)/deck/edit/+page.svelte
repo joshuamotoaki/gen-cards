@@ -25,6 +25,7 @@
   import Select from "svelte-select";
   import { slide } from "svelte/transition";
   import DeckWarning from "../DeckWarning.svelte";
+  import EditIcon from "$lib/components/icons/EditIcon.svelte";
 
   // UI State
   let schemaOpen = true;
@@ -75,7 +76,7 @@
             });
           }}
           id="delete-button"
-          class="btn variant-filled-warning gap-1 btn-icon rounded-container-token">
+          class="btn variant-filled-surface hover:variant-filled-warning gap-1 btn-icon rounded-container-token">
           <TrashIcon />
         </button>
         <button
@@ -124,7 +125,7 @@
       <!-- ! Schema -->
       <section class="mb-4 space-y-4 border-b border-surface-500/30 pb-4">
         <button
-          class="flex items-center btn variant-filled-secondary btn-sm gap-1"
+          class="flex items-center btn variant-filled-surface hover:variant-filled-secondary btn-sm gap-1"
           on:click={() => {
             schemaOpen = !schemaOpen;
           }}>
@@ -151,8 +152,20 @@
                                                 p-2 flex items-center">
                         {field}
                       </h3>
+
                       <button
-                        class="btn variant-filled-warning gap-1 btn-icon rounded-container-token"
+                        class="btn variant-filled-surface hover:variant-filled-warning gap-1 btn-icon rounded-container-token"
+                        on:click={() => {
+                          modalStore.trigger({
+                            type: "component",
+                            component: "editField",
+                            meta: { field, index }
+                          });
+                        }}>
+                        <EditIcon />
+                      </button>
+                      <button
+                        class="btn variant-filled-surface hover:variant-filled-warning gap-1 btn-icon rounded-container-token"
                         on:click={() => {
                           modalStore.trigger({
                             type: "confirm",
@@ -186,7 +199,7 @@
                           type: "component",
                           component: "addField"
                         })}
-                      class="btn variant-filled-primary gap-2">
+                      class="btn variant-soft-primary gap-2">
                       <PlusIcon />
                       New Field
                     </button>
@@ -233,7 +246,7 @@
                             index
                           );
                         }}
-                        class="btn variant-filled-warning gap-1 btn-icon
+                        class="btn variant-filled-surface hover:variant-filled-warning gap-1 btn-icon
                         rounded-container-token">
                         <TrashIcon />
                       </button>
@@ -252,7 +265,7 @@
                     on:click={async () => {
                       addRelationshipToSchema($currentDeck);
                     }}
-                    class="btn variant-filled-primary gap-2">
+                    class="btn variant-soft-primary gap-2">
                     <PlusIcon />
                     New Relationship
                   </button>
@@ -270,7 +283,7 @@
             Cards ({$currentDeck.cards.cards.length})
           </h2>
           <button
-            class="btn btn-sm variant-filled-secondary gap-1"
+            class="btn btn-sm variant-filled-surface hover:variant-filled-secondary gap-1"
             on:click={() => {
               cardUploadOpen = !cardUploadOpen;
             }}>

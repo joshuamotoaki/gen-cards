@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { currentDeck } from "$lib/state";
-  import { addFieldToSchema } from "$lib/helpers";
+  import { addFieldToSchema, modifyFieldName } from "$lib/helpers";
 
   const modalStore = getModalStore();
 
@@ -16,7 +16,7 @@
     }
 
     const currentFields = $currentDeck.cards.schema.fields;
-    if (currentFields.includes(name)) {
+    if (currentFields.filter((field, i) => i !== index).includes(name)) {
       validationError = "Error: Field name already exists.";
       return false;
     }
@@ -27,18 +27,20 @@
   const onFormSubmit = async () => {
     if (!$currentDeck) return;
     if (!validateField(fieldName)) return;
-    await addFieldToSchema($currentDeck, fieldName);
+    await modifyFieldName($currentDeck, index, fieldName);
     modalStore.close();
   };
 
-  let fieldName = "";
+  let fieldName = $modalStore[0].meta.field;
+  let index = $modalStore[0].meta.index;
+
   let validationError = "";
 </script>
 
 {#if $modalStore[0]}
   <div class="card p-4 w-modal shadow-xl">
-    <header class="text-2xl font-semibold mb-1">Add Field</header>
-    <article class="mb-4">Enter the name of the new field.</article>
+    <header class="text-2xl font-semibold mb-1">Edit Field</header>
+    <article class="mb-4">Edit the name of the field.</article>
     {#if validationError}
       <div class="text-red-500 mb-2">{validationError}</div>
     {/if}

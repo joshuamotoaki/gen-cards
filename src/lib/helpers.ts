@@ -82,6 +82,37 @@ export const addFieldToSchema = async (deck: Deck, field: string) => {
 };
 
 /**
+ * Modify the name of a field in a deck's schema.
+ * @param deck Deck to modify the field name in
+ * @param index Index of the field to modify
+ * @param newName New name for the field
+ */
+export const modifyFieldName = async (
+  deck: Deck,
+  index: number,
+  newName: string
+) => {
+  const oldName = deck.cards.schema.fields[index];
+  deck.cards.schema.fields[index] = newName;
+
+  // Update the field name in all cards
+  deck.cards.cards.forEach(card => {
+    card.fields[newName] = card.fields[oldName];
+    delete card.fields[oldName];
+  });
+
+  // Update relationships
+  deck.cards.schema.relationships = deck.cards.schema.relationships.map(rel => {
+    if (rel.from === oldName) rel.from = newName;
+    if (rel.to === oldName) rel.to = newName;
+    return rel;
+  });
+
+  await db.updateDeckCards(deck.cards);
+  currentDeck.set(deck);
+};
+
+/**
  * Remove a field from a deck's schema.
  * @param deck Deck to remove a field from
  * @param index Index of the field to remove

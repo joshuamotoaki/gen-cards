@@ -11,6 +11,7 @@
   import { db } from "$lib/db";
   import { refreshDecks } from "$lib/helpers";
   import AddField from "$lib/components/modals/AddField.svelte";
+  import EditField from "$lib/components/modals/EditField.svelte";
 
   // Theme change
   $: {
@@ -22,7 +23,8 @@
   // Modal Components
   initializeStores();
   const modalRegistry: Record<string, ModalComponent> = {
-    addField: { ref: AddField }
+    addField: { ref: AddField },
+    editField: { ref: EditField }
   };
 
   let isReady = false;
