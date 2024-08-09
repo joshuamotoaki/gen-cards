@@ -1,19 +1,23 @@
 <script lang="ts">
-    // @ts-nocheck
     import { goto } from "$app/navigation";
     import { db } from "$lib/db";
-    import { currentDeck, decks } from "$lib/state";
+    import { currentDeck } from "$lib/state";
     import {
         getModalStore,
         getToastStore,
         type ToastSettings
     } from "@skeletonlabs/skeleton";
     import DeckWarning from "../DeckWarning.svelte";
-    import { createNewCard, refreshDecks } from "$lib/helpers";
+    import {
+        addFieldToSchema,
+        createNewCard,
+        refreshDecks,
+        removeFieldFromSchema
+    } from "$lib/helpers";
     import { slide } from "svelte/transition";
     import Select from "svelte-select";
 
-    let schemaOpen = false;
+    let schemaOpen = true;
     let cardUploadOpen = false;
 
     const toastStore = getToastStore();
@@ -55,7 +59,7 @@
             <div class="flex items-center gap-2">
                 <button
                     on:click={() => {
-                        const deleteConfirm = {
+                        modalStore.trigger({
                             type: "confirm",
                             title: "Delete Deck",
                             body: `Are you sure you want to delete deck ${$currentDeck.info.title}?`,
@@ -69,8 +73,7 @@
                                     toastStore.trigger(deleteToast);
                                 }
                             }
-                        };
-                        modalStore.trigger(deleteConfirm);
+                        });
                     }}
                     id="delete-button"
                     class="btn variant-filled-warning gap-1 btn-icon rounded-container-token">
@@ -194,7 +197,20 @@
                                                 placeholder="Input a field" />
                                             <button
                                                 on:click={() => {
-                                                    console.log("delete field");
+                                                    modalStore.trigger({
+                                                        type: "confirm",
+                                                        title: "Delete Deck",
+                                                        body: `Are you sure you want to delete field ${field || "(no name)"}?`,
+                                                        response:
+                                                            async confirm => {
+                                                                if (confirm) {
+                                                                    await removeFieldFromSchema(
+                                                                        $currentDeck,
+                                                                        index
+                                                                    );
+                                                                }
+                                                            }
+                                                    });
                                                 }}
                                                 class="btn variant-filled-warning gap-1 btn-icon rounded-container-token">
                                                 <svg
@@ -215,6 +231,12 @@
 
                                     <div class="flex justify-end">
                                         <button
+                                            on:click={async () => {
+                                                await addFieldToSchema(
+                                                    $currentDeck,
+                                                    ""
+                                                );
+                                            }}
                                             class="btn variant-filled-primary gap-2">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"

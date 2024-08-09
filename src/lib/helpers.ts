@@ -65,3 +65,34 @@ export const createNewCard = async (deck: Deck) => {
     await refreshDecks();
     currentDeck.set(deck);
 };
+
+/**
+ * Add a field to a deck's schema.
+ * @param deck Deck to add a field to
+ * @param field Field to add
+ */
+export const addFieldToSchema = async (deck: Deck, field: string) => {
+    deck.cards.schema.fields.push(field);
+    deck.cards.cards.forEach(card => {
+        card.fields[field] = "";
+    });
+
+    await db.updateDeckCards(deck.cards);
+    currentDeck.set(deck);
+};
+
+/**
+ * Remove a field from a deck's schema.
+ * @param deck Deck to remove a field from
+ * @param index Index of the field to remove
+ */
+export const removeFieldFromSchema = async (deck: Deck, index: number) => {
+    const field = deck.cards.schema.fields[index];
+    deck.cards.schema.fields.splice(index, 1);
+    deck.cards.cards.forEach(card => {
+        delete card.fields[field];
+    });
+
+    await db.updateDeckCards(deck.cards);
+    currentDeck.set(deck);
+};
