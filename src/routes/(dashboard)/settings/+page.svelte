@@ -26,8 +26,8 @@
       <button
         class="card card-hover
                     {$currentTheme === 'gengoko'
-          ? 'from-orange-600 to-blue-600 text-white'
-          : 'from-orange-200 to-blue-200 text-black'}
+          ? 'from-[#DA2602] to-[#ed9121] text-white'
+          : 'from-red-200 to-orange-200 text-black'}
                     "
         on:click={() => currentTheme.set("gengoko")}>
         ⭐ Gengoko
