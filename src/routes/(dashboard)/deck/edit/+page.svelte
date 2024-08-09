@@ -132,10 +132,11 @@
           }}>
           {#if schemaOpen}
             <ChevronUpIcon />
+            <h2 class="text-base">Hide Schema</h2>
           {:else}
             <ChevronDownIcon />
+            <h2 class="text-base">Edit Schema</h2>
           {/if}
-          <h2 class="text-base">Edit Schema</h2>
         </button>
         {#if schemaOpen}
           <div transition:slide={{ axis: "y", duration: 250 }}>
