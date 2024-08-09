@@ -3,7 +3,6 @@
   import { currentDeck, prevRoute } from "$lib/state";
   import { getToastStore, type ToastSettings } from "@skeletonlabs/skeleton";
   import DeckWarning from "./DeckWarning.svelte";
-  import { onMount } from "svelte";
   import { db } from "$lib/db";
 
   // Toast handling
@@ -41,14 +40,7 @@
     return isError;
   };
 
-  let fields: string[] = [];
-  $: gridStyleColumns = `grid-template-columns: repeat(${fields.length + 1}, 1fr);`;
-
-  onMount(() => {
-    if ($currentDeck) {
-      fields = $currentDeck.cards.schema.fields;
-    }
-  });
+  const gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
 </script>
 
 {#if !$currentDeck}
@@ -150,7 +142,7 @@
         Relationships ({$currentDeck.cards.schema.relationships.length})
       </h2>
       {#each $currentDeck.cards.schema.relationships as relationship}
-        <div style={gridStyleColumns} class="w-full grid grid-cols-2 text-sm">
+        <div class="w-full grid grid-cols-2 text-sm">
           <div>
             <span class="font-semibold"> From: </span>
             {relationship.from}
@@ -173,55 +165,73 @@
         Cards ({$currentDeck.cards.cards.length})
       </h2>
       {#if $currentDeck.cards.cards.length > 0}
-        <div id="card-grid" class="w-full grid text-sm">
-          {#each fields as field}
-            <div class="font-semibold">{field}</div>
-          {/each}
+        <div class="space-y-2">
+          <div class="flex gap-2">
+            <div style={gridCSS} class="grid flex-1">
+              {#each $currentDeck.cards.schema.fields as field}
+                <h3 class="font-semibold select-text cursor-text">{field}</h3>
+              {/each}
+            </div>
+            <h3 class="w-[43px] flex justify-end">Priority</h3>
+          </div>
 
           {#each $currentDeck.cards.cards as card, index}
-            {#each fields as field}
-              <div>
-                {field}:
-                {card.fields[field]}
+            <div class="flex gap-2">
+              <div
+                style={gridCSS}
+                class="grid flex-1 rounded-container-token p-2
+                {card.priority === 1
+                  ? 'bg-primary-200-700-token'
+                  : 'bg-surface-200-700-token'}
+              ">
+                {#each $currentDeck.cards.schema.fields as field}
+                  <p class="flex items-center select-text cursor-text">
+                    {card.fields[field]}
+                  </p>
+                {/each}
               </div>
-            {/each}
+              <!-- Priority Toggle Button -->
+              <div>
+                <button
+                  class="btn btn-icon
+                  {card.priority === 1
+                    ? 'variant-filled-primary'
+                    : 'variant-filled-surface hover:variant-filled-primary'}
+                   rounded-container-token"
+                  on:click={async () => {
+                    $currentDeck.cards.cards[index].priority === 0
+                      ? ($currentDeck.cards.cards[index].priority = 1)
+                      : ($currentDeck.cards.cards[index].priority = 0);
 
-            <div>
-              <button
-                class="btn btn-icon"
-                on:click={async () => {
-                  $currentDeck.cards.cards[index].priority === 0
-                    ? ($currentDeck.cards.cards[index].priority = 1)
-                    : ($currentDeck.cards.cards[index].priority = 0);
-
-                  await db.updateDeckCards($currentDeck.cards);
-                }}>
-                {#if card.priority === 0}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="size-6">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
-                  </svg>
-                {:else}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    class="size-6">
-                    <path
-                      fill-rule="evenodd"
-                      d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                      clip-rule="evenodd" />
-                  </svg>
-                {/if}
-              </button>
+                    await db.updateDeckCards($currentDeck.cards);
+                  }}>
+                  {#if card.priority === 0}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-6">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                    </svg>
+                  {:else}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="size-6">
+                      <path
+                        fill-rule="evenodd"
+                        d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  {/if}
+                </button>
+              </div>
             </div>
           {/each}
         </div>

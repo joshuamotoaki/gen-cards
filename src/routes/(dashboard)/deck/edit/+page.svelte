@@ -40,7 +40,7 @@
 
   const modalStore = getModalStore();
 
-  $: gridCSS = `grid-template-columns: repeat(${$currentDeck.cards.schema.fields.length}, 1fr);`;
+  const gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
 </script>
 
 {#if !$currentDeck}
@@ -339,9 +339,9 @@
           <main class="space-y-2">
             <div style={gridCSS} class="grid p-2">
               {#each $currentDeck.cards.schema.fields as field}
-                <div class="font-semibold">
+                <h4 class="font-semibold">
                   {field}
-                </div>
+                </h4>
               {/each}
               <div></div>
             </div>
