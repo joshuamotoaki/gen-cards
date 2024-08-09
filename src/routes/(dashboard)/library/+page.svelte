@@ -63,9 +63,9 @@
                     <thead>
                         <tr>
                             <ThSort {handler} orderBy="title">Title</ThSort>
-                            <ThSort {handler} orderBy="totalCards"
-                                >Total Cards</ThSort>
-                            <ThSort {handler} orderBy="lastStudied"
+                            <ThSort {handler} orderBy="card_count"
+                                >Card Count</ThSort>
+                            <ThSort {handler} orderBy="studied_at"
                                 >Last Studied</ThSort>
                         </tr>
                     </thead>
