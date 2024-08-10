@@ -15,7 +15,7 @@
   } from "$lib/utils/deck";
 
   import { currentDeck } from "$lib/utils/state";
-  import { getModalStore, getToastStore } from "@skeletonlabs/skeleton";
+  import { getModalStore } from "@skeletonlabs/skeleton";
   import Select from "svelte-select";
   import { slide } from "svelte/transition";
 
@@ -45,7 +45,8 @@
 </script>
 
 {#if $currentDeck}
-  <div class="space-y-2 mb-4">
+  <!-- Metadata -->
+  <section class="space-y-2 mb-4">
     <label class="label space-y-1">
       <span class="text-lg font-semibold"> Title </span>
       <input
@@ -66,9 +67,9 @@
         title="description"
         placeholder="Enter a description" />
     </label>
-  </div>
+  </section>
 
-  <!-- ! Schema -->
+  <!-- Schema -->
   <section class="mb-4 space-y-4 border-b border-surface-500/30 pb-4">
     <button
       class="flex items-center btn variant-filled-secondary btn-sm gap-1"

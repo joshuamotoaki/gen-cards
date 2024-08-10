@@ -43,7 +43,7 @@
 </script>
 
 {#if $currentDeck}
-  <div class="flex justify-between items-center mb-4">
+  <section class="flex justify-between items-center mb-4">
     <h2 class="text-lg font-semibold">
       Cards ({$currentDeck.cards.cards.length})
     </h2>
@@ -59,11 +59,11 @@
       {/if}
       Upload Cards
     </button>
-  </div>
+  </section>
 
   <!-- Card Upload -->
   {#if cardUploadOpen}
-    <div
+    <section
       transition:slide={{ axis: "y", duration: 250 }}
       class="mb-4 bg-surface-100-800-token border
       border-surface-300-600-token
@@ -85,6 +85,6 @@
           </p>
         </svelte:fragment>
       </FileDropzone>
-    </div>
+    </section>
   {/if}
 {/if}
