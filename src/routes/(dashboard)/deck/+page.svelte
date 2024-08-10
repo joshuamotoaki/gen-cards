@@ -123,12 +123,12 @@
     </div>
     <div class="space-y-1">
       {#if $currentDeck.info.description}
-        <p class="text-sm">
+        <p>
           <span class="font-semibold"> Description: </span>
           <span>{$currentDeck.info.description}</span>
         </p>
       {/if}
-      <p class="text-sm">
+      <p>
         <span class="font-semibold"> Last studied: </span>
         <span>
           {$currentDeck?.info.studied_at
@@ -144,7 +144,7 @@
         Relationships ({$currentDeck.cards.schema.relationships.length})
       </h2>
       {#each $currentDeck.cards.schema.relationships as relationship}
-        <div class="w-full grid grid-cols-2 text-sm">
+        <div class="w-full grid grid-cols-2">
           <div>
             <span class="font-semibold"> From: </span>
             {relationship.from}
@@ -167,11 +167,13 @@
         Cards ({$currentDeck.cards.cards.length})
       </h2>
       {#if $currentDeck.cards.cards.length > 0}
-        <div class="space-y-2">
+        <div class="space-y-3">
           <div class="flex gap-2">
             <div style={gridCSS} class="grid flex-1">
               {#each $currentDeck.cards.schema.fields as field}
-                <h3 class="font-semibold select-text cursor-text">{field}</h3>
+                <h3 class="font-semibold select-text cursor-text ml-2">
+                  {field}
+                </h3>
               {/each}
             </div>
             <h3 class="w-[43px] flex justify-end">Priority</h3>
@@ -181,13 +183,17 @@
             <div class="flex gap-2">
               <div
                 style={gridCSS}
-                class="grid flex-1 rounded-container-token p-2
+                class="grid flex-1 rounded-container-token p-2 h-12 shadow-sm
+                border border-surface-300-600-token
                 {card.priority === 1
                   ? 'bg-primary-200-700-token'
                   : 'bg-surface-200-700-token'}
               ">
-                {#each $currentDeck.cards.schema.fields as field}
-                  <p class="flex items-center select-text cursor-text">
+                {#each $currentDeck.cards.schema.fields as field, index}
+                  <p
+                    class="flex items-center select-text cursor-text pl-2
+                    {index !== 0 && 'border-l border-surface-400-500-token'}
+                  ">
                     {card.fields[field]}
                   </p>
                 {/each}
@@ -195,7 +201,7 @@
               <!-- Priority Toggle Button -->
               <div>
                 <button
-                  class="btn btn-icon
+                  class="btn btn-icon h-12 w-12
                   {card.priority === 1
                     ? 'variant-filled-primary'
                     : 'variant-filled-surface hover:variant-filled-primary'}
