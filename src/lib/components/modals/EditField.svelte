@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { currentDeck } from "$lib/state";
-  import { updateFieldName } from "$lib/helpers";
+  import { updateFieldName } from "$lib/deck";
 
   const modalStore = getModalStore();
 

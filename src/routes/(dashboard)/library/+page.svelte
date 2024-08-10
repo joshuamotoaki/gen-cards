@@ -5,7 +5,7 @@
   import RowCount from "$lib/components/datatable/RowCount.svelte";
   import Pagination from "$lib/components/datatable/Pagination.svelte";
   import { currentDeck, decks, prevRoute } from "$lib/state";
-  import { createNewDeck } from "$lib/helpers";
+  import { createNewDeck } from "$lib/deck";
   import { db } from "$lib/db";
   import { goto } from "$app/navigation";
   import type { DeckInfo } from "$lib/types";

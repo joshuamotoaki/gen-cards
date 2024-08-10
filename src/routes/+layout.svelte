@@ -9,7 +9,7 @@
   // Modal imports
   // import { SyncLoader } from "svelte-loading-spinners";
   import { db } from "$lib/db";
-  import { refreshDecks } from "$lib/helpers";
+  import { refreshDecks } from "$lib/deck";
   import AddField from "$lib/components/modals/AddField.svelte";
   import EditField from "$lib/components/modals/EditField.svelte";
 

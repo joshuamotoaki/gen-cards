@@ -4,6 +4,10 @@ import { db } from "./db";
 import { currentDeck, decks } from "./state";
 import type { Deck } from "./types";
 
+//----------------------------------------------------------------------
+// General
+//----------------------------------------------------------------------
+
 /**
  * Refresh the deck infos. This should be called whenever any deck
  * info is updated.
@@ -12,12 +16,9 @@ export const refreshDecks = async () => {
   decks.set(await db.getAllDeckInfos());
 };
 
-export const togglePriority = async (deck: Deck, index: number) => {
-  deck.cards.cards[index].priority =
-    deck.cards.cards[index].priority === 0 ? 1 : 0;
-  await db.updateDeckCards(deck.cards);
-  currentDeck.set(deck);
-};
+//----------------------------------------------------------------------
+// Create
+//----------------------------------------------------------------------
 
 /**
  * Create a new deck and navigate to the edit page.
@@ -74,17 +75,6 @@ export const createNewCard = async (deck: Deck) => {
 };
 
 /**
- * Remove a card from a deck.
- * @param deck Deck to remove a card from
- * @param index Index of the card to remove
- */
-export const removeCard = async (deck: Deck, index: number) => {
-  deck.cards.cards.splice(index, 1);
-  await db.updateDeckCards(deck.cards);
-  currentDeck.set(deck);
-};
-
-/**
  * Add a field to a deck's schema.
  * @param deck Deck to add a field to
  * @param field Field to add
@@ -98,6 +88,19 @@ export const addFieldToSchema = async (deck: Deck, field: string) => {
   await db.updateDeckCards(deck.cards);
   currentDeck.set(deck);
 };
+
+export const addRelationshipToSchema = async (deck: Deck) => {
+  deck.cards.schema.relationships.push({
+    from: "",
+    to: ""
+  });
+  await db.updateDeckCards(deck.cards);
+  currentDeck.set(deck);
+};
+
+//----------------------------------------------------------------------
+// Update
+//----------------------------------------------------------------------
 
 /**
  * Update the name of a field in a deck's schema.
@@ -156,6 +159,28 @@ export const updateFieldIndex = async (
   currentDeck.set(deck);
 };
 
+export const togglePriority = async (deck: Deck, index: number) => {
+  deck.cards.cards[index].priority =
+    deck.cards.cards[index].priority === 0 ? 1 : 0;
+  await db.updateDeckCards(deck.cards);
+  currentDeck.set(deck);
+};
+
+//----------------------------------------------------------------------
+// Delete
+//----------------------------------------------------------------------
+
+/**
+ * Remove a card from a deck.
+ * @param deck Deck to remove a card from
+ * @param index Index of the card to remove
+ */
+export const removeCard = async (deck: Deck, index: number) => {
+  deck.cards.cards.splice(index, 1);
+  await db.updateDeckCards(deck.cards);
+  currentDeck.set(deck);
+};
+
 /**
  * Remove a field from a deck's schema.
  * @param deck Deck to remove a field from
@@ -181,15 +206,6 @@ export const removeFieldFromSchema = async (deck: Deck, index: number) => {
     );
   }
 
-  await db.updateDeckCards(deck.cards);
-  currentDeck.set(deck);
-};
-
-export const addRelationshipToSchema = async (deck: Deck) => {
-  deck.cards.schema.relationships.push({
-    from: "",
-    to: ""
-  });
   await db.updateDeckCards(deck.cards);
   currentDeck.set(deck);
 };

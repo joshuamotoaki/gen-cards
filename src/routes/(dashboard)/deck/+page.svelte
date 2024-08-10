@@ -8,7 +8,7 @@
     StarIcon,
     StarSolidIcon
   } from "$lib/components/icons/icons";
-  import { togglePriority } from "$lib/helpers";
+  import { togglePriority } from "$lib/deck";
   import BackIcon from "$lib/components/icons/BackIcon.svelte";
 
   const toastStore = getToastStore();

@@ -21,7 +21,7 @@
     removeRelationshipFromSchema,
     togglePriority,
     updateFieldIndex
-  } from "$lib/helpers";
+  } from "$lib/deck";
   import { currentDeck } from "$lib/state";
   import {
     FileDropzone,

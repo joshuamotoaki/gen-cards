@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores";
-  import { createNewDeck, refreshDecks } from "$lib/helpers";
+  import { createNewDeck, refreshDecks } from "$lib/deck";
   import { PlusIcon } from "$lib/components/icons/icons";
   import { db } from "$lib/db";
   import { goto } from "$app/navigation";

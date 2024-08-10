@@ -1,6 +1,6 @@
 <script lang="ts">
   import RecentDisplay from "$lib/components/RecentDisplay.svelte";
-  import { createNewDeck } from "$lib/helpers";
+  import { createNewDeck } from "$lib/deck";
   import { decks } from "$lib/state";
   import type { DeckInfo } from "$lib/types";
 
