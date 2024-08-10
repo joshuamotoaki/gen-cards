@@ -431,6 +431,30 @@
                                 e.target.value;
                               await db.updateDeckCards($currentDeck.cards);
                             }}
+                            on:blur={async e => {
+                              // If the the last one, add a new card
+                              if (
+                                field ===
+                                  $currentDeck.cards.schema.fields[
+                                    $currentDeck.cards.schema.fields.length - 1
+                                  ] &&
+                                index === $currentDeck.cards.cards.length - 1
+                              ) {
+                                await createNewCard($currentDeck);
+
+                                // Tab to the next field
+                                const nextField = document.querySelector(
+                                  `textarea[title="${
+                                    $currentDeck.cards.schema.fields[0] +
+                                    ($currentDeck.cards.cards.length - 1)
+                                  }"]`
+                                );
+                                if (nextField) {
+                                  nextField.focus();
+                                }
+                              }
+                            }}
+                            title={field + index}
                             rows="1"
                             class="focus:outline-none bg-transparent
                             pt-2 pb-1 resize-none w-full
