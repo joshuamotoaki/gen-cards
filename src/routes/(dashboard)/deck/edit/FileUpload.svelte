@@ -1,22 +1,16 @@
 <script lang="ts">
-  import {
-    ChevronUpIcon,
-    DocumentUpSolidIcon,
-    UploadIcon
-  } from "$lib/components/icons/icons";
+  import { UploadIcon } from "$lib/components/icons/icons";
   import { fieldsToAdd, currentDeck } from "$lib/utils/state";
   import {
-    FileDropzone,
+    FileButton,
     getModalStore,
     getToastStore
   } from "@skeletonlabs/skeleton";
-  import { slide } from "svelte/transition";
 
   const toastStore = getToastStore();
   const modalStore = getModalStore();
 
   let files: FileList;
-  let cardUploadOpen = false;
 
   const csvToFields = async (file: File): Promise<boolean> => {
     const text = await file.text();
@@ -108,7 +102,7 @@
         break;
       default:
         toastStore.trigger({
-          message: "Invalid file type. Please upload a CSV or JSON file.",
+          message: "Invalid file type. Please upload a CSV file.",
           background: "variant-filled-error"
         });
         return;
@@ -129,44 +123,13 @@
     <h2 class="text-lg font-semibold">
       Cards ({$currentDeck.cards.cards.length})
     </h2>
-    <button
-      class="btn btn-sm variant-filled-secondary gap-1"
-      on:click={() => {
-        cardUploadOpen = !cardUploadOpen;
-      }}>
-      {#if cardUploadOpen}
-        <ChevronUpIcon />
-      {:else}
-        <UploadIcon />
-      {/if}
-      Upload Cards
-    </button>
+    <FileButton
+      button="btn btn-sm variant-filled-secondary gap-1"
+      name="upload"
+      bind:files
+      on:change={handleFileUpload}>
+      <UploadIcon />
+      Upload Card CSV
+    </FileButton>
   </section>
-
-  <!-- Card Upload -->
-  {#if cardUploadOpen}
-    <section
-      transition:slide={{ axis: "y", duration: 250 }}
-      class="mb-4 bg-surface-100-800-token border
-      border-surface-300-600-token
-      p-4 rounded-container-token">
-      <FileDropzone name="upload" bind:files on:change={handleFileUpload}>
-        <svelte:fragment slot="lead">
-          <div class="flex items-center justify-center">
-            <DocumentUpSolidIcon className="size-8" />
-          </div>
-        </svelte:fragment>
-        <svelte:fragment slot="message">
-          <h3 class="text-lg font-semibold text-center">
-            Upload a CSV file to bulk add cards.
-          </h3>
-        </svelte:fragment>
-        <svelte:fragment slot="meta">
-          <p class="text-sm text-surface-600-300-token">
-            CSV files must match the schema of the deck.
-          </p>
-        </svelte:fragment>
-      </FileDropzone>
-    </section>
-  {/if}
 {/if}
