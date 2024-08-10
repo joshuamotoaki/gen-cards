@@ -86,6 +86,14 @@
   const handleFileUpload = async () => {
     fieldsToAdd.set(null);
 
+    if (!$currentDeck || $currentDeck?.cards.schema.fields.length < 2) {
+      toastStore.trigger({
+        message: "Decks must have at least two fields.",
+        background: "variant-filled-error"
+      });
+      return;
+    }
+
     // This should theoretically never happen
     if (!files) {
       toastStore.trigger({
@@ -118,6 +126,7 @@
   };
 </script>
 
+<!-- TODO: Ensure that a double upload (after 1st one being error) succeeds -->
 {#if $currentDeck}
   <section class="flex justify-between items-center mb-4">
     <h2 class="text-lg font-semibold">
