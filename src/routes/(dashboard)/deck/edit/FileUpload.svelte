@@ -76,7 +76,7 @@
         </svelte:fragment>
         <svelte:fragment slot="message">
           <h3 class="text-lg font-semibold text-center">
-            Upload a deckfile to magically add cards.
+            Upload a file to bulk add cards.
           </h3>
         </svelte:fragment>
         <svelte:fragment slot="meta">
