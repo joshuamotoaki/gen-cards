@@ -111,45 +111,24 @@
     await db.updateDeckCards($currentDeck.cards);
   };
 
-  const tabNextField = async (
-    field: string,
-    index: number,
-    e: KeyboardEvent
-  ) => {
+  const autoCreateNewCard = async (field: string, index: number) => {
     if (!$currentDeck) return;
 
-    // If the the last one, handle tabbing to the next card input
+    // If the card is the last one, create a new card
     if (
       field ===
-      $currentDeck.cards.schema.fields[
-        $currentDeck.cards.schema.fields.length - 1
-      ]
+        $currentDeck.cards.schema.fields[
+          $currentDeck.cards.schema.fields.length - 1
+        ] &&
+      index === $currentDeck.cards.cards.length - 1
     ) {
-      // If the final card, create a new card
-      if (index === $currentDeck.cards.cards.length - 1)
-        await createNewCard($currentDeck);
+      await createNewCard($currentDeck);
 
-      // Tab to the first field in the next card
-      console.log($currentDeck.cards.schema.fields[0] + (index + 1));
+      // Tab to the first field in the new card
       const nextField = document.querySelector(
         `textarea[title="${$currentDeck.cards.schema.fields[0] + (index + 1)}"]`
       ) as HTMLTextAreaElement;
-      console.log(nextField);
-      if (nextField) {
-        nextField.focus();
-      }
-    } else {
-      // Otherwise, simply tab to the next field
-      const nextField = document.querySelector(
-        `textarea[title="${
-          $currentDeck.cards.schema.fields[
-            $currentDeck.cards.schema.fields.indexOf(field) + 1
-          ] + index
-        }"]`
-      ) as HTMLTextAreaElement;
-      if (nextField) {
-        nextField.focus();
-      }
+      if (nextField) nextField.focus();
     }
   };
 </script>
@@ -453,6 +432,7 @@
                     </p>
                     <div class="flex items-center gap-2">
                       <button
+                        tabindex="-1"
                         class="btn-icon btn-icon-sm
                         {card.priority === 1
                           ? 'text-primary-700-200-token'
@@ -466,6 +446,7 @@
                         {/if}
                       </button>
                       <button
+                        tabindex="-1"
                         on:click={async () => {
                           if (!$currentDeck.info) return;
                           await removeCard($currentDeck, index);
@@ -487,11 +468,8 @@
                             value={card.fields[field]}
                             on:input={e =>
                               updateCard(index, field, e.currentTarget.value)}
-                            on:keydown={e => {
-                              if (e.key === "Tab") {
-                                e.preventDefault();
-                                tabNextField(field, index, e);
-                              }
+                            on:keydown={() => {
+                              autoCreateNewCard(field, index);
                             }}
                             title={field + index}
                             rows="1"
