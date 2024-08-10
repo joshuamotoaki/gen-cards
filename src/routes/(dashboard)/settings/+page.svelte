@@ -1,5 +1,5 @@
 <script>
-  import { currentTheme } from "$lib/config";
+  import { currentTheme } from "$lib/utils/config";
   import { LightSwitch } from "@skeletonlabs/skeleton";
 </script>
 

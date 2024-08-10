@@ -1,8 +1,8 @@
 <script lang="ts">
   import RecentDisplay from "$lib/components/RecentDisplay.svelte";
-  import { createNewDeck } from "$lib/deck";
-  import { decks } from "$lib/state";
-  import type { DeckInfo } from "$lib/types";
+  import { createNewDeck } from "$lib/utils/deck";
+  import { decks } from "$lib/utils/state";
+  import type { DeckInfo } from "$lib/utils/types";
 
   const NUMBER_OF_RECENT_DECKS = 6;
   const getMostRecentDecks = (decks: DeckInfo[], n: number): DeckInfo[] => {

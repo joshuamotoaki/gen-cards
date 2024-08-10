@@ -11,7 +11,7 @@
     TrashIcon,
     UploadIcon
   } from "$lib/components/icons/icons";
-  import { db } from "$lib/db";
+  import { db } from "$lib/utils/db";
   import {
     addRelationshipToSchema,
     createNewCard,
@@ -21,8 +21,8 @@
     removeRelationshipFromSchema,
     togglePriority,
     updateFieldIndex
-  } from "$lib/deck";
-  import { currentDeck } from "$lib/state";
+  } from "$lib/utils/deck";
+  import { currentDeck } from "$lib/utils/state";
   import {
     FileDropzone,
     getModalStore,

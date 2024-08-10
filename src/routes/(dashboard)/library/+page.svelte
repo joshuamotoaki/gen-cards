@@ -4,11 +4,11 @@
   import ThSort from "$lib/components/datatable/ThSort.svelte";
   import RowCount from "$lib/components/datatable/RowCount.svelte";
   import Pagination from "$lib/components/datatable/Pagination.svelte";
-  import { currentDeck, decks, prevRoute } from "$lib/state";
-  import { createNewDeck } from "$lib/deck";
-  import { db } from "$lib/db";
+  import { currentDeck, decks, prevRoute } from "$lib/utils/state";
+  import { createNewDeck } from "$lib/utils/deck";
+  import { db } from "$lib/utils/db";
   import { goto } from "$app/navigation";
-  import type { DeckInfo } from "$lib/types";
+  import type { DeckInfo } from "$lib/utils/types";
 
   const handler = new DataHandler($decks, { rowsPerPage: 10 });
   const rows = handler.getRows();

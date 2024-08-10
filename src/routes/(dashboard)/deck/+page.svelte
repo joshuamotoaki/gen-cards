@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { currentDeck, prevRoute } from "$lib/state";
+  import { currentDeck, prevRoute } from "$lib/utils/state";
   import { getToastStore } from "@skeletonlabs/skeleton";
   import DeckWarning from "./DeckWarning.svelte";
   import {
@@ -8,7 +8,7 @@
     StarIcon,
     StarSolidIcon
   } from "$lib/components/icons/icons";
-  import { togglePriority } from "$lib/deck";
+  import { togglePriority } from "$lib/utils/deck";
   import BackIcon from "$lib/components/icons/BackIcon.svelte";
 
   const toastStore = getToastStore();

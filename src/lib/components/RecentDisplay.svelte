@@ -1,8 +1,8 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { db } from "$lib/db";
-  import { currentDeck, prevRoute } from "$lib/state";
-  import type { DeckInfo } from "$lib/types";
+  import { db } from "$lib/utils/db";
+  import { currentDeck, prevRoute } from "$lib/utils/state";
+  import type { DeckInfo } from "$lib/utils/types";
 
   export let props: DeckInfo;
   export let variant: string = "variant-glass-surface";

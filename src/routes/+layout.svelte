@@ -1,15 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import "../app.postcss";
-  import { currentTheme } from "$lib/config";
+  import { currentTheme } from "$lib/utils/config";
   import { browser } from "$app/environment";
   import { initializeStores, Modal, Toast } from "@skeletonlabs/skeleton";
   import type { ModalComponent } from "@skeletonlabs/skeleton";
 
   // Modal imports
   // import { SyncLoader } from "svelte-loading-spinners";
-  import { db } from "$lib/db";
-  import { refreshDecks } from "$lib/deck";
+  import { db } from "$lib/utils/db";
+  import { refreshDecks } from "$lib/utils/deck";
   import AddField from "$lib/components/modals/AddField.svelte";
   import EditField from "$lib/components/modals/EditField.svelte";
 
