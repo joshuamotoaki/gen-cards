@@ -111,29 +111,40 @@
     await db.updateDeckCards($currentDeck.cards);
   };
 
-  // Create a new card when the last field is tabbed out of
-  const autoCreateNewCard = async (
+  const tabNextField = async (
     field: string,
     index: number,
     e: KeyboardEvent
   ) => {
-    if (!$currentDeck || e.key !== "Tab") return;
+    if (!$currentDeck) return;
 
-    // If the the last one, add a new card
+    // If the the last one, handle tabbing to the next card input
     if (
       field ===
-        $currentDeck.cards.schema.fields[
-          $currentDeck.cards.schema.fields.length - 1
-        ] &&
-      index === $currentDeck.cards.cards.length - 1
+      $currentDeck.cards.schema.fields[
+        $currentDeck.cards.schema.fields.length - 1
+      ]
     ) {
-      await createNewCard($currentDeck);
+      // If the final card, create a new card
+      if (index === $currentDeck.cards.cards.length - 1)
+        await createNewCard($currentDeck);
 
-      // Tab to the next field
+      // Tab to the first field in the next card
+      console.log($currentDeck.cards.schema.fields[0] + (index + 1));
+      const nextField = document.querySelector(
+        `textarea[title="${$currentDeck.cards.schema.fields[0] + (index + 1)}"]`
+      ) as HTMLTextAreaElement;
+      console.log(nextField);
+      if (nextField) {
+        nextField.focus();
+      }
+    } else {
+      // Otherwise, simply tab to the next field
       const nextField = document.querySelector(
         `textarea[title="${
-          $currentDeck.cards.schema.fields[0] +
-          ($currentDeck.cards.cards.length - 1)
+          $currentDeck.cards.schema.fields[
+            $currentDeck.cards.schema.fields.indexOf(field) + 1
+          ] + index
         }"]`
       ) as HTMLTextAreaElement;
       if (nextField) {
@@ -477,7 +488,10 @@
                             on:input={e =>
                               updateCard(index, field, e.currentTarget.value)}
                             on:keydown={e => {
-                              autoCreateNewCard(field, index, e);
+                              if (e.key === "Tab") {
+                                e.preventDefault();
+                                tabNextField(field, index, e);
+                              }
                             }}
                             title={field + index}
                             rows="1"
