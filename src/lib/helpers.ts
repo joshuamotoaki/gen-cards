@@ -67,6 +67,17 @@ export const createNewCard = async (deck: Deck) => {
 };
 
 /**
+ * Remove a card from a deck.
+ * @param deck Deck to remove a card from
+ * @param index Index of the card to remove
+ */
+export const removeCard = async (deck: Deck, index: number) => {
+  deck.cards.cards.splice(index, 1);
+  await db.updateDeckCards(deck.cards);
+  currentDeck.set(deck);
+};
+
+/**
  * Add a field to a deck's schema.
  * @param deck Deck to add a field to
  * @param field Field to add

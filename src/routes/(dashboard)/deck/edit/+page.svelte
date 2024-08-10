@@ -16,6 +16,7 @@
     addRelationshipToSchema,
     createNewCard,
     refreshDecks,
+    removeCard,
     removeFieldFromSchema,
     removeRelationshipFromSchema,
     updateFieldIndex
@@ -163,7 +164,8 @@
                         on:click={async () =>
                           updateFieldIndex($currentDeck, index, "up")}
                         disabled={index === 0}
-                        class="btn btn-icon gap-1 variant-filled-surface hover:variant-filled-secondary rounded-container-token">
+                        class="btn btn-icon gap-1 variant-filled-surface
+                        hover:variant-filled-secondary rounded-container-token">
                         <ChevronUpIcon />
                       </button>
                       <button
@@ -171,7 +173,8 @@
                           updateFieldIndex($currentDeck, index, "down")}
                         disabled={index ===
                           $currentDeck.cards.schema.fields.length - 1}
-                        class="btn btn-icon gap-1 variant-filled-surface hover:variant-filled-secondary rounded-container-token">
+                        class="btn btn-icon gap-1 variant-filled-surface
+                        hover:variant-filled-secondary rounded-container-token">
                         <ChevronDownIcon />
                       </button>
 
@@ -182,7 +185,8 @@
                       </h3>
 
                       <button
-                        class="btn variant-filled-surface hover:variant-filled-warning gap-1 btn-icon rounded-container-token"
+                        class="btn variant-filled-surface
+                        hover:variant-filled-warning gap-1 btn-icon rounded-container-token"
                         on:click={() => {
                           modalStore.trigger({
                             type: "component",
@@ -193,7 +197,8 @@
                         <EditIcon />
                       </button>
                       <button
-                        class="btn variant-filled-surface hover:variant-filled-warning gap-1 btn-icon rounded-container-token"
+                        class="btn variant-filled-surface hover:variant-filled-warning
+                        gap-1 btn-icon rounded-container-token"
                         on:click={() => {
                           modalStore.trigger({
                             type: "confirm",
@@ -276,7 +281,8 @@
                             index
                           );
                         }}
-                        class="btn variant-filled-surface hover:variant-filled-warning gap-1 btn-icon
+                        class="btn variant-filled-surface
+                        hover:variant-filled-warning gap-1 btn-icon
                         rounded-container-token">
                         <TrashIcon />
                       </button>
@@ -330,7 +336,8 @@
         {#if cardUploadOpen}
           <div
             transition:slide={{ axis: "y", duration: 250 }}
-            class="mb-4 bg-surface-100-800-token border border-surface-300-600-token
+            class="mb-4 bg-surface-100-800-token border
+            border-surface-300-600-token
             p-4 rounded-container-token">
             <FileDropzone accept=".csv,.json" name="upload">
               <svelte:fragment slot="lead">
@@ -394,7 +401,12 @@
                         {/if}
                       </button>
                       <button
-                        class="btn-icon btn-icon-sm text-surface-600-300-token hover:text-warning-700-200-token">
+                        on:click={async () => {
+                          if (!$currentDeck.info) return;
+                          await removeCard($currentDeck, index);
+                        }}
+                        class="btn-icon btn-icon-sm text-surface-600-300-token
+                        hover:text-warning-700-200-token">
                         <TrashIcon className="size-5" />
                       </button>
                     </div>
