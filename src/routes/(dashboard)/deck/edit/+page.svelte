@@ -372,6 +372,7 @@
                   }}
                   class="flex-1 shadow-sm border border-surface-300-600-token
                 bg-surface-200-700-token rounded-container-token p-4">
+                  <!-- Card Actions -->
                   <div
                     class="border-b-2 border-surface-300-600-token
                       flex justify-between items-center text-sm pb-1 mb-2">
@@ -411,12 +412,21 @@
                       </button>
                     </div>
                   </div>
+
+                  <!-- Card Contents -->
                   <div style={gridCSS} class="grid gap-4">
                     {#each $currentDeck.cards.schema.fields as field}
                       <div class="flex items-center">
                         <label class="flex flex-col gap-1 w-full">
                           <!-- TODO: Figure out how to dynamically change size -->
                           <textarea
+                            value={card.fields[field]}
+                            on:input={async e => {
+                              if (!$currentDeck.info) return;
+                              $currentDeck.cards.cards[index].fields[field] =
+                                e.target.value;
+                              await db.updateDeckCards($currentDeck.cards);
+                            }}
                             rows="1"
                             class="focus:outline-none bg-transparent
                             pt-2 pb-1 resize-none
