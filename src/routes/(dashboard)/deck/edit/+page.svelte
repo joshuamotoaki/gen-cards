@@ -353,7 +353,7 @@
         <!-- Card List -->
         <div>
           {#if $currentDeck.cards.cards.length > 0}
-            <main class="space-y-2">
+            <main class="space-y-6">
               <div style={gridCSS} class="grid p-2">
                 {#each $currentDeck.cards.schema.fields as field}
                   <h4 class="font-semibold">
@@ -363,31 +363,44 @@
                 <div></div>
               </div>
               {#each $currentDeck.cards.cards as card, index}
+                <!-- Visual Container -->
                 <div
-                  class="flex gap-2 items-center"
                   transition:slide={{
                     duration: 100,
                     axis: "y"
-                  }}>
+                  }}
+                  class="flex-1 shadow-sm border border-surface-300-600-token
+                bg-surface-200-700-token rounded-container-token p-4">
                   <div
-                    style={gridCSS}
-                    class="grid p-2 flex-1
-                bg-surface-300-600-token rounded-container-token gap-2
-              ">
+                    class="border-b-2 border-surface-300-600-token
+                      flex justify-between items-center px-2 text-sm pb-1 mb-2">
+                    <p class="text-surface-600-300-token font-semibold">
+                      {index + 1}
+                    </p>
+                    <button class="btn-icon btn-icon-sm">
+                      <TrashIcon
+                        className="size-5 duration-150
+                      text-surface-600-300-token hover:text-warning-700-200-token" />
+                    </button>
+                  </div>
+                  <div style={gridCSS} class="grid gap-4">
                     {#each $currentDeck.cards.schema.fields as field}
                       <div class="flex items-center">
-                        <input
-                          type="text"
-                          class="input p-1"
-                          placeholder={"Enter " + field} />
+                        <label class="flex flex-col gap-1 w-full">
+                          <!-- TODO: Figure out how to dynamically change size -->
+                          <textarea
+                            rows="1"
+                            class="focus:outline-none bg-transparent
+                            pt-2 pb-1 resize-none
+                            border-b-2 border-surface-700-200-token
+                            focus:border-primary-500-400-token"
+                            placeholder={"Enter " + field} />
+                          <span class="text-sm text-surface-600-300-token">
+                            {field}
+                          </span>
+                        </label>
                       </div>
                     {/each}
-                  </div>
-                  <div class="flex items-center justify-end">
-                    <button
-                      class="btn btn-icon variant-filled-surface rounded-container-token">
-                      <TrashIcon />
-                    </button>
                   </div>
                 </div>
               {/each}
@@ -395,7 +408,7 @@
           {/if}
 
           <button
-            class="btn w-full variant-filled-primary gap-2 mt-2"
+            class="btn w-full variant-filled-primary gap-2 mt-4"
             on:click={async () => {
               if (!$currentDeck.info) return;
 
