@@ -370,8 +370,12 @@
                     duration: 100,
                     axis: "y"
                   }}
-                  class="flex-1 shadow-sm border border-surface-300-600-token
-                bg-surface-200-700-token rounded-container-token p-4">
+                  class="flex-1 shadow-sm border
+                bg-surface-200-700-token rounded-container-token p-4
+                {Object.values(card.fields).some(field => field === '')
+                    ? 'border-warning-700-200-token'
+                    : 'border-surface-300-600-token'}
+                ">
                   <!-- Card Actions -->
                   <div
                     class="border-b-2 border-surface-300-600-token
