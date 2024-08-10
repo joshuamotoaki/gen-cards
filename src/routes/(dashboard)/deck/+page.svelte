@@ -11,7 +11,6 @@
   import { togglePriority } from "$lib/helpers";
   import BackIcon from "$lib/components/icons/BackIcon.svelte";
 
-  // Toast handling
   const toastStore = getToastStore();
 
   const isDeckError = (): boolean => {
@@ -20,6 +19,7 @@
     let isError = false;
     const TOAST_TIMEOUT = 5000;
 
+    // There must be at least one relationship
     if ($currentDeck.cards.schema.relationships.length === 0) {
       toastStore.trigger({
         message: "No relationship found.",
@@ -29,9 +29,24 @@
       isError = true;
     }
 
+    // There must be at least one card
     if ($currentDeck.cards.cards.length === 0) {
       toastStore.trigger({
         message: "No cards found.",
+        background: "variant-filled-error",
+        timeout: TOAST_TIMEOUT
+      });
+      isError = true;
+    }
+
+    // There must be no empty fields
+    if (
+      $currentDeck.cards.cards.some(card =>
+        Object.values(card.fields).some(field => !field)
+      )
+    ) {
+      toastStore.trigger({
+        message: "Empty fields found.",
         background: "variant-filled-error",
         timeout: TOAST_TIMEOUT
       });
