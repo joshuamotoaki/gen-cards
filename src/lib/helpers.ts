@@ -12,6 +12,13 @@ export const refreshDecks = async () => {
   decks.set(await db.getAllDeckInfos());
 };
 
+export const togglePriority = async (deck: Deck, index: number) => {
+  deck.cards.cards[index].priority =
+    deck.cards.cards[index].priority === 0 ? 1 : 0;
+  await db.updateDeckCards(deck.cards);
+  currentDeck.set(deck);
+};
+
 /**
  * Create a new deck and navigate to the edit page.
  */

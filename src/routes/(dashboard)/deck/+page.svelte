@@ -9,6 +9,7 @@
     StarIcon,
     StarSolidIcon
   } from "$lib/components/icons/icons";
+  import { togglePriority } from "$lib/helpers";
 
   // Toast handling
   const toastStore = getToastStore();
@@ -210,13 +211,7 @@
                     ? 'variant-filled-primary'
                     : 'variant-filled-surface hover:variant-filled-primary'}
                    rounded-container-token"
-                  on:click={async () => {
-                    $currentDeck.cards.cards[index].priority === 0
-                      ? ($currentDeck.cards.cards[index].priority = 1)
-                      : ($currentDeck.cards.cards[index].priority = 0);
-
-                    await db.updateDeckCards($currentDeck.cards);
-                  }}>
+                  on:click={() => togglePriority($currentDeck, index)}>
                   {#if card.priority === 0}
                     <StarIcon />
                   {:else}

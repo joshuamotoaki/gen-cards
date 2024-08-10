@@ -19,6 +19,7 @@
     removeCard,
     removeFieldFromSchema,
     removeRelationshipFromSchema,
+    togglePriority,
     updateFieldIndex
   } from "$lib/helpers";
   import { currentDeck } from "$lib/state";
@@ -47,6 +48,99 @@
 
   // Reactive in order to update on schema changes
   $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
+
+  //--------------------------------------------------------------------
+  // Helper Functions
+  //--------------------------------------------------------------------
+
+  const deleteDeck = () => {
+    if (!$currentDeck) return;
+    modalStore.trigger({
+      type: "confirm",
+      title: "Delete Deck",
+      body: `Are you sure you want to delete deck "${$currentDeck.info.title}"?`,
+      response: async confirm => {
+        if (confirm) {
+          if (!$currentDeck?.info) return;
+          goto("/library");
+          await db.deleteDeck($currentDeck.info.id);
+          currentDeck.set(null);
+          await refreshDecks();
+          toastStore.trigger(deleteToast);
+        }
+      }
+    });
+  };
+
+  const deleteField = (field: string, index: number) => {
+    if (!$currentDeck) return;
+    modalStore.trigger({
+      type: "confirm",
+      title: "Delete Deck",
+      body: `Are you sure you want to delete field "${field}"?`,
+      response: async confirm => {
+        if (confirm) {
+          await removeFieldFromSchema($currentDeck, index);
+        }
+      }
+    });
+  };
+
+  const updateMeta = async (key: "title" | "description", value: string) => {
+    if (!$currentDeck) return;
+    $currentDeck.info[key] = value;
+    await db.updateDeckInfo($currentDeck.info);
+  };
+
+  const checkAndCreateNewCard = async () => {
+    if (!$currentDeck) return;
+    if ($currentDeck.cards.schema.fields.length < 2) {
+      toastStore.trigger({
+        message: "Decks must have at least two fields.",
+        background: "variant-filled-error"
+      });
+      return;
+    }
+
+    await createNewCard($currentDeck);
+  };
+
+  const updateCard = async (index: number, field: string, value: string) => {
+    if (!$currentDeck) return;
+    $currentDeck.cards.cards[index].fields[field] = value;
+    await db.updateDeckCards($currentDeck.cards);
+  };
+
+  // Create a new card when the last field is tabbed out of
+  const autoCreateNewCard = async (
+    field: string,
+    index: number,
+    e: KeyboardEvent
+  ) => {
+    if (!$currentDeck || e.key !== "Tab") return;
+
+    // If the the last one, add a new card
+    if (
+      field ===
+        $currentDeck.cards.schema.fields[
+          $currentDeck.cards.schema.fields.length - 1
+        ] &&
+      index === $currentDeck.cards.cards.length - 1
+    ) {
+      await createNewCard($currentDeck);
+
+      // Tab to the next field
+      const nextField = document.querySelector(
+        `textarea[title="${
+          $currentDeck.cards.schema.fields[0] +
+          ($currentDeck.cards.cards.length - 1)
+        }"]`
+      ) as HTMLTextAreaElement;
+      if (nextField) {
+        nextField.focus();
+      }
+    }
+  };
 </script>
 
 {#if !$currentDeck}
@@ -67,25 +161,10 @@
       </div>
       <div class="flex items-center gap-2">
         <button
-          on:click={() => {
-            modalStore.trigger({
-              type: "confirm",
-              title: "Delete Deck",
-              body: `Are you sure you want to delete deck "${$currentDeck.info.title}"?`,
-              response: async confirm => {
-                if (confirm) {
-                  if (!$currentDeck?.info) return;
-                  goto("/library");
-                  await db.deleteDeck($currentDeck.info.id);
-                  currentDeck.set(null);
-                  await refreshDecks();
-                  toastStore.trigger(deleteToast);
-                }
-              }
-            });
-          }}
+          on:click={deleteDeck}
           id="delete-button"
-          class="btn variant-filled-surface hover:variant-filled-warning gap-1 btn-icon rounded-container-token">
+          class="btn variant-filled-surface hover:variant-filled-warning
+          gap-1 btn-icon rounded-container-token">
           <TrashIcon />
         </button>
         <button
@@ -105,11 +184,7 @@
           <span class="text-lg font-semibold"> Title </span>
           <input
             value={$currentDeck.info.title}
-            on:input={e => {
-              if (!$currentDeck.info) return;
-              $currentDeck.info.title = e.target.value;
-              db.updateDeckInfo($currentDeck.info);
-            }}
+            on:input={e => updateMeta("title", e.currentTarget.value)}
             class="input p-2"
             title="title"
             type="text"
@@ -119,11 +194,7 @@
           <span class="text-lg font-semibold"> Description </span>
           <textarea
             value={$currentDeck.info.description}
-            on:input={e => {
-              if (!$currentDeck.info) return;
-              $currentDeck.info.description = e.target.value;
-              db.updateDeckInfo($currentDeck.info);
-            }}
+            on:input={e => updateMeta("description", e.currentTarget.value)}
             class="textarea p-2"
             rows="2"
             title="description"
@@ -199,21 +270,7 @@
                       <button
                         class="btn variant-filled-surface hover:variant-filled-warning
                         gap-1 btn-icon rounded-container-token"
-                        on:click={() => {
-                          modalStore.trigger({
-                            type: "confirm",
-                            title: "Delete Deck",
-                            body: `Are you sure you want to delete field "${field}"?`,
-                            response: async confirm => {
-                              if (confirm) {
-                                await removeFieldFromSchema(
-                                  $currentDeck,
-                                  index
-                                );
-                              }
-                            }
-                          });
-                        }}>
+                        on:click={() => deleteField(field, index)}>
                         <TrashIcon />
                       </button>
                     </div>
@@ -390,15 +447,7 @@
                           ? 'text-primary-700-200-token'
                           : 'text-surface-600-300-token hover:text-primary-700-200-token'}
                         "
-                        on:click={async () => {
-                          if (!$currentDeck.info) return;
-
-                          $currentDeck.cards.cards[index].priority === 0
-                            ? ($currentDeck.cards.cards[index].priority = 1)
-                            : ($currentDeck.cards.cards[index].priority = 0);
-
-                          await db.updateDeckCards($currentDeck.cards);
-                        }}>
+                        on:click={() => togglePriority($currentDeck, index)}>
                         {#if card.priority === 1}
                           <StarSolidIcon className="size-5" />
                         {:else}
@@ -425,34 +474,10 @@
                           <!-- TODO: Figure out how to dynamically change size -->
                           <textarea
                             value={card.fields[field]}
-                            on:input={async e => {
-                              if (!$currentDeck.info) return;
-                              $currentDeck.cards.cards[index].fields[field] =
-                                e.target.value;
-                              await db.updateDeckCards($currentDeck.cards);
-                            }}
-                            on:blur={async e => {
-                              // If the the last one, add a new card
-                              if (
-                                field ===
-                                  $currentDeck.cards.schema.fields[
-                                    $currentDeck.cards.schema.fields.length - 1
-                                  ] &&
-                                index === $currentDeck.cards.cards.length - 1
-                              ) {
-                                await createNewCard($currentDeck);
-
-                                // Tab to the next field
-                                const nextField = document.querySelector(
-                                  `textarea[title="${
-                                    $currentDeck.cards.schema.fields[0] +
-                                    ($currentDeck.cards.cards.length - 1)
-                                  }"]`
-                                );
-                                if (nextField) {
-                                  nextField.focus();
-                                }
-                              }
+                            on:input={e =>
+                              updateCard(index, field, e.currentTarget.value)}
+                            on:keydown={e => {
+                              autoCreateNewCard(field, index, e);
                             }}
                             title={field + index}
                             rows="1"
@@ -475,19 +500,7 @@
 
           <button
             class="btn w-full variant-filled-primary gap-2 mt-4"
-            on:click={async () => {
-              if (!$currentDeck.info) return;
-
-              if ($currentDeck.cards.schema.fields.length < 2) {
-                toastStore.trigger({
-                  message: "Decks must have at least two fields.",
-                  background: "variant-filled-error"
-                });
-                return;
-              }
-
-              await createNewCard($currentDeck);
-            }}>
+            on:click={checkAndCreateNewCard}>
             <PlusIcon />
             New Card
           </button>
