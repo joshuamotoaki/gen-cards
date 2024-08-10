@@ -433,7 +433,7 @@
                             }}
                             rows="1"
                             class="focus:outline-none bg-transparent
-                            pt-2 pb-1 resize-none
+                            pt-2 pb-1 resize-none w-full
                             border-b-2 border-surface-700-200-token
                             focus:border-primary-500-400-token"
                             placeholder={"Enter " + field} />
