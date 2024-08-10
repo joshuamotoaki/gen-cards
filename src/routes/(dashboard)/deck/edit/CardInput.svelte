@@ -120,8 +120,10 @@
                     value={card.fields[field]}
                     on:input={e =>
                       updateCard(index, field, e.currentTarget.value)}
-                    on:keydown={() => {
-                      autoCreateNewCard(field, index);
+                    on:keydown={e => {
+                      if (e.key === "Tab") {
+                        autoCreateNewCard(field, index);
+                      }
                     }}
                     title={field + index}
                     rows="1"
