@@ -1,45 +1,40 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { currentDeck, prevRoute } from "$lib/state";
-  import { getToastStore, type ToastSettings } from "@skeletonlabs/skeleton";
+  import { getToastStore } from "@skeletonlabs/skeleton";
   import DeckWarning from "./DeckWarning.svelte";
-  import { db } from "$lib/db";
   import {
     EditIcon,
     StarIcon,
     StarSolidIcon
   } from "$lib/components/icons/icons";
   import { togglePriority } from "$lib/helpers";
+  import BackIcon from "$lib/components/icons/BackIcon.svelte";
 
   // Toast handling
   const toastStore = getToastStore();
 
-  const TOAST_TIMEOUT = 5000;
-  const noSchemaError: ToastSettings = {
-    message: "No schema found.",
-    background: "variant-filled-error",
-    timeout: TOAST_TIMEOUT
-  };
-
-  const noCardsError: ToastSettings = {
-    message: "No cards found.",
-    background: "variant-filled-error",
-    timeout: TOAST_TIMEOUT
-  };
-
   const isDeckError = (): boolean => {
+    if (!$currentDeck) return true;
+
     let isError = false;
-    if (!$currentDeck) {
-      return true;
-    }
+    const TOAST_TIMEOUT = 5000;
 
     if ($currentDeck.cards.schema.relationships.length === 0) {
-      toastStore.trigger(noSchemaError);
+      toastStore.trigger({
+        message: "No relationship found.",
+        background: "variant-filled-error",
+        timeout: TOAST_TIMEOUT
+      });
       isError = true;
     }
 
     if ($currentDeck.cards.cards.length === 0) {
-      toastStore.trigger(noCardsError);
+      toastStore.trigger({
+        message: "No cards found.",
+        background: "variant-filled-error",
+        timeout: TOAST_TIMEOUT
+      });
       isError = true;
     }
 
@@ -66,39 +61,13 @@
               else goto("/library");
               prevRoute.set(null);
             }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-            </svg>
+            <BackIcon />
           </button>
 
           <h1 class="text-2xl font-semibold">
             {$currentDeck?.info.title ? $currentDeck.info.title : "(no title)"}
           </h1>
         </div>
-        <!-- ! Menu for settings dropdown in the future -->
-        <!-- <button class="btn btn-icon">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="size-6">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                    </svg>
-                </button> -->
       </div>
 
       <!-- Action Buttons -->
@@ -160,7 +129,7 @@
           </div>
         </div>
       {:else}
-        <p class="text-sm">
+        <p>
           No relationship found. Please add field relationships before studying.
         </p>
       {/each}
@@ -230,7 +199,7 @@
           </button>
         </div>
       {:else}
-        <p class="text-sm">No cards found. Please add cards before studying.</p>
+        <p>No cards found. Please add cards before studying.</p>
       {/if}
     </div>
   </div>
