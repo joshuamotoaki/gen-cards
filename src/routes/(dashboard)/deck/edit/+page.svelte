@@ -6,6 +6,8 @@
     ChevronUpIcon,
     DocumentUpSolidIcon,
     PlusIcon,
+    StarIcon,
+    StarSolidIcon,
     TrashIcon,
     UploadIcon
   } from "$lib/components/icons/icons";
@@ -365,15 +367,37 @@
                 bg-surface-200-700-token rounded-container-token p-4">
                   <div
                     class="border-b-2 border-surface-300-600-token
-                      flex justify-between items-center px-2 text-sm pb-1 mb-2">
+                      flex justify-between items-center text-sm pb-1 mb-2">
                     <p class="text-surface-600-300-token font-semibold">
                       {index + 1}
                     </p>
-                    <button class="btn-icon btn-icon-sm">
-                      <TrashIcon
-                        className="size-5 duration-150
-                      text-surface-600-300-token hover:text-warning-700-200-token" />
-                    </button>
+                    <div class="flex items-center gap-2">
+                      <button
+                        class="btn-icon btn-icon-sm
+                        {card.priority === 1
+                          ? 'text-primary-700-200-token'
+                          : 'text-surface-600-300-token hover:text-primary-700-200-token'}
+                        "
+                        on:click={async () => {
+                          if (!$currentDeck.info) return;
+
+                          $currentDeck.cards.cards[index].priority === 0
+                            ? ($currentDeck.cards.cards[index].priority = 1)
+                            : ($currentDeck.cards.cards[index].priority = 0);
+
+                          await db.updateDeckCards($currentDeck.cards);
+                        }}>
+                        {#if card.priority === 1}
+                          <StarSolidIcon className="size-5" />
+                        {:else}
+                          <StarIcon className="size-5" />
+                        {/if}
+                      </button>
+                      <button
+                        class="btn-icon btn-icon-sm text-surface-600-300-token hover:text-warning-700-200-token">
+                        <TrashIcon className="size-5" />
+                      </button>
+                    </div>
                   </div>
                   <div style={gridCSS} class="grid gap-4">
                     {#each $currentDeck.cards.schema.fields as field}
