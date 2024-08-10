@@ -306,7 +306,7 @@
 
       <!-- ! Cards-->
       <section class="mb-4">
-        <div class="flex justify-between items-center mb-2">
+        <div class="flex justify-between items-center mb-4">
           <h2 class="text-lg font-semibold">
             Cards ({$currentDeck.cards.cards.length})
           </h2>
@@ -354,14 +354,6 @@
         <div>
           {#if $currentDeck.cards.cards.length > 0}
             <main class="space-y-6">
-              <div style={gridCSS} class="grid p-2">
-                {#each $currentDeck.cards.schema.fields as field}
-                  <h4 class="font-semibold">
-                    {field}
-                  </h4>
-                {/each}
-                <div></div>
-              </div>
               {#each $currentDeck.cards.cards as card, index}
                 <!-- Visual Container -->
                 <div
