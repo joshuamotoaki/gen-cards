@@ -4,6 +4,7 @@
   import { PlusIcon } from "$lib/components/icons/icons";
   import { db } from "$lib/utils/db";
   import { goto } from "$app/navigation";
+  import { conflictingCards } from "$lib/utils/state";
 </script>
 
 <aside
@@ -95,6 +96,7 @@
       on:click={async () => {
         await db.deleteEverything();
         await refreshDecks();
+        conflictingCards.set(null);
         goto("/");
       }}>
       Clear Data

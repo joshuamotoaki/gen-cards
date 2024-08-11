@@ -59,8 +59,10 @@
     }
   };
 
-  // Reactive in order to update on schema changes
   $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
+  $: conflictList = $conflictingCards
+    ? Object.keys($conflictingCards).map(Number)
+    : [];
 </script>
 
 {#if $currentDeck}
@@ -76,7 +78,8 @@
           }}
           class="flex-1 shadow-sm border
           bg-surface-200-700-token rounded-container-token p-4
-          {Object.values(card.fields).some(field => field === '')
+          {Object.values(card.fields).some(field => field === '') ||
+          conflictList.includes(index)
             ? 'border-warning-300-600-token'
             : 'border-surface-300-600-token'}
           ">
@@ -84,9 +87,19 @@
           <div
             class="border-b-2 border-surface-300-600-token
                 flex justify-between items-center text-sm pb-1 mb-2">
-            <p class="text-surface-600-300-token font-semibold">
-              {index + 1}
-            </p>
+            <div class="flex items-center gap-4">
+              <p class="text-surface-600-300-token font-semibold">
+                {index + 1}
+              </p>
+              {#if conflictList.includes(index) && $conflictingCards}
+                <p class="text-warning-700-200-token">
+                  Conflicts with card{$conflictingCards[index].length === 1
+                    ? ""
+                    : "s"}{" "}
+                  {$conflictingCards[index].map(i => i + 1).join(", ")}
+                </p>
+              {/if}
+            </div>
             <div class="flex items-center gap-2">
               <button
                 tabindex="-1"

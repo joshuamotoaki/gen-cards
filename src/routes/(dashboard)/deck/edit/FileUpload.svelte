@@ -116,8 +116,6 @@
         return;
     }
 
-    console.log("Fields to add:", $fieldsToAdd);
-
     // Open the modal to confirm the upload
     modalStore.trigger({
       type: "component",

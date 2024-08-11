@@ -16,7 +16,7 @@ export const refreshDecks = async () => {
   decks.set(await db.getAllDeckInfos());
 };
 
-export const refreshConflictingCards = async () => {
+export const refreshConflictingCards = () => {
   const deck = get(currentDeck);
   if (deck === null) return;
   const deckCards = deck.cards.cards;
@@ -41,10 +41,12 @@ export const refreshConflictingCards = async () => {
     else hashMap.set(combined, [i]);
   }
 
-  // Find all conflicting cards
-  const conflicts: Set<number>[] = [];
+  // This is trading off space for time
+  const conflicts: Record<number, number[]> = {};
   for (const val of hashMap.values())
-    if (val.length > 1) conflicts.push(new Set(val));
+    if (val.length > 1)
+      for (const index of val)
+        conflicts[index] = val.filter(i => i !== index).sort((a, b) => a - b);
   conflictingCards.set(conflicts);
 };
 
@@ -237,6 +239,7 @@ export const togglePriority = async (deck: Deck, index: number) => {
 export const removeCard = async (deck: Deck, index: number) => {
   deck.cards.cards.splice(index, 1);
   await db.updateDeckCards(deck.cards);
+  refreshConflictingCards();
   currentDeck.set(deck);
 };
 
