@@ -63,6 +63,7 @@
     <div class="space-y-6">
       {#each $currentDeck.cards.cards as card, index}
         <!-- Visual Container -->
+        <!-- TODO: Fix sliding visual to slide for individual card instead of entire list -->
         <article
           transition:slide={{
             duration: 100,
