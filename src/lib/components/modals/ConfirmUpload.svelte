@@ -1,11 +1,15 @@
 <script lang="ts">
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { currentDeck, fieldsToAdd } from "$lib/utils/state";
+  import { createNewCardsFromUpload } from "$lib/utils/deck";
 
   const modalStore = getModalStore();
 
   const onFormSubmit = async () => {
+    if (!$currentDeck || !$fieldsToAdd) return;
+    await createNewCardsFromUpload($currentDeck, $fieldsToAdd);
     modalStore.close();
+    fieldsToAdd.set(null);
   };
 
   $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;

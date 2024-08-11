@@ -75,6 +75,33 @@ export const createNewCard = async (deck: Deck) => {
 };
 
 /**
+ * Create new cards in a deck from an upload.
+ * @param deck Deck to add cards to
+ * @param toAdd Array of the new fields and values of the cards to add
+ */
+export const createNewCardsFromUpload = async (
+  deck: Deck,
+  toAdd: Record<string, string>[]
+) => {
+  const newCards = toAdd.map(fields => {
+    const card = {
+      id: generateIdForCard(deck),
+      level: 0,
+      scheduled_at: null,
+      studied_at: null,
+      priority: 0,
+      fields
+    };
+    return card;
+  });
+
+  deck.cards.cards.push(...newCards);
+  await db.updateDeckCards(deck.cards);
+  await refreshDecks();
+  currentDeck.set(deck);
+};
+
+/**
  * Add a field to a deck's schema.
  * @param deck Deck to add a field to
  * @param field Field to add
