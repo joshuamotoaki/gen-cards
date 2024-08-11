@@ -7,6 +7,9 @@ export const decks = writable<DeckInfo[]>([]);
 // The current deck being interacted with.
 export const currentDeck = writable<Deck | null>(null);
 
+// Sets of conflicting cards.
+export const conflictingCards = writable<Set<number>[] | null>(null);
+
 // The fields to add from an uploaded file.
 export const fieldsToAdd = writable<Record<string, string>[] | null>(null);
 

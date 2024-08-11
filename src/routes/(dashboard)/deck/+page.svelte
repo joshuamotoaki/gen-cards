@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { currentDeck, prevRoute } from "$lib/utils/state";
+  import { conflictingCards, currentDeck, prevRoute } from "$lib/utils/state";
   import { getToastStore } from "@skeletonlabs/skeleton";
   import DeckWarning from "./DeckWarning.svelte";
   import {
@@ -72,6 +72,7 @@
             class="btn btn-icon"
             on:click={() => {
               currentDeck.set(null);
+              conflictingCards.set(null);
               if ($prevRoute) goto($prevRoute);
               else goto("/library");
               prevRoute.set(null);

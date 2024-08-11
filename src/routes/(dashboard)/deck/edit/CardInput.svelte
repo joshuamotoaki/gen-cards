@@ -6,9 +6,14 @@
     TrashIcon
   } from "$lib/components/icons/icons";
   import { db } from "$lib/utils/db";
-  import { createNewCard, removeCard, togglePriority } from "$lib/utils/deck";
+  import {
+    createNewCard,
+    refreshConflictingCards,
+    removeCard,
+    togglePriority
+  } from "$lib/utils/deck";
 
-  import { currentDeck } from "$lib/utils/state";
+  import { conflictingCards, currentDeck } from "$lib/utils/state";
   import { getToastStore } from "@skeletonlabs/skeleton";
   import { slide } from "svelte/transition";
 
@@ -119,8 +124,10 @@
                   <!-- TODO: Tabbing to the next card places cursor at the end-->
                   <textarea
                     value={card.fields[field]}
-                    on:input={e =>
-                      updateCard(index, field, e.currentTarget.value)}
+                    on:input={async e => {
+                      await updateCard(index, field, e.currentTarget.value);
+                      refreshConflictingCards();
+                    }}
                     on:keydown={e => {
                       if (e.key === "Tab") {
                         autoCreateNewCard(field, index);

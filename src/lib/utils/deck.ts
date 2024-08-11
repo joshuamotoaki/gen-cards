@@ -1,7 +1,7 @@
 import { goto } from "$app/navigation";
 import { get } from "svelte/store";
 import { db } from "./db";
-import { currentDeck, decks } from "./state";
+import { conflictingCards, currentDeck, decks } from "./state";
 import type { Deck } from "./types";
 
 //----------------------------------------------------------------------
@@ -14,6 +14,38 @@ import type { Deck } from "./types";
  */
 export const refreshDecks = async () => {
   decks.set(await db.getAllDeckInfos());
+};
+
+export const refreshConflictingCards = async () => {
+  const deck = get(currentDeck);
+  if (deck === null) return;
+  const deckCards = deck.cards.cards;
+
+  // Create a hash map of fields to card indices
+  const hashMap = new Map<string, number[]>();
+  for (let i = 0; i < deckCards.length; i++) {
+    const card = deckCards[i];
+
+    // Concatenate all the fields into a single string
+    const fields = Object.values(card.fields);
+
+    // Skip cards with empty fields
+    if (fields.some(field => field === "")) continue;
+
+    // The delimiter is unlikely to appear in the fields
+    const combined = fields.join("&^チ@)($#름&*は@)!_ü#@&");
+
+    // If the combined string already exists, add the index to the list
+    if (hashMap.has(combined)) hashMap.get(combined)!.push(i);
+    // Otherwise, create a new list with the index as the only element
+    else hashMap.set(combined, [i]);
+  }
+
+  // Find all conflicting cards
+  const conflicts: Set<number>[] = [];
+  for (const val of hashMap.values())
+    if (val.length > 1) conflicts.push(new Set(val));
+  conflictingCards.set(conflicts);
 };
 
 //----------------------------------------------------------------------

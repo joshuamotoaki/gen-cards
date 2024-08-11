@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { db } from "$lib/utils/db";
+  import { refreshConflictingCards } from "$lib/utils/deck";
   import { currentDeck, prevRoute } from "$lib/utils/state";
   import type { DeckInfo } from "$lib/utils/types";
 
@@ -17,6 +18,7 @@
       info: props,
       cards: deckCards
     });
+    refreshConflictingCards();
 
     prevRoute.set("/");
     goto("/deck");

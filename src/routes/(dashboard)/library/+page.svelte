@@ -5,7 +5,7 @@
   import RowCount from "$lib/components/datatable/RowCount.svelte";
   import Pagination from "$lib/components/datatable/Pagination.svelte";
   import { currentDeck, decks, prevRoute } from "$lib/utils/state";
-  import { createNewDeck } from "$lib/utils/deck";
+  import { createNewDeck, refreshConflictingCards } from "$lib/utils/deck";
   import { db } from "$lib/utils/db";
   import { goto } from "$app/navigation";
   import type { DeckInfo } from "$lib/utils/types";
@@ -22,6 +22,7 @@
       info: row,
       cards: deckCards
     });
+    refreshConflictingCards();
 
     prevRoute.set("/library");
     goto("/deck");
