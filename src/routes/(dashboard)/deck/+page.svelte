@@ -5,6 +5,7 @@
   import DeckWarning from "./DeckWarning.svelte";
   import {
     EditIcon,
+    SearchIcon,
     StarIcon,
     StarSolidIcon
   } from "$lib/components/icons/icons";
@@ -56,7 +57,16 @@
     return isError;
   };
 
-  // Pagination
+  // Pagination and Search
+
+  let searchInput = "";
+
+  $: filteredCards = $currentDeck?.cards.cards.filter(card =>
+    Object.values(card.fields).some(field =>
+      field.toLowerCase().includes(searchInput.toLowerCase())
+    )
+  );
+
   let paginationSettings = {
     page: 0,
     limit: 50,
@@ -64,14 +74,26 @@
     amounts: [10, 25, 50, 100]
   };
 
-  $: paginatedCards = $currentDeck?.cards.cards
-    ? $currentDeck.cards.cards.slice(
+  // TODO - Ensure that this behavior is correct
+  $: {
+    paginationSettings.size = filteredCards ? filteredCards.length : 0;
+
+    if (
+      paginationSettings.page * paginationSettings.limit >
+      paginationSettings.size
+    ) {
+      paginationSettings.page = 0;
+    }
+  }
+
+  $: paginatedCards = filteredCards
+    ? filteredCards.slice(
         paginationSettings.page * paginationSettings.limit,
         (paginationSettings.page + 1) * paginationSettings.limit
       )
     : [];
 
-  // Reactive in order to update on schema changes
+  // Style
   $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
 </script>
 
@@ -144,7 +166,7 @@
     </div>
 
     <!-- Schema-->
-    <div>
+    <div class="border-b border-surface-500/30 pb-4 mb-4">
       <h2 class="text-lg font-semibold mt-4">
         Relationships ({$currentDeck.cards.schema.relationships.length})
       </h2>
@@ -169,27 +191,28 @@
 
     <!-- Cards -->
     <div>
-      <h2 class="text-lg font-semibold mt-4">
+      <h2 class="text-lg font-semibold mb-2">
         Cards ({$currentDeck.cards.cards.length})
       </h2>
 
       {#if $currentDeck.cards.cards.length > 0}
         <div class="space-y-3">
-          <div class="flex gap-2">
-            <div style={gridCSS} class="grid flex-1">
-              {#each $currentDeck.cards.schema.fields as field}
-                <h3 class="font-semibold select-text cursor-text ml-2">
-                  {field}
-                </h3>
-              {/each}
-            </div>
-            <h3 class="w-[43px] flex justify-end">Priority</h3>
-          </div>
-
           <Paginator
             showFirstLastButtons={true}
             showPreviousNextButtons={true}
             bind:settings={paginationSettings} />
+
+          <div class="input-group input-group-divider grid-cols-[auto_1fr]">
+            <div class="input-group-shim">
+              <SearchIcon />
+            </div>
+            <input
+              class="input p-2 border-none outline-none bg-transparent focus:bg-transparent hover:bg-transparent"
+              type="search"
+              placeholder="Search..."
+              bind:value={searchInput} />
+          </div>
+
           {#each paginatedCards as card, index}
             <div class="flex gap-2">
               <div
@@ -227,6 +250,13 @@
               </div>
             </div>
           {/each}
+
+          {#if paginationSettings.size > 20}
+            <Paginator
+              showFirstLastButtons={true}
+              showPreviousNextButtons={true}
+              bind:settings={paginationSettings} />
+          {/if}
 
           <button
             class="w-full btn gap-2 variant-soft-primary"
