@@ -32,7 +32,7 @@ export const gotoDeck = async (info: DeckInfo, prev: string) => {
     });
   }
 
-  refreshConflictingCards();
+  // refreshConflictingCards();
   prevRoute.set(prev);
   goto("/deck");
 };

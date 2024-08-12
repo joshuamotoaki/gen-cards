@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { conflictingCards, currentDeck, prevRoute } from "$lib/utils/state";
-  import { getToastStore } from "@skeletonlabs/skeleton";
+  import { getToastStore, Paginator } from "@skeletonlabs/skeleton";
   import DeckWarning from "./DeckWarning.svelte";
   import {
     EditIcon,
@@ -55,6 +55,21 @@
 
     return isError;
   };
+
+  // Pagination
+  let paginationSettings = {
+    page: 0,
+    limit: 50,
+    size: $currentDeck?.cards.cards.length || 0,
+    amounts: [10, 25, 50, 100]
+  };
+
+  $: paginatedCards = $currentDeck?.cards.cards
+    ? $currentDeck.cards.cards.slice(
+        paginationSettings.page * paginationSettings.limit,
+        (paginationSettings.page + 1) * paginationSettings.limit
+      )
+    : [];
 
   // Reactive in order to update on schema changes
   $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
@@ -133,6 +148,7 @@
       <h2 class="text-lg font-semibold mt-4">
         Relationships ({$currentDeck.cards.schema.relationships.length})
       </h2>
+
       {#each $currentDeck.cards.schema.relationships as relationship}
         <div class="w-full grid grid-cols-2">
           <div>
@@ -156,6 +172,7 @@
       <h2 class="text-lg font-semibold mt-4">
         Cards ({$currentDeck.cards.cards.length})
       </h2>
+
       {#if $currentDeck.cards.cards.length > 0}
         <div class="space-y-3">
           <div class="flex gap-2">
@@ -169,7 +186,11 @@
             <h3 class="w-[43px] flex justify-end">Priority</h3>
           </div>
 
-          {#each $currentDeck.cards.cards as card, index}
+          <Paginator
+            showFirstLastButtons={true}
+            showPreviousNextButtons={true}
+            bind:settings={paginationSettings} />
+          {#each paginatedCards as card, index}
             <div class="flex gap-2">
               <div
                 style={gridCSS}

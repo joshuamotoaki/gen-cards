@@ -14,7 +14,7 @@
   } from "$lib/utils/deck";
 
   import { conflictingCards, currentDeck } from "$lib/utils/state";
-  import { getToastStore } from "@skeletonlabs/skeleton";
+  import { getToastStore, Paginator } from "@skeletonlabs/skeleton";
   import { slide } from "svelte/transition";
 
   const toastStore = getToastStore();
@@ -63,12 +63,31 @@
   $: conflictList = $conflictingCards
     ? Object.keys($conflictingCards).map(Number)
     : [];
+
+  // Pagination
+  let paginationSettings = {
+    page: 0,
+    limit: 50,
+    size: $currentDeck?.cards.cards.length || 0,
+    amounts: [10, 25, 50, 100]
+  };
+
+  $: paginatedCards = $currentDeck?.cards.cards
+    ? $currentDeck.cards.cards.slice(
+        paginationSettings.page * paginationSettings.limit,
+        (paginationSettings.page + 1) * paginationSettings.limit
+      )
+    : [];
 </script>
 
 {#if $currentDeck}
   {#if $currentDeck.cards.cards.length > 0}
     <div class="space-y-6">
-      {#each $currentDeck.cards.cards as card, index}
+      <Paginator
+        showFirstLastButtons={true}
+        showPageButtons={true}
+        bind:settings={paginationSettings} />
+      {#each paginatedCards as card, index}
         <!-- Visual Container -->
         <!-- TODO: Fix sliding visual to slide for individual card instead of entire list -->
         <article
@@ -89,7 +108,7 @@
                 flex justify-between items-center text-sm pb-1 mb-2">
             <div class="flex items-center gap-4">
               <p class="text-surface-600-300-token font-semibold">
-                {index + 1}
+                {paginationSettings.page * paginationSettings.limit + index + 1}
               </p>
               {#if conflictList.includes(index) && $conflictingCards}
                 <p class="text-warning-700-200-token">
@@ -162,6 +181,10 @@
           </div>
         </article>
       {/each}
+      <Paginator
+        showFirstLastButtons={true}
+        showPageButtons={true}
+        bind:settings={paginationSettings} />
     </div>
   {/if}
 
