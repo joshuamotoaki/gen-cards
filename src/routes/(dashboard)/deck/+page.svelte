@@ -7,11 +7,11 @@
     EditIcon,
     SearchIcon,
     StarIcon,
-    StarSolidIcon
+    StarSolidIcon,
+    BackIcon
   } from "$lib/components/icons/icons";
   import { togglePriority } from "$lib/utils/deck";
-  import BackIcon from "$lib/components/icons/BackIcon.svelte";
-  import TrashIcon from "$lib/components/icons/TrashIcon.svelte";
+  import InfoIcon from "$lib/components/icons/InfoIcon.svelte";
 
   const toastStore = getToastStore();
 
@@ -122,37 +122,28 @@
             {$currentDeck?.info.title ? $currentDeck.info.title : "(no title)"}
           </h1>
         </div>
-      </div>
 
-      <!-- Action Buttons -->
-      <div class="grid grid-cols-3 gap-2 mb-4">
-        <button
-          class="card card-hover p-1 variant-filled-primary overflow-hidden"
-          on:click={() => {
-            if (isDeckError()) return;
-            goto("/deck/study");
-          }}>
-          Study
-        </button>
-        <button
-          class="card card-hover p-1 variant-filled-secondary overflow-hidden"
-          on:click={() => {
-            if (isDeckError()) return;
-            goto("/deck/flashcards");
-          }}>
-          Flashcards
-        </button>
-        <button
-          class="card card-hover p-1 variant-filled-surface overflow-hidden"
-          on:click={() => goto("/deck/edit")}>
-          Edit
-        </button>
+        <div class="flex items-center gap-2">
+          <button class="btn btn-icon">
+            <InfoIcon />
+          </button>
+          <button class="btn btn-icon" on:click={() => goto("/deck/edit")}>
+            <EditIcon />
+          </button>
+          <button
+            class="card card-hover px-8 py-1 variant-filled-primary overflow-hidden"
+            on:click={() => {
+              if (isDeckError()) return;
+              goto("/deck/study");
+            }}>
+            Study
+          </button>
+        </div>
       </div>
     </div>
     <div class="space-y-1">
       {#if $currentDeck.info.description}
         <p>
-          <span class="font-semibold"> Description: </span>
           <span>{$currentDeck.info.description}</span>
         </p>
       {/if}
@@ -168,9 +159,7 @@
 
     <!-- Schema-->
     <div class="border-b border-surface-500/30 pb-4 mb-4">
-      <h2 class="text-lg font-semibold mt-4">
-        Relationships ({$currentDeck.cards.schema.relationships.length})
-      </h2>
+      <h2 class="text-lg font-semibold mt-4">Relationships</h2>
 
       {#each $currentDeck.cards.schema.relationships as relationship}
         <div class="w-full grid grid-cols-2">
@@ -277,7 +266,7 @@
           {/if}
 
           <button
-            class="w-full btn gap-2 variant-soft-primary"
+            class="w-full btn gap-2 variant-filled-secondary"
             on:click={() => goto("/deck/edit")}>
             <EditIcon />
             Edit Cards

@@ -5,6 +5,7 @@ export { default as ChevronDownIcon } from "./ChevronDownIcon.svelte";
 export { default as ChevronUpIcon } from "./ChevronUpIcon.svelte";
 export { default as DocumentUpSolidIcon } from "./DocumentUpSolidIcon.svelte";
 export { default as EditIcon } from "./EditIcon.svelte";
+export { default as InfoIcon } from "./InfoIcon.svelte";
 export { default as PlusIcon } from "./PlusIcon.svelte";
 export { default as SearchIcon } from "./SearchIcon.svelte";
 export { default as StarIcon } from "./StarIcon.svelte";
