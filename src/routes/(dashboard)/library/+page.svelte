@@ -4,8 +4,12 @@
   import ThSort from "$lib/components/datatable/ThSort.svelte";
   import RowCount from "$lib/components/datatable/RowCount.svelte";
   import Pagination from "$lib/components/datatable/Pagination.svelte";
-  import { currentDeck, decks, prevRoute } from "$lib/utils/state";
-  import { createNewDeck, refreshConflictingCards } from "$lib/utils/deck";
+  import { currentDeck, deckCache, decks, prevRoute } from "$lib/utils/state";
+  import {
+    createNewDeck,
+    gotoDeck,
+    refreshConflictingCards
+  } from "$lib/utils/deck";
   import { db } from "$lib/utils/db";
   import { goto } from "$app/navigation";
   import type { DeckInfo } from "$lib/utils/types";
@@ -14,19 +18,6 @@
   const rows = handler.getRows();
 
   $: handler.setRows($decks);
-
-  const gotoDeck = async (row: DeckInfo) => {
-    const deckCards = await db.getDeckCards(row.id);
-
-    currentDeck.set({
-      info: row,
-      cards: deckCards
-    });
-    refreshConflictingCards();
-
-    prevRoute.set("/library");
-    goto("/deck");
-  };
 </script>
 
 <div class="flex-1 p-4 overflow-y-auto">
@@ -72,10 +63,13 @@
               <tr
                 tabindex="0"
                 class="cursor-pointer"
-                on:keydown={async e => {
-                  if (e.key === "Enter") await gotoDeck(row);
+                on:mouseenter={async () => {
+                  await deckCache.add(row.id);
                 }}
-                on:click={async () => await gotoDeck(row)}>
+                on:keydown={async e => {
+                  if (e.key === "Enter") await gotoDeck(row, "/library");
+                }}
+                on:click={async () => await gotoDeck(row, "/library")}>
                 <td>{row.title ? row.title : "(no title)"}</td>
                 <td>{row.card_count}</td>
                 <td>

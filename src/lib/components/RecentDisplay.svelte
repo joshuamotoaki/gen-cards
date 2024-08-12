@@ -1,8 +1,5 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
-  import { db } from "$lib/utils/db";
-  import { refreshConflictingCards } from "$lib/utils/deck";
-  import { currentDeck, prevRoute } from "$lib/utils/state";
+  import { gotoDeck } from "$lib/utils/deck";
   import type { DeckInfo } from "$lib/utils/types";
 
   export let props: DeckInfo;
@@ -11,18 +8,7 @@
 
 <button
   class="block card card-hover overflow-clip {variant}"
-  on:click={async () => {
-    const deckCards = await db.getDeckCards(props.id);
-
-    currentDeck.set({
-      info: props,
-      cards: deckCards
-    });
-    refreshConflictingCards();
-
-    prevRoute.set("/");
-    goto("/deck");
-  }}>
+  on:click={async () => await gotoDeck(props, "/")}>
   <section class="p-4 text-left">
     <h2 class="text-xl font-semibold">
       {props.title ? props.title : "(no title)"}

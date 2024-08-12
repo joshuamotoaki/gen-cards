@@ -1,12 +1,41 @@
 import { goto } from "$app/navigation";
 import { get } from "svelte/store";
 import { db } from "./db";
-import { conflictingCards, currentDeck, decks } from "./state";
-import type { Deck } from "./types";
+import {
+  conflictingCards,
+  currentDeck,
+  deckCache,
+  decks,
+  prevRoute
+} from "./state";
+import type { Deck, DeckInfo } from "./types";
 
 //----------------------------------------------------------------------
 // General
 //----------------------------------------------------------------------
+
+/**
+ * Go to the deck page.
+ * @param row Information about the deck to go to
+ * @param prev The previous route to go back to
+ */
+export const gotoDeck = async (info: DeckInfo, prev: string) => {
+  // If in cache, set the current deck and return
+  const cached: Deck | undefined = deckCache.getDeck(info.id);
+  if (cached !== undefined) {
+    currentDeck.set(cached);
+  } else {
+    const deckCards = await db.getDeckCards(info.id);
+    currentDeck.set({
+      info: info,
+      cards: deckCards
+    });
+  }
+
+  refreshConflictingCards();
+  prevRoute.set(prev);
+  goto("/deck");
+};
 
 /**
  * Refresh the deck infos. This should be called whenever any deck
@@ -150,6 +179,10 @@ export const addFieldToSchema = async (deck: Deck, field: string) => {
   currentDeck.set(deck);
 };
 
+/**
+ * Add a relationship to a deck's schema.
+ * @param deck Deck to add a relationship to
+ */
 export const addRelationshipToSchema = async (deck: Deck) => {
   deck.cards.schema.relationships.push({
     from: "",
@@ -272,6 +305,11 @@ export const removeFieldFromSchema = async (deck: Deck, index: number) => {
   currentDeck.set(deck);
 };
 
+/**
+ * Remove a relationship from a deck's schema.
+ * @param deck Deck to remove a relationship from
+ * @param index Index of the relationship to remove
+ */
 export const removeRelationshipFromSchema = async (
   deck: Deck,
   index: number

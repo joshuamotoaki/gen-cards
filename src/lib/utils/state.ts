@@ -1,5 +1,6 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import type { Deck, DeckInfo } from "./types";
+import { db } from "./db";
 
 // All the deck infos.
 export const decks = writable<DeckInfo[]>([]);
@@ -15,3 +16,34 @@ export const fieldsToAdd = writable<Record<string, string>[] | null>(null);
 
 // The previous route (used for handling back button).
 export const prevRoute = writable<string | null>(null);
+
+const createDeckCache = () => {
+  const store = writable<Record<number, Deck>>({});
+
+  return {
+    set: store.set,
+    update: store.update,
+    subscribe: store.subscribe,
+
+    getDeck: (id: number): Deck | undefined => get(store)[id],
+
+    add: async (id: number) => {
+      // If the deck is already in the cache, do nothing
+      if (id in get(store)) return;
+
+      // Fetch the deck info and cards
+      const deckCards = await db.getDeckCards(id);
+      const deckInfo = get(decks).find(deck => deck.id === id);
+      if (deckInfo === undefined) return;
+
+      store.update(decks => {
+        decks[id] = {
+          info: deckInfo,
+          cards: deckCards
+        };
+        return decks;
+      });
+    }
+  };
+};
+export const deckCache = createDeckCache();

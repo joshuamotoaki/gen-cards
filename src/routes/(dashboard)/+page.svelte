@@ -1,8 +1,9 @@
 <script lang="ts">
   import RecentDisplay from "$lib/components/RecentDisplay.svelte";
   import { createNewDeck } from "$lib/utils/deck";
-  import { decks } from "$lib/utils/state";
+  import { deckCache, decks } from "$lib/utils/state";
   import type { DeckInfo } from "$lib/utils/types";
+  import { onMount } from "svelte";
 
   const NUMBER_OF_RECENT_DECKS = 6;
   const getMostRecentDecks = (decks: DeckInfo[], n: number): DeckInfo[] => {
@@ -17,7 +18,7 @@
     return sortedDecks.slice(0, n);
   };
 
-  $: recentDecks = getMostRecentDecks($decks, NUMBER_OF_RECENT_DECKS);
+  const recentDecks = getMostRecentDecks($decks, NUMBER_OF_RECENT_DECKS);
 
   const RECENT_DECKS_VARIANTS = [
     "variant-glass-primary",
@@ -27,6 +28,12 @@
     "variant-glass-warning",
     "variant-glass-error"
   ].sort(() => Math.random() - 0.5);
+
+  onMount(async () => {
+    for (const deck of recentDecks) {
+      await deckCache.add(deck.id);
+    }
+  });
 </script>
 
 <div class="flex-1 p-4 overflow-y-auto">
