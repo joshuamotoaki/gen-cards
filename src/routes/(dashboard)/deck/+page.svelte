@@ -214,7 +214,7 @@
           </div>
 
           {#each paginatedCards as card, index}
-            <div class="flex gap-2">
+            <div>
               <div
                 style={gridCSS}
                 class="grid flex-1 rounded-container-token p-2 h-12 shadow-sm
@@ -233,7 +233,7 @@
                 {/each}
               </div>
               <!-- Priority Toggle Button -->
-              <div>
+              <!-- <div>
                 <button
                   class="btn btn-icon h-12 w-12
                   {card.priority === 1
@@ -247,7 +247,7 @@
                     <StarSolidIcon />
                   {/if}
                 </button>
-              </div>
+              </div> -->
             </div>
           {/each}
 
