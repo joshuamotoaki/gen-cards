@@ -11,6 +11,7 @@
   } from "$lib/components/icons/icons";
   import { togglePriority } from "$lib/utils/deck";
   import BackIcon from "$lib/components/icons/BackIcon.svelte";
+  import TrashIcon from "$lib/components/icons/TrashIcon.svelte";
 
   const toastStore = getToastStore();
 
@@ -214,40 +215,57 @@
           </div>
 
           {#each paginatedCards as card, index}
-            <div>
-              <div
-                style={gridCSS}
-                class="grid flex-1 rounded-container-token p-2 h-12 shadow-sm
-                border border-surface-300-600-token
+            <div
+              class="border border-surface-300-600-token rounded-container-token
+              p-2 shadow-sm
                 {card.priority === 1
-                  ? 'bg-primary-200-700-token'
-                  : 'bg-surface-200-700-token'}
-              ">
+                ? 'bg-primary-200-700-token'
+                : 'bg-surface-200-700-token'}">
+              <div
+                class="border-b border-surface-500/30 flex items-center justify-between text-sm">
+                <p class="font-semibold text-surface-600-300-token">
+                  {paginationSettings.page * paginationSettings.limit +
+                    index +
+                    1}
+                </p>
+                <div class="flex items-center gap-2">
+                  <button
+                    tabindex="-1"
+                    class="btn-icon btn-icon-sm
+                          {card.priority === 1
+                      ? 'text-primary-700-200-token'
+                      : 'text-surface-600-300-token hover:text-primary-700-200-token'}
+                          "
+                    on:click={() => togglePriority($currentDeck, index)}>
+                    {#if card.priority === 1}
+                      <StarSolidIcon className="size-5" />
+                    {:else}
+                      <StarIcon className="size-5" />
+                    {/if}
+                  </button>
+
+                  <button
+                    class="btn-icon btn-icon-sm text-surface-600-300-token
+                  hover:text-secondary-700-200-token">
+                    <EditIcon className="size-5" />
+                  </button>
+                </div>
+              </div>
+              <div style={gridCSS} class="grid flex-1 py-1">
                 {#each $currentDeck.cards.schema.fields as field, index}
-                  <p
-                    class="flex items-center select-text cursor-text pl-2
-                    {index !== 0 && 'border-l border-surface-400-500-token'}
+                  <div>
+                    <p
+                      class="flex items-center select-text cursor-text
+                    {index !== 0 && 'border-surface-400-500-token'}
                   ">
-                    {card.fields[field]}
-                  </p>
+                      {card.fields[field]}
+                    </p>
+                    <p class="text-sm text-surface-600-300-token">
+                      {field}
+                    </p>
+                  </div>
                 {/each}
               </div>
-              <!-- Priority Toggle Button -->
-              <!-- <div>
-                <button
-                  class="btn btn-icon h-12 w-12
-                  {card.priority === 1
-                    ? 'variant-filled-primary'
-                    : 'variant-filled-surface hover:variant-filled-primary'}
-                   rounded-container-token"
-                  on:click={() => togglePriority($currentDeck, index)}>
-                  {#if card.priority === 0}
-                    <StarIcon />
-                  {:else}
-                    <StarSolidIcon />
-                  {/if}
-                </button>
-              </div> -->
             </div>
           {/each}
 
