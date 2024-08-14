@@ -17,7 +17,7 @@ fn main() {
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     edited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     studied_at TIMESTAMP,
-                    schema TEXT NOT NULL,
+                    schema TEXT NOT NULL
                 );
 
                 CREATE TABLE cards (
