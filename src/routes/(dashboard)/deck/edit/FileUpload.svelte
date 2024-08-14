@@ -31,7 +31,7 @@
     // Validate headers
     let areHeadersEqual = true;
 
-    const currentHeaders = $currentDeck?.cards.schema.fields;
+    const currentHeaders = $currentDeck?.info.schema.fields;
     if (!currentHeaders) return false;
 
     // Headers don't have to be in the same order or case
@@ -86,7 +86,7 @@
   const handleFileUpload = async () => {
     fieldsToAdd.set(null);
 
-    if (!$currentDeck || $currentDeck?.cards.schema.fields.length < 2) {
+    if (!$currentDeck || $currentDeck?.info.schema.fields.length < 2) {
       toastStore.trigger({
         message: "Decks must have at least two fields.",
         background: "variant-filled-error"
@@ -128,7 +128,7 @@
 {#if $currentDeck}
   <section class="flex justify-between items-center mb-4">
     <h2 class="text-lg font-semibold">
-      Cards ({$currentDeck.cards.cards.length})
+      Cards ({$currentDeck.cards.length})
     </h2>
     <FileButton
       button="btn btn-sm variant-filled-secondary gap-1"

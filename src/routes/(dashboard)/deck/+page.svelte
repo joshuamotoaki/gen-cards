@@ -22,7 +22,7 @@
     const TOAST_TIMEOUT = 5000;
 
     // There must be at least one relationship
-    if ($currentDeck.cards.schema.relationships.length === 0) {
+    if ($currentDeck.info.schema.relationships.length === 0) {
       toastStore.trigger({
         message: "No relationship found.",
         background: "variant-filled-error",
@@ -32,7 +32,7 @@
     }
 
     // There must be at least one card
-    if ($currentDeck.cards.cards.length === 0) {
+    if ($currentDeck.cards.length === 0) {
       toastStore.trigger({
         message: "No cards found.",
         background: "variant-filled-error",
@@ -43,7 +43,7 @@
 
     // There must be no empty fields
     if (
-      $currentDeck.cards.cards.some(card =>
+      $currentDeck.cards.some(card =>
         Object.values(card.fields).some(field => !field)
       )
     ) {
@@ -62,7 +62,7 @@
 
   let searchInput = "";
 
-  $: filteredCards = $currentDeck?.cards.cards.filter(card =>
+  $: filteredCards = $currentDeck?.cards.filter(card =>
     Object.values(card.fields).some(field =>
       field.toLowerCase().includes(searchInput.toLowerCase())
     )
@@ -71,7 +71,7 @@
   let paginationSettings = {
     page: 0,
     limit: 50,
-    size: $currentDeck?.cards.cards.length || 0,
+    size: $currentDeck?.cards.length || 0,
     amounts: [10, 25, 50, 100]
   };
 
@@ -95,7 +95,7 @@
     : [];
 
   // Style
-  $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
+  $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.info.schema.fields.length}, 1fr);`;
 </script>
 
 {#if !$currentDeck}
@@ -161,7 +161,7 @@
     <div class="border-b border-surface-500/30 pb-4 mb-4">
       <h2 class="text-lg font-semibold mt-4">Relationships</h2>
 
-      {#each $currentDeck.cards.schema.relationships as relationship}
+      {#each $currentDeck.info.schema.relationships as relationship}
         <div class="w-full grid grid-cols-2">
           <div>
             <span class="font-semibold"> From: </span>
@@ -182,10 +182,10 @@
     <!-- Cards -->
     <div>
       <h2 class="text-lg font-semibold mb-2">
-        Cards ({$currentDeck.cards.cards.length})
+        Cards ({$currentDeck.cards.length})
       </h2>
 
-      {#if $currentDeck.cards.cards.length > 0}
+      {#if $currentDeck.cards.length > 0}
         <div class="space-y-3">
           <Paginator
             showFirstLastButtons={true}
@@ -241,7 +241,7 @@
                 </div>
               </div>
               <div style={gridCSS} class="grid flex-1 py-1">
-                {#each $currentDeck.cards.schema.fields as field, index}
+                {#each $currentDeck.info.schema.fields as field, index}
                   <div>
                     <p
                       class="flex items-center select-text cursor-text

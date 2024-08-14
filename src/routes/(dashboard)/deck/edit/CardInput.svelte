@@ -10,7 +10,7 @@
 
   const checkAndCreateNewCard = async () => {
     if (!$currentDeck) return;
-    if ($currentDeck.cards.schema.fields.length < 2) {
+    if ($currentDeck.info.schema.fields.length < 2) {
       toastStore.trigger({
         message: "Decks must have at least two fields.",
         background: "variant-filled-error"
@@ -25,12 +25,12 @@
   let paginationSettings = {
     page: 0,
     limit: 50,
-    size: $currentDeck?.cards.cards.length || 0,
+    size: $currentDeck?.cards.length || 0,
     amounts: [10, 25, 50, 100]
   };
 
-  $: paginatedCards = $currentDeck?.cards.cards
-    ? $currentDeck.cards.cards.slice(
+  $: paginatedCards = $currentDeck?.cards
+    ? $currentDeck.cards.slice(
         paginationSettings.page * paginationSettings.limit,
         (paginationSettings.page + 1) * paginationSettings.limit
       )
@@ -38,7 +38,7 @@
 </script>
 
 {#if $currentDeck}
-  {#if $currentDeck.cards.cards.length > 0}
+  {#if $currentDeck.cards.length > 0}
     <div class="space-y-6">
       <Paginator
         showFirstLastButtons={true}

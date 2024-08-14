@@ -11,8 +11,8 @@
 
   const updateCard = async (index: number, field: string, value: string) => {
     if (!$currentDeck) return;
-    $currentDeck.cards.cards[index].fields[field] = value;
-    await db.updateDeckCards($currentDeck.cards);
+    $currentDeck.cards[index].fields[field] = value;
+    await db.updateCard($currentDeck.cards[index]);
   };
 
   const autoCreateNewCard = async (field: string, index: number) => {
@@ -21,22 +21,22 @@
     // If the card is the last one, create a new card
     if (
       field ===
-        $currentDeck.cards.schema.fields[
-          $currentDeck.cards.schema.fields.length - 1
+        $currentDeck.info.schema.fields[
+          $currentDeck.info.schema.fields.length - 1
         ] &&
-      index === $currentDeck.cards.cards.length - 1
+      index === $currentDeck.cards.length - 1
     ) {
       await createNewCard($currentDeck);
 
       // Tab to the first field in the new card
       const nextField = document.querySelector(
-        `textarea[title="${$currentDeck.cards.schema.fields[0] + (index + 1)}"]`
+        `textarea[title="${$currentDeck.info.schema.fields[0] + (index + 1)}"]`
       ) as HTMLTextAreaElement;
       if (nextField) nextField.focus();
     }
   };
 
-  $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
+  $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.info.schema.fields.length}, 1fr);`;
 </script>
 
 {#if $currentDeck}
@@ -96,7 +96,7 @@
 
     <!-- Card Contents -->
     <div style={gridCSS} class="grid gap-4">
-      {#each $currentDeck.cards.schema.fields as field}
+      {#each $currentDeck.info.schema.fields as field}
         <div class="flex items-center">
           <label class="flex flex-col gap-1 w-full">
             <!-- TODO: Figure out how to dynamically change size -->

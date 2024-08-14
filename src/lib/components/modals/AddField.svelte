@@ -15,7 +15,7 @@
       return false;
     }
 
-    const currentFields = $currentDeck.cards.schema.fields;
+    const currentFields = $currentDeck.info.schema.fields;
     if (currentFields.includes(name)) {
       validationError = "Error: Field name already exists.";
       return false;

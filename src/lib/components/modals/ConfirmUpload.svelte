@@ -12,7 +12,7 @@
     fieldsToAdd.set(null);
   };
 
-  $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.cards.schema.fields.length}, 1fr);`;
+  $: gridCSS = `grid-template-columns: repeat(${$currentDeck && $currentDeck.info.schema.fields.length}, 1fr);`;
 </script>
 
 {#if $modalStore[0]}
@@ -36,7 +36,7 @@
             style={gridCSS}
             class="w-full shadow-sm grid border border-surface-300-600-token gap-2
           bg-surface-400-500-token rounded-container-token p-2 font-semibold">
-            {#each $currentDeck.cards.schema.fields as field, j}
+            {#each $currentDeck.info.schema.fields as field, j}
               <h3
                 class="select-text cursor-text pl-2
                 {j !== 0 && 'border-l border-surface-600-300-token'}">
@@ -52,7 +52,7 @@
             bg-surface-200-700-token rounded-container-token p-2
             ">
               <div style={gridCSS} class="grid gap-2">
-                {#each $currentDeck.cards.schema.fields as field, j}
+                {#each $currentDeck.info.schema.fields as field, j}
                   <div
                     class="flex items-center select-text cursor-text pl-2
                     {j !== 0 && 'border-l border-surface-400-500-token'}">

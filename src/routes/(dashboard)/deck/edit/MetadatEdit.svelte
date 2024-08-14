@@ -94,7 +94,7 @@
           <h2 class="text-lg font-semibold mb-1">Fields</h2>
           <div>
             <div class="space-y-2">
-              {#each $currentDeck.cards.schema.fields as field, index}
+              {#each $currentDeck.info.schema.fields as field, index}
                 <div
                   class="flex gap-2"
                   transition:slide={{ axis: "y", duration: 100 }}>
@@ -110,7 +110,7 @@
                     on:click={async () =>
                       updateFieldIndex($currentDeck, index, "down")}
                     disabled={index ===
-                      $currentDeck.cards.schema.fields.length - 1}
+                      $currentDeck.info.schema.fields.length - 1}
                     class="btn btn-icon gap-1 variant-filled-surface
                     hover:variant-filled-secondary rounded-container-token">
                     <ChevronDownIcon />
@@ -143,7 +143,7 @@
                 </div>
               {/each}
 
-              {#if $currentDeck.cards.schema.fields.length < 2}
+              {#if $currentDeck.info.schema.fields.length < 2}
                 <p class="text-red-500">
                   Warning: Decks must have at least two fields.
                 </p>
@@ -169,7 +169,7 @@
         <div>
           <h2 class="text-lg font-semibold mb-1">Relationships</h2>
           <div class="space-y-2">
-            {#each $currentDeck.cards.schema.relationships as rel, index}
+            {#each $currentDeck.info.schema.relationships as rel, index}
               <div
                 class="flex gap-2"
                 transition:slide={{ axis: "y", duration: 100 }}>
@@ -179,9 +179,9 @@
                     <Select
                       on:select={async e => {
                         rel.from = e.detail.value;
-                        await db.updateDeckCards($currentDeck.cards);
+                        await db.updateDeckInfo($currentDeck.info);
                       }}
-                      items={$currentDeck.cards.schema.fields}
+                      items={$currentDeck.info.schema.fields}
                       value={rel.from}
                       placeholder="Select a field" />
                   </div>
@@ -190,9 +190,9 @@
                     <Select
                       on:select={async e => {
                         rel.to = e.detail.value;
-                        await db.updateDeckCards($currentDeck.cards);
+                        await db.updateDeckInfo($currentDeck.info);
                       }}
-                      items={$currentDeck.cards.schema.fields}
+                      items={$currentDeck.info.schema.fields}
                       value={rel.to}
                       placeholder="Select a field" />
                   </div>
@@ -211,7 +211,7 @@
               </div>
             {/each}
 
-            {#if !$currentDeck.cards.schema.relationships.length}
+            {#if !$currentDeck.info.schema.relationships.length}
               <p class="text-red-500">
                 Warning: Decks must have at least one relationship.
               </p>
