@@ -8,7 +8,7 @@ import {
   decks,
   prevRoute
 } from "./state";
-import type { Deck, DeckInfo } from "./types";
+import type { CardInsert, Deck, DeckInfo } from "./types";
 
 //----------------------------------------------------------------------
 // General
@@ -42,13 +42,13 @@ export const gotoDeck = async (info: DeckInfo, prev: string) => {
  * info is updated.
  */
 export const refreshDecks = async () => {
-  decks.set(await db.getAllDeckInfos());
+  decks.set(await db.getAllDecks());
 };
 
 export const refreshConflictingCards = () => {
   const deck = get(currentDeck);
   if (deck === null) return;
-  const deckCards = deck.cards.cards;
+  const deckCards = deck.cards;
 
   // Create a hash map of fields to card indices
   const hashMap = new Map<string, number[]>();
@@ -92,22 +92,12 @@ export const createNewDeck = async () => {
 
   const deckInfo = get(decks).find(deck => deck.id === id);
   if (deckInfo === undefined) throw new Error("Failed to find deck");
-  const deckCards = await db.getDeckCards(id);
   currentDeck.set({
     info: deckInfo,
-    cards: deckCards
+    cards: []
   });
 
   goto("/deck/edit");
-};
-
-// Generate a new ID for a card in the deck.
-const generateIdForCard = (deck: Deck) => {
-  const maxId = deck.cards.cards.reduce(
-    (max, card) => Math.max(max, card.id),
-    0
-  );
-  return maxId + 1;
 };
 
 /**
@@ -115,7 +105,7 @@ const generateIdForCard = (deck: Deck) => {
  * @param deck Deck to create a new card in
  */
 export const createNewCard = async (deck: Deck) => {
-  const fields = deck.cards.schema.fields.reduce(
+  const fields = deck.info.schema.fields.reduce(
     (acc, field) => {
       acc[field] = "";
       return acc;
@@ -124,15 +114,21 @@ export const createNewCard = async (deck: Deck) => {
   );
 
   const newCard = {
-    id: generateIdForCard(deck),
+    deck_id: deck.info.id,
     level: 0,
     scheduled_at: null,
     studied_at: null,
     priority: 0,
     fields
-  };
-  deck.cards.cards.push(newCard);
-  await db.updateDeckCards(deck.cards);
+  } as CardInsert;
+
+  const id = (await db.createCard(newCard)).lastInsertId;
+
+  deck.cards.push({
+    ...newCard,
+    id
+  });
+
   await refreshDecks();
   currentDeck.set(deck);
 };
@@ -270,8 +266,8 @@ export const togglePriority = async (deck: Deck, index: number) => {
  * @param index Index of the card to remove
  */
 export const removeCard = async (deck: Deck, index: number) => {
-  deck.cards.cards.splice(index, 1);
-  await db.updateDeckCards(deck.cards);
+  const oldCard = deck.cards.splice(index, 1);
+  await db.deleteCard(oldCard[0].id);
   refreshConflictingCards();
   currentDeck.set(deck);
 };
@@ -282,26 +278,26 @@ export const removeCard = async (deck: Deck, index: number) => {
  * @param index Index of the field to remove
  */
 export const removeFieldFromSchema = async (deck: Deck, index: number) => {
-  const field = deck.cards.schema.fields[index];
-  deck.cards.schema.fields.splice(index, 1);
+  const field = deck.info.schema.fields[index];
+  deck.info.schema.fields.splice(index, 1);
 
   // Delete all cards if there are no fields left
-  if (deck.cards.schema.fields.length === 0) {
-    deck.cards.cards = [];
-    deck.cards.schema.relationships = [];
+  if (deck.info.schema.fields.length === 0) {
+    deck.cards = [];
+    deck.info.schema.relationships = [];
   } else {
     // Remove the field from all cards
-    deck.cards.cards.forEach(card => {
+    deck.cards.forEach(card => {
       delete card.fields[field];
     });
 
     // Delete all relationships that involve the field
-    deck.cards.schema.relationships = deck.cards.schema.relationships.filter(
+    deck.info.schema.relationships = deck.info.schema.relationships.filter(
       rel => rel.from !== field && rel.to !== field
     );
   }
 
-  await db.updateDeckCards(deck.cards);
+  await db.updateDeckInfo(deck.info);
   currentDeck.set(deck);
 };
 
@@ -314,7 +310,7 @@ export const removeRelationshipFromSchema = async (
   deck: Deck,
   index: number
 ) => {
-  deck.cards.schema.relationships.splice(index, 1);
-  await db.updateDeckCards(deck.cards);
+  deck.info.schema.relationships.splice(index, 1);
+  await db.updateDeckInfo(deck.info);
   currentDeck.set(deck);
 };

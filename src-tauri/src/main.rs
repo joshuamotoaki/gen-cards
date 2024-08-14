@@ -12,17 +12,21 @@ fn main() {
                 CREATE TABLE decks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     title TEXT NOT NULL,
-                    description TEXT,
+                    description TEXT NOT NULL,
                     card_count INTEGER,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     edited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    studied_at TIMESTAMP
+                    studied_at TIMESTAMP,
+                    schema TEXT NOT NULL,
                 );
 
-                CREATE TABLE deck_cards (
+                CREATE TABLE cards (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    schema TEXT NOT NULL,
-                    cards TEXT,
+                    level INTEGER NOT NULL,
+                    scheduled_at TIMESTAMP,
+                    studied_at TIMESTAMP,
+                    priority INTEGER,
+                    fields TEXT NOT NULL,
                     deck_id INTEGER,
                     FOREIGN KEY (deck_id) REFERENCES decks(id) ON DELETE CASCADE
                 );
@@ -32,7 +36,7 @@ fn main() {
     tauri::Builder::default()
         .plugin(
             tauri_plugin_sql::Builder::default()
-                .add_migrations("sqlite:app.db", migrations)
+                .add_migrations("sqlite:gen.db", migrations)
                 .build(),
         )
         .run(tauri::generate_context!())

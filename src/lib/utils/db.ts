@@ -1,13 +1,6 @@
 import { get, writable } from "svelte/store";
 import Database, { type QueryResult } from "tauri-plugin-sql-api";
-import { type DeckCards, type DeckInfo } from "./types";
-
-type DeckCardsDB = {
-  id: number;
-  deck_id: number;
-  schema: string;
-  cards: string;
-};
+import type { Card, CardDB, CardInsert, DeckInfo, DeckInfoDB } from "./types";
 
 const createDB = () => {
   const store = writable<Database | null>(null);
@@ -27,7 +20,7 @@ const createDB = () => {
      */
     init: async () => {
       if (isReady) return;
-      const db = await Database.load("sqlite:app.db");
+      const db = await Database.load("sqlite:gen.db");
       store.set(db);
       isReady = true;
     },
@@ -106,11 +99,8 @@ const createDB = () => {
       checkDB();
       const res = get(store)?.execute(
         `
-                        BEGIN TRANSACTION;
-                        INSERT INTO decks (title, description, card_count) VALUES ($1, $2, $3);
-                        INSERT INTO deck_cards (deck_id, schema, cards) VALUES (last_insert_rowid(), $4, $5);
-                        COMMIT;
-                        `,
+          INSERT INTO decks (title, description, card_count, schema) VALUES ($1, $2, $3, $4);
+        `,
         [
           "My Deck",
           "",
@@ -131,38 +121,86 @@ const createDB = () => {
       return res;
     },
 
+    /**
+     * Create a new card in a deck.
+     * @param deckId Id of the deck to create a card in
+     */
+    createCard: async (card: CardInsert): Promise<QueryResult> => {
+      checkDB();
+      const res = get(store)?.execute(
+        `
+          BEGIN TRANSACTION;
+          INSERT INTO cards (deck_id, level, scheduled_at, studied_at, priority, fields)
+          VALUES ($1, $2, $3, $4, $5, $6);
+          UPDATE decks SET card_count = card_count + 1, edited_at = CURRENT_TIMESTAMP WHERE id = $1;
+          COMMIT;
+        `,
+        [
+          card.deck_id,
+          card.level,
+          card.scheduled_at,
+          card.studied_at,
+          card.priority,
+          JSON.stringify(card.fields)
+        ]
+      );
+
+      if (res === undefined) throw new Error("Failed to create card");
+      return res;
+    },
+
     // ! Read
 
     /**
      * Get all decks in the database.
      * @returns All decks in the database.
      */
-    getAllDeckInfos: async (): Promise<DeckInfo[]> => {
+    getAllDecks: async (): Promise<DeckInfo[]> => {
       checkDB();
-      const res = await get(store)?.select<DeckInfo[]>("SELECT * FROM decks");
+      const res = await get(store)?.select<DeckInfoDB[]>("SELECT * FROM decks");
       if (res === undefined) throw new Error("Failed to get decks");
-      return res;
+
+      const normalized = res.map(deck => {
+        return {
+          id: deck.id,
+          title: deck.title,
+          card_count: deck.card_count,
+          description: deck.description,
+          created_at: deck.created_at,
+          edited_at: deck.edited_at,
+          studied_at: deck.studied_at,
+          schema: JSON.parse(deck.schema)
+        };
+      }) as DeckInfo[];
+
+      return normalized;
     },
 
     /**
      * Get a deck cards and schema by its ID.
      * @param deckId ID of the deck
      */
-    getDeckCards: async (deckId: number): Promise<DeckCards> => {
+    getDeckCards: async (deckId: number): Promise<Card[]> => {
       checkDB();
-      const res = await get(store)?.select<DeckCardsDB[]>(
-        "SELECT * FROM deck_cards WHERE deck_id = $1 LIMIT 1",
+      const res = await get(store)?.select<CardDB[]>(
+        "SELECT * FROM cards WHERE deck_id = $1",
         [deckId]
       );
       if (res === undefined) throw new Error("Failed to get deck cards");
-      const cards = res[0];
 
-      return {
-        id: cards.id,
-        deck_id: cards.deck_id,
-        schema: JSON.parse(cards.schema),
-        cards: JSON.parse(cards.cards)
-      } as DeckCards;
+      const normalized = res.map(card => {
+        return {
+          id: card.id,
+          deck_id: card.deck_id,
+          level: card.level,
+          scheduled_at: card.scheduled_at,
+          studied_at: card.studied_at,
+          priority: card.priority,
+          fields: JSON.parse(card.fields)
+        };
+      }) as Card[];
+
+      return normalized;
     },
 
     // ! Update
@@ -175,10 +213,16 @@ const createDB = () => {
       checkDB();
       const res = get(store)?.execute(
         `
-                UPDATE decks SET title = $1, description = $2, edited_at = CURRENT_TIMESTAMP, card_count = $3 
-                WHERE id = $4;
-                `,
-        [deckInfo.title, deckInfo.description, deckInfo.card_count, deckInfo.id]
+          UPDATE decks SET title = $1, description = $2, edited_at = CURRENT_TIMESTAMP, card_count = $3, schema = $5
+          WHERE id = $4;
+        `,
+        [
+          deckInfo.title,
+          deckInfo.description,
+          deckInfo.card_count,
+          deckInfo.id,
+          JSON.stringify(deckInfo.schema)
+        ]
       );
 
       if (res === undefined) throw new Error("Failed to update deck");
@@ -186,47 +230,46 @@ const createDB = () => {
     },
 
     /**
-     * Update the cards of a deck due to editing.
-     * @param deckCards Updated deck cards
+     * Update a card's information.
+     * @param card Card to update
      */
-    updateDeckCards: async (deckCards: DeckCards): Promise<QueryResult> => {
+    updateCard: async (card: Card): Promise<QueryResult> => {
       checkDB();
       const res = get(store)?.execute(
         `
-                BEGIN TRANSACTION;
-                UPDATE deck_cards SET schema = $1, cards = $2 WHERE id = $3;
-                UPDATE decks SET edited_at = CURRENT_TIMESTAMP, card_count = $4
-                WHERE id = $5;
-                COMMIT;
-                `,
+          BEGIN TRANSACTION;
+          UPDATE cards SET level = $1, scheduled_at = $2, priority = $3, fields = $4
+          WHERE id = $5;
+          UPDATE decks SET edited_at = CURRENT_TIMESTAMP WHERE id = $6;
+          COMMIT;
+        `,
         [
-          deckCards.schema,
-          deckCards.cards,
-          deckCards.id,
-          deckCards.cards.length,
-          deckCards.deck_id
+          card.level,
+          card.scheduled_at,
+          card.priority,
+          JSON.stringify(card.fields),
+          card.id,
+          card.deck_id
         ]
       );
-      if (res === undefined) throw new Error("Failed to update deck cards");
+      if (res === undefined) throw new Error("Failed to update card");
       return res;
     },
 
     /**
-     * Update the cards of a deck due to studying.
-     * @param deckCards Updated deck cards
+     * Update a card due to studying.
+     * @param Card Updated card
      */
-    updateDeckCardsStudy: async (
-      deckCards: DeckCards
-    ): Promise<QueryResult> => {
+    updateCardStudy: async (card: Card): Promise<QueryResult> => {
       checkDB();
       const res = get(store)?.execute(
         `
-                BEGIN TRANSACTION;
-                UPDATE deck_cards SET cards = $1 WHERE id = $2;
-                UPDATE decks SET studied_at = CURRENT_TIMESTAMP WHERE id = $3;
-                COMMIT;
-                `,
-        [deckCards.cards, deckCards.id, deckCards.deck_id]
+          BEGIN TRANSACTION;
+          UPDATE card SET level = $1, scheduled_at = $2, studied_at = $3
+          UPDATE decks SET studied_at = $3 WHERE id = $4;
+          COMMIT; 
+        `,
+        [card.level, card.scheduled_at, card.studied_at, card.deck_id]
       );
       if (res === undefined) throw new Error("Failed to update deck cards");
       return res;
@@ -244,6 +287,19 @@ const createDB = () => {
         deckId
       ]);
       if (res === undefined) throw new Error("Failed to delete deck");
+      return res;
+    },
+
+    /**
+     * Delete a card by its ID.
+     * @param cardId ID of the card
+     */
+    deleteCard: async (cardId: number): Promise<QueryResult> => {
+      checkDB();
+      const res = get(store)?.execute("DELETE FROM cards WHERE id = $1", [
+        cardId
+      ]);
+      if (res === undefined) throw new Error("Failed to delete card");
       return res;
     }
   };

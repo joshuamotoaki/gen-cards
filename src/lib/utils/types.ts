@@ -18,17 +18,6 @@ export type StudyVariables = {
   baseRepetitionInHours: number;
 };
 
-// DB types
-export type DeckInfo = {
-  id: number;
-  title: string;
-  description: string;
-  created_at: string;
-  edited_at: string;
-  studied_at: string | null;
-  card_count: number;
-};
-
 export type Relationship = {
   from: string;
   to: string;
@@ -39,8 +28,30 @@ export type Schema = {
   relationships: Relationship[];
 };
 
-export type Card = {
+export type DeckInfoDB = {
   id: number;
+  title: string;
+  description: string;
+  card_count: number;
+  created_at: string;
+  edited_at: string;
+  studied_at: string | null;
+  schema: string;
+};
+
+export type DeckInfo = {
+  id: number;
+  title: string;
+  card_count: number;
+  description: string;
+  created_at: string;
+  edited_at: string;
+  studied_at: string | null;
+  schema: Schema;
+};
+
+export type CardInsert = {
+  deck_id: number;
   level: number;
   scheduled_at: string | null;
   studied_at: string | null;
@@ -50,14 +61,29 @@ export type Card = {
   };
 };
 
-export type DeckCards = {
+export type CardDB = {
   id: number;
   deck_id: number;
-  schema: Schema;
-  cards: Card[];
+  level: number;
+  scheduled_at: string | null;
+  studied_at: string | null;
+  priority: number;
+  fields: string;
+};
+
+export type Card = {
+  id: number;
+  deck_id: number;
+  level: number;
+  scheduled_at: string | null;
+  studied_at: string | null;
+  priority: number;
+  fields: {
+    [key: string]: string;
+  };
 };
 
 export type Deck = {
   info: DeckInfo;
-  cards: DeckCards;
+  cards: Card[];
 };
