@@ -9,7 +9,7 @@
   // Modal imports
   // import { SyncLoader } from "svelte-loading-spinners";
   import { db } from "$lib/utils/db";
-  import { refreshDecks } from "$lib/utils/deck";
+  import { refreshAllDecks } from "$lib/utils/deck";
   import AddField from "$lib/components/modals/AddField.svelte";
   import EditField from "$lib/components/modals/EditField.svelte";
   import ConfirmUpload from "$lib/components/modals/ConfirmUpload.svelte";
@@ -35,7 +35,7 @@
   onMount(async () => {
     try {
       await db.init();
-      await refreshDecks();
+      await refreshAllDecks();
       isReady = true;
     } catch (e: unknown) {
       console.error("Error:", e);

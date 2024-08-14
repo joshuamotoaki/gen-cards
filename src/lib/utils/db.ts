@@ -149,7 +149,56 @@ const createDB = () => {
       return res;
     },
 
+    /**
+     * Create multiple cards in a deck.
+     * @param deckId ID of the deck to create cards in
+     * @param cards Cards to create
+     */
+    createCards: async (
+      deckId: number,
+      cards: CardInsert[]
+    ): Promise<QueryResult> => {
+      checkDB();
+      const res = get(store)?.execute(
+        `
+          BEGIN TRANSACTION;
+          INSERT INTO cards (deck_id, level, scheduled_at, studied_at, priority, fields)
+          VALUES ${cards.map(card => `(${deckId}, ${card.level}, ${card.scheduled_at}, ${card.studied_at}, ${card.priority}, ${JSON.stringify(card.fields)})`).join(",")};
+          UPDATE decks SET card_count = card_count + ${cards.length}, edited_at = CURRENT_TIMESTAMP WHERE id = ${deckId};
+          COMMIT;
+        `
+      );
+
+      if (res === undefined) throw new Error("Failed to create cards");
+      return res;
+    },
+
     // ! Read
+
+    /**
+     * Get a deck by its ID.
+     * @param deckId Id of the deck to get
+     */
+    getDeck: async (deckId: number): Promise<DeckInfo> => {
+      checkDB();
+      const res = await get(store)?.select<DeckInfoDB[]>(
+        "SELECT * FROM decks WHERE id = $1",
+        [deckId]
+      );
+      if (res === undefined) throw new Error("Failed to get deck");
+
+      const deck = res[0];
+      return {
+        id: deck.id,
+        title: deck.title,
+        card_count: deck.card_count,
+        description: deck.description,
+        created_at: deck.created_at,
+        edited_at: deck.edited_at,
+        studied_at: deck.studied_at,
+        schema: JSON.parse(deck.schema)
+      };
+    },
 
     /**
      * Get all decks in the database.
@@ -253,6 +302,31 @@ const createDB = () => {
         ]
       );
       if (res === undefined) throw new Error("Failed to update card");
+      return res;
+    },
+
+    /**
+     * Update multiple cards.
+     * @param cards Updated cards
+     */
+    updateCards: async (cards: Card[]): Promise<QueryResult> => {
+      checkDB();
+      const res = get(store)?.execute(
+        `
+          BEGIN TRANSACTION;
+          ${cards
+            .map(
+              card => `
+            UPDATE cards SET level = ${card.level}, scheduled_at = ${card.scheduled_at}, priority = ${card.priority}, fields = ${JSON.stringify(card.fields)}
+            WHERE id = ${card.id};
+          `
+            )
+            .join("")}
+          UPDATE decks SET edited_at = CURRENT_TIMESTAMP WHERE id = ${cards[0].deck_id};
+          COMMIT;
+        `
+      );
+      if (res === undefined) throw new Error("Failed to update cards");
       return res;
     },
 

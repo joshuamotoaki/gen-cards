@@ -38,10 +38,27 @@ export const gotoDeck = async (info: DeckInfo, prev: string) => {
 };
 
 /**
- * Refresh the deck infos. This should be called whenever any deck
- * info is updated.
+ * Refresh a deck's information.
+ * @param deckId Id of the deck to refresh
  */
-export const refreshDecks = async () => {
+export const refreshDeck = async (deckId: number) => {
+  const deckInfo = await db.getDeck(deckId);
+  decks.update(decks => {
+    const index = decks.findIndex(d => d.id === deckId);
+    if (index === -1) {
+      decks.push(deckInfo);
+    } else {
+      decks[index] = deckInfo;
+    }
+
+    return decks;
+  });
+};
+
+/**
+ * Refresh all the deck infos.
+ */
+export const refreshAllDecks = async () => {
   decks.set(await db.getAllDecks());
 };
 
@@ -88,7 +105,7 @@ export const refreshConflictingCards = () => {
  */
 export const createNewDeck = async () => {
   const id = (await db.createDeck()).lastInsertId;
-  await refreshDecks();
+  await refreshDeck(id);
 
   const deckInfo = get(decks).find(deck => deck.id === id);
   if (deckInfo === undefined) throw new Error("Failed to find deck");
@@ -129,7 +146,7 @@ export const createNewCard = async (deck: Deck) => {
     id
   });
 
-  await refreshDecks();
+  await refreshDeck(deck.info.id);
   currentDeck.set(deck);
 };
 
@@ -142,9 +159,11 @@ export const createNewCardsFromUpload = async (
   deck: Deck,
   toAdd: Record<string, string>[]
 ) => {
-  const newCards = toAdd.map(fields => {
+  const deckId = deck.info.id;
+
+  const newCards: CardInsert[] = toAdd.map(fields => {
     const card = {
-      id: generateIdForCard(deck),
+      deck_id: deckId,
       level: 0,
       scheduled_at: null,
       studied_at: null,
@@ -154,9 +173,9 @@ export const createNewCardsFromUpload = async (
     return card;
   });
 
-  deck.cards.cards.push(...newCards);
-  await db.updateDeckCards(deck.cards);
-  await refreshDecks();
+  await db.createCards(deckId, newCards);
+  deck.cards = await db.getDeckCards(deckId);
+  await refreshDeck(deckId);
   currentDeck.set(deck);
 };
 
@@ -166,12 +185,14 @@ export const createNewCardsFromUpload = async (
  * @param field Field to add
  */
 export const addFieldToSchema = async (deck: Deck, field: string) => {
-  deck.cards.schema.fields.push(field);
-  deck.cards.cards.forEach(card => {
+  deck.info.schema.fields.push(field);
+  deck.cards.forEach(card => {
     card.fields[field] = "";
   });
 
-  await db.updateDeckCards(deck.cards);
+  await db.updateDeckInfo(deck.info);
+  await db.updateCards(deck.cards);
+  await refreshDeck(deck.info.id);
   currentDeck.set(deck);
 };
 
@@ -180,11 +201,12 @@ export const addFieldToSchema = async (deck: Deck, field: string) => {
  * @param deck Deck to add a relationship to
  */
 export const addRelationshipToSchema = async (deck: Deck) => {
-  deck.cards.schema.relationships.push({
+  deck.info.schema.relationships.push({
     from: "",
     to: ""
   });
-  await db.updateDeckCards(deck.cards);
+  await db.updateDeckInfo(deck.info);
+  await refreshDeck(deck.info.id);
   currentDeck.set(deck);
 };
 
@@ -203,23 +225,26 @@ export const updateFieldName = async (
   index: number,
   newName: string
 ) => {
-  const oldName = deck.cards.schema.fields[index];
-  deck.cards.schema.fields[index] = newName;
+  const oldName = deck.info.schema.fields[index];
+  deck.info.schema.fields[index] = newName;
 
   // Update the field name in all cards
-  deck.cards.cards.forEach(card => {
+  deck.cards.forEach(card => {
     card.fields[newName] = card.fields[oldName];
     delete card.fields[oldName];
   });
 
   // Update relationships
-  deck.cards.schema.relationships = deck.cards.schema.relationships.map(rel => {
+  deck.info.schema.relationships = deck.info.schema.relationships.map(rel => {
     if (rel.from === oldName) rel.from = newName;
     if (rel.to === oldName) rel.to = newName;
     return rel;
   });
 
-  await db.updateDeckCards(deck.cards);
+  await db.updateCards(deck.cards);
+  await db.updateDeckInfo(deck.info);
+
+  await refreshDeck(deck.info.id);
   currentDeck.set(deck);
 };
 
@@ -236,23 +261,23 @@ export const updateFieldIndex = async (
 ) => {
   // Validate the index
   if (direction === "up" && oldIndex === 0) return;
-  if (direction === "down" && oldIndex === deck.cards.schema.fields.length - 1)
+  if (direction === "down" && oldIndex === deck.info.schema.fields.length - 1)
     return;
 
   // Swap the fields' positions
   const newIndex = direction === "up" ? oldIndex - 1 : oldIndex + 1;
-  const temp = deck.cards.schema.fields[oldIndex];
-  deck.cards.schema.fields[oldIndex] = deck.cards.schema.fields[newIndex];
-  deck.cards.schema.fields[newIndex] = temp;
+  const temp = deck.info.schema.fields[oldIndex];
+  deck.info.schema.fields[oldIndex] = deck.info.schema.fields[newIndex];
+  deck.info.schema.fields[newIndex] = temp;
 
-  await db.updateDeckCards(deck.cards);
+  await db.updateDeckInfo(deck.info);
+  await refreshDeck(deck.info.id);
   currentDeck.set(deck);
 };
 
 export const togglePriority = async (deck: Deck, index: number) => {
-  deck.cards.cards[index].priority =
-    deck.cards.cards[index].priority === 0 ? 1 : 0;
-  await db.updateDeckCards(deck.cards);
+  deck.cards[index].priority = deck.cards[index].priority === 0 ? 1 : 0;
+  await db.updateCard(deck.cards[index]);
   currentDeck.set(deck);
 };
 

@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation";
   import { BackIcon, TrashIcon } from "$lib/components/icons/icons";
   import { db } from "$lib/utils/db";
-  import { refreshDecks } from "$lib/utils/deck";
+  import { refreshAllDecks } from "$lib/utils/deck";
   import { conflictingCards, currentDeck } from "$lib/utils/state";
   import { getModalStore, getToastStore } from "@skeletonlabs/skeleton";
   import DeckWarning from "../DeckWarning.svelte";
@@ -26,7 +26,7 @@
           await db.deleteDeck($currentDeck.info.id);
           currentDeck.set(null);
           conflictingCards.set(null);
-          await refreshDecks();
+          await refreshAllDecks();
           toastStore.trigger({
             message: "Deck successfully deleted.",
             background: "variant-filled-success"
