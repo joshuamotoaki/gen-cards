@@ -167,7 +167,7 @@ const createDB = () => {
         `
           BEGIN TRANSACTION;
           INSERT INTO cards (deck_id, level, scheduled_at, studied_at, priority, fields)
-          VALUES ${cards.map(card => `(${deckId}, ${card.level}, ${card.scheduled_at}, ${card.studied_at}, ${card.priority}, ${JSON.stringify(card.fields)})`).join(",")};
+          VALUES ${cards.map(card => `(${deckId}, ${card.level}, ${card.scheduled_at}, ${card.studied_at}, ${card.priority}, '${JSON.stringify(card.fields)}')`).join(",")};
           UPDATE decks SET card_count = card_count + ${cards.length}, edited_at = CURRENT_TIMESTAMP WHERE id = ${deckId};
           COMMIT;
         `
@@ -321,7 +321,7 @@ const createDB = () => {
           ${cards
             .map(
               card => `
-            UPDATE cards SET level = ${card.level}, scheduled_at = ${card.scheduled_at}, priority = ${card.priority}, fields = ${JSON.stringify(card.fields)}
+            UPDATE cards SET level = ${card.level}, scheduled_at = ${card.scheduled_at}, priority = ${card.priority}, fields = '${JSON.stringify(card.fields)}'
             WHERE id = ${card.id};
           `
             )
