@@ -5,6 +5,7 @@
   import DeckWarning from "../../(dashboard)/deck/DeckWarning.svelte";
 
   let correct = true;
+  let input = "";
 </script>
 
 {#if !$currentDeck}
@@ -43,6 +44,13 @@
 
       <section class="w-2/3 mx-auto mt-24">
         <input
+          on:keydown={e => {
+            if (e.key === "Enter") {
+              correct = !correct;
+              input = "";
+            }
+          }}
+          bind:value={input}
           autocomplete="off"
           spellcheck="false"
           class="focus:outline-none bg-transparent
