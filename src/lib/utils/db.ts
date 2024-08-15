@@ -160,7 +160,8 @@ const createDB = () => {
      */
     createCards: async (
       deckId: number,
-      cards: CardInsert[]
+      cards: CardInsert[],
+      cardCount: number
     ): Promise<QueryResult> => {
       checkDB();
       const res = get(store)?.execute(
@@ -168,9 +169,10 @@ const createDB = () => {
           BEGIN TRANSACTION;
           INSERT INTO cards (deck_id, level, scheduled_at, studied_at, priority, fields)
           VALUES ${cards.map(card => `(${deckId}, ${card.level}, ${card.scheduled_at}, ${card.studied_at}, ${card.priority}, '${JSON.stringify(card.fields)}')`).join(",")};
-          UPDATE decks SET card_count = card_count + ${cards.length}, edited_at = CURRENT_TIMESTAMP WHERE id = ${deckId};
+          UPDATE decks SET card_count = $1, edited_at = CURRENT_TIMESTAMP WHERE id = ${deckId};
           COMMIT;
-        `
+        `,
+        [cardCount]
       );
 
       if (res === undefined) throw new Error("Failed to create cards");

@@ -173,7 +173,7 @@ export const createNewCardsFromUpload = async (
     return card;
   });
 
-  await db.createCards(deckId, newCards);
+  await db.createCards(deckId, newCards, deck.cards.length + newCards.length);
   deck.cards = await db.getDeckCards(deckId);
   await refreshDeck(deckId);
   currentDeck.set(deck);
