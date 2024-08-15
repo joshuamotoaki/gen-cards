@@ -10,7 +10,7 @@
   const toastStore = getToastStore();
   const modalStore = getModalStore();
 
-  let files: FileList;
+  let files: FileList | undefined;
 
   const csvToFields = async (file: File): Promise<boolean> => {
     const text = await file.text();
@@ -83,16 +83,14 @@
     return true;
   };
 
-  const handleFileUpload = async () => {
-    fieldsToAdd.set(null);
+  const handleFileUpload = async (e: Event) => {
+    // This ensures that the same file can be uploaded twice in a row
+    const resetField = () => {
+      // @ts-ignore
+      e.target.value = null;
+    };
 
-    if (!$currentDeck || $currentDeck?.info.schema.fields.length < 2) {
-      toastStore.trigger({
-        message: "Decks must have at least two fields.",
-        background: "variant-filled-error"
-      });
-      return;
-    }
+    fieldsToAdd.set(null);
 
     // This should theoretically never happen
     if (!files) {
@@ -100,19 +98,35 @@
         message: "Something went wrong: no file selected.",
         background: "variant-filled-error"
       });
+      resetField();
       return;
     }
 
+    if (!$currentDeck || $currentDeck?.info.schema.fields.length < 2) {
+      toastStore.trigger({
+        message: "Decks must have at least two fields.",
+        background: "variant-filled-error"
+      });
+      resetField();
+      return;
+    }
+
+    const file = files[0];
+
     // Format and populate the cardsToAdd store
-    switch (files[0].name.split(".").pop()) {
+    switch (file.name.split(".").pop()) {
       case "csv":
-        if (!(await csvToFields(files[0]))) return;
+        if (!(await csvToFields(file))) {
+          resetField();
+          return;
+        }
         break;
       default:
         toastStore.trigger({
           message: "Invalid file type. Please upload a CSV file.",
           background: "variant-filled-error"
         });
+        resetField();
         return;
     }
 
@@ -121,6 +135,8 @@
       type: "component",
       component: "confirmUpload"
     });
+
+    resetField();
   };
 </script>
 
@@ -134,7 +150,9 @@
       button="btn btn-sm variant-filled-secondary gap-1"
       name="upload"
       bind:files
-      on:change={handleFileUpload}>
+      on:change={e => {
+        handleFileUpload(e);
+      }}>
       <UploadIcon />
       Upload Card CSV
     </FileButton>

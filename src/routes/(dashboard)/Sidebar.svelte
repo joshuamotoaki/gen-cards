@@ -4,7 +4,7 @@
   import { PlusIcon } from "$lib/components/icons/icons";
   import { db } from "$lib/utils/db";
   import { goto } from "$app/navigation";
-  import { conflictingCards } from "$lib/utils/state";
+  import { conflictingCards, currentDeck, deckCache } from "$lib/utils/state";
 </script>
 
 <aside
@@ -97,6 +97,8 @@
         await db.deleteEverything();
         await refreshAllDecks();
         conflictingCards.set(null);
+        currentDeck.set(null);
+        deckCache.set({});
         goto("/");
       }}>
       Clear Data
