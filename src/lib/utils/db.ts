@@ -77,7 +77,7 @@ const createDB = () => {
       const res = get(store)?.execute(`
                 BEGIN TRANSACTION;
                 DELETE FROM decks;
-                DELETE FROM deck_cards;
+                DELETE FROM cards;
                 COMMIT;
             `);
       if (res === undefined) throw new Error("Failed to clear database");
