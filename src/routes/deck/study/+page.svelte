@@ -15,7 +15,7 @@
       class="flex items-center justify-between px-4 py-2
         bg-surface-50-900-token border-b border-surface-500/30
         ">
-      <h1 class="text-2xl font-bold">
+      <h1 class="text-2xl font-semibold">
         {$currentDeck.info.title}
       </h1>
 
@@ -47,7 +47,7 @@
           spellcheck="false"
           class="focus:outline-none bg-transparent
                       pt-2 pb-1 resize-none w-full text-center
-                      border-b-2
+                      border-b-2 text-lg
                       {correct ? 'border-surface-500/90' : 'border-warning-500'}
                       "
           type="text" />
@@ -70,7 +70,7 @@
       <div>
         <p>5 cards completed</p>
       </div>
-      <div>5 / 10 Accuracy</div>
+      <div>50% Accuracy (5/10)</div>
     </footer>
   </div>
 {/if}
