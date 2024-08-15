@@ -139,7 +139,7 @@ export const createNewCard = async (deck: Deck) => {
     fields
   } as CardInsert;
 
-  const id = (await db.createCard(newCard)).lastInsertId;
+  const id = (await db.createCard(newCard, deck.cards.length + 1)).lastInsertId;
 
   deck.cards.push({
     ...newCard,
@@ -191,7 +191,8 @@ export const addFieldToSchema = async (deck: Deck, field: string) => {
   });
 
   await db.updateDeckInfo(deck.info);
-  await db.updateCards(deck.cards);
+  if (deck.cards.length > 0) await db.updateCards(deck.cards);
+
   await refreshDeck(deck.info.id);
   currentDeck.set(deck);
 };
@@ -292,7 +293,9 @@ export const togglePriority = async (deck: Deck, index: number) => {
  */
 export const removeCard = async (deck: Deck, index: number) => {
   const oldCard = deck.cards.splice(index, 1);
-  await db.deleteCard(oldCard[0].id);
+  await db.deleteCard(oldCard[0].id, deck.cards.length, deck.info.id);
+
+  await refreshDeck(deck.info.id);
   refreshConflictingCards();
   currentDeck.set(deck);
 };

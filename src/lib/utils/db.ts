@@ -125,14 +125,17 @@ const createDB = () => {
      * Create a new card in a deck.
      * @param deckId Id of the deck to create a card in
      */
-    createCard: async (card: CardInsert): Promise<QueryResult> => {
+    createCard: async (
+      card: CardInsert,
+      cardCount: number
+    ): Promise<QueryResult> => {
       checkDB();
       const res = get(store)?.execute(
         `
           BEGIN TRANSACTION;
           INSERT INTO cards (deck_id, level, scheduled_at, studied_at, priority, fields)
           VALUES ($1, $2, $3, $4, $5, $6);
-          UPDATE decks SET card_count = card_count + 1, edited_at = CURRENT_TIMESTAMP WHERE id = $1;
+          UPDATE decks SET card_count = $7, edited_at = CURRENT_TIMESTAMP WHERE id = $1;
           COMMIT;
         `,
         [
@@ -141,7 +144,8 @@ const createDB = () => {
           card.scheduled_at,
           card.studied_at,
           card.priority,
-          JSON.stringify(card.fields)
+          JSON.stringify(card.fields),
+          cardCount
         ]
       );
 
@@ -368,11 +372,21 @@ const createDB = () => {
      * Delete a card by its ID.
      * @param cardId ID of the card
      */
-    deleteCard: async (cardId: number): Promise<QueryResult> => {
+    deleteCard: async (
+      cardId: number,
+      deckId: number,
+      cardCount: number
+    ): Promise<QueryResult> => {
       checkDB();
-      const res = get(store)?.execute("DELETE FROM cards WHERE id = $1", [
-        cardId
-      ]);
+      const res = get(store)?.execute(
+        `
+          BEGIN TRANSACTION;
+          DELETE FROM cards WHERE id = $1;
+          UPDATE decks SET card_count = $2, edited_at = CURRENT_TIMESTAMP WHERE id = $3;
+          COMMIT;
+        `,
+        [cardId, cardCount, deckId]
+      );
       if (res === undefined) throw new Error("Failed to delete card");
       return res;
     }
