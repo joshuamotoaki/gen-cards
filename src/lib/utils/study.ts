@@ -15,6 +15,10 @@ export type StudySession = {
   window: CardInProgress[];
   currentIndex: number;
   relationshipIndex: number;
+
+  // Note - these "queues" are technically priority queues. However,
+  // since there is the ability to mark a card as "priority", the naming
+  // can get very confusing and verbose, hence just "queues".
   queues: {
     review: Card[];
     reviewPriority: Card[];
@@ -25,6 +29,86 @@ export type StudySession = {
 
 const createStudySession = () => {
   const store = writable<StudySession | null>(null);
+
+  // Return the next card to add to the window, or null if no cards found
+  const nextCard = (): Card | null => {
+    const session = get(store);
+    if (!session) return null;
+    const deck = get(currentDeck);
+    if (!deck) return null;
+    const studyVars = get(studyVariables);
+    if (!studyVars) throw new Error("Study variables not set");
+
+    const newQueue = session.queues.new;
+    const newQueuePriority = session.queues.newPriority;
+    const reviewQueue = session.queues.review;
+    const reviewQueuePriority = session.queues.reviewPriority;
+
+    const currentTime = new Date().getTime();
+
+    // If a card is due in RQP
+    if (reviewQueuePriority.length) {
+      const lastElemRQP = reviewQueuePriority[reviewQueuePriority.length - 1];
+      const lastElemRQPTime = new Date(
+        lastElemRQP.scheduled_at || ""
+      ).getTime();
+      if (lastElemRQPTime < currentTime) {
+        return reviewQueuePriority.pop()!;
+      }
+    }
+
+    // If a card is in NQP
+    if (newQueuePriority.length) {
+      return newQueuePriority.pop()!;
+    }
+
+    // If a card is due in RQ
+    if (reviewQueue.length) {
+      const lastElemRQ = reviewQueue[reviewQueue.length - 1];
+      const lastElemRQTime = new Date(lastElemRQ.scheduled_at || "").getTime();
+      if (lastElemRQTime < currentTime) {
+        if (newQueue.length) {
+          const rand = Math.random();
+          if (rand < studyVars.repeatRatioReview) return reviewQueue.pop()!;
+          else return newQueue.pop()!;
+        } else {
+          return reviewQueue.pop()!;
+        }
+      }
+    }
+
+    // If a card is in NQ
+    if (newQueue.length) {
+      if (reviewQueuePriority.length) {
+        const rand = Math.random();
+        if (rand < studyVars.repeatRatioNew) return newQueue.pop()!;
+        else return reviewQueuePriority.pop()!;
+      } else if (reviewQueue.length) {
+        const rand = Math.random();
+        if (rand < studyVars.repeatRatioNew) return newQueue.pop()!;
+        else return reviewQueue.pop()!;
+      } else {
+        return newQueue.pop()!;
+      }
+    }
+
+    // If there are no more cards to study, pull randomly from
+    // RQP (if available), then RQ
+    if (reviewQueuePriority.length) {
+      const randIndex = Math.floor(Math.random() * reviewQueuePriority.length);
+      const toRet = reviewQueuePriority[randIndex];
+      reviewQueuePriority.splice(randIndex, 1);
+      return toRet;
+    } else if (reviewQueue.length) {
+      const randIndex = Math.floor(Math.random() * reviewQueue.length);
+      const toRet = reviewQueue[randIndex];
+      reviewQueue.splice(randIndex, 1);
+      return toRet;
+    }
+
+    // There are no cards left, so return null (deckSize < windowSize)
+    return null;
+  };
 
   return {
     set: store.set,
@@ -70,82 +154,11 @@ const createStudySession = () => {
       const studyVars = get(studyVariables);
       if (!studyVars) throw new Error("Study variables not set");
 
-      const currentTime = new Date().getTime();
       const window: Card[] = [];
-
       for (let i = 0; i < studyVars.windowSize; i++) {
-        // If a card is due in RQP
-        if (reviewQueuePriority.length) {
-          const lastElemRQP =
-            reviewQueuePriority[reviewQueuePriority.length - 1];
-          const lastElemRQPTime = new Date(
-            lastElemRQP.scheduled_at || ""
-          ).getTime();
-          if (lastElemRQPTime < currentTime) {
-            window.push(reviewQueuePriority.pop()!);
-            continue;
-          }
-        }
-
-        // If a card is in NQP
-        if (newQueuePriority.length) {
-          window.push(newQueuePriority.pop()!);
-          continue;
-        }
-
-        // If a card is due in RQ
-        if (reviewQueue.length) {
-          const lastElemRQ = reviewQueue[reviewQueue.length - 1];
-          const lastElemRQTime = new Date(
-            lastElemRQ.scheduled_at || ""
-          ).getTime();
-          if (lastElemRQTime < currentTime) {
-            if (newQueue.length) {
-              const rand = Math.random();
-              if (rand < studyVars.repeatRatioReview)
-                window.push(reviewQueue.pop()!);
-              else window.push(newQueue.pop()!);
-            } else {
-              window.push(reviewQueue.pop()!);
-            }
-            continue;
-          }
-        }
-
-        // If a card is in NQ
-        if (newQueue.length) {
-          if (reviewQueuePriority.length) {
-            const rand = Math.random();
-            if (rand < studyVars.repeatRatioNew) window.push(newQueue.pop()!);
-            else window.push(reviewQueuePriority.pop()!);
-          } else if (reviewQueue.length) {
-            const rand = Math.random();
-            if (rand < studyVars.repeatRatioNew) window.push(newQueue.pop()!);
-            else window.push(reviewQueue.pop()!);
-          } else {
-            window.push(newQueue.pop()!);
-          }
-          continue;
-        }
-
-        // If there are no more cards to study, pull randomly from
-        // RQP (if available), then RQ
-        if (reviewQueuePriority.length) {
-          const randIndex = Math.floor(
-            Math.random() * reviewQueuePriority.length
-          );
-          window.push(reviewQueuePriority[randIndex]);
-          reviewQueuePriority.splice(randIndex, 1);
-          continue;
-        } else if (reviewQueue.length) {
-          const randIndex = Math.floor(Math.random() * reviewQueue.length);
-          window.push(reviewQueue[randIndex]);
-          reviewQueue.splice(randIndex, 1);
-          continue;
-        }
-
-        // There are no cards left, so break (deckSize < windowSize)
-        break;
+        const next = nextCard();
+        if (!next) break;
+        else window.push(next);
       }
 
       store.set({
@@ -202,11 +215,37 @@ const createStudySession = () => {
               // No level change
               break;
             case 2:
+              if (currentCard.card.level === 1) break;
               currentCard.card.level--;
               break;
             default:
-              currentCard.card.level = 0;
+              currentCard.card.level = 1;
           }
+
+          // TODO - Schedule new due date
+
+          // TODO - Push to DB
+
+          // Increment index
+          const prevIndex = session.currentIndex;
+          session.currentIndex =
+            (session.currentIndex + 1) % session.window.length;
+
+          // TODO - Put old card back into a queue
+
+          // Exchange card
+          const next = nextCard();
+          if (!next) throw new Error("No next card");
+          else
+            session.window[prevIndex] = {
+              card: next,
+              streak: [],
+              isCorrect: true
+            };
+        } else {
+          // Increment index
+          session.currentIndex =
+            (session.currentIndex + 1) % session.window.length;
         }
       }
 
