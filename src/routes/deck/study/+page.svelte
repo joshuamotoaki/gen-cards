@@ -51,7 +51,7 @@
         </div>
       </section>
 
-      <section class="w-2/3 mx-auto mt-24">
+      <section class="w-2/3 mx-auto mt-24 flex flex-col items-center">
         <input
           on:keydown={e => {
             if (e.key === "Enter") {
@@ -78,6 +78,12 @@
             Copy the correct answer
           </p>
         {/if}
+        <button
+          on:click={() => {}}
+          class:invisible={correct}
+          class="btn variant-soft-secondary w-fit rounded-lg px-4 py-2 mt-8">
+          Override
+        </button>
       </section>
     </main>
 
