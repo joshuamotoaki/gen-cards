@@ -108,13 +108,22 @@ const createStudySession = () => {
 
         // If a card is in NQ
         if (newQueue.length) {
-          window.push(newQueue.pop()!);
+          if (reviewQueuePriority.length) {
+            const rand = Math.random();
+            if (rand < studyVars.repeatRatioNew) window.push(newQueue.pop()!);
+            else window.push(reviewQueuePriority.pop()!);
+          } else if (reviewQueue.length) {
+            const rand = Math.random();
+            if (rand < studyVars.repeatRatioNew) window.push(newQueue.pop()!);
+            else window.push(reviewQueue.pop()!);
+          } else {
+            window.push(newQueue.pop()!);
+          }
           continue;
         }
 
         // If there are no more cards to study, pull randomly from
         // RQP (if available), then RQ
-
         if (reviewQueuePriority.length) {
           const randIndex = Math.floor(
             Math.random() * reviewQueuePriority.length
