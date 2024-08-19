@@ -8,7 +8,10 @@
   let correct = true;
   let input = "";
 
-  $: console.log($currentStudySession);
+  const areEqual = (a: string, b: string): boolean => {
+    // TODO - Fill in
+    return false;
+  };
 
   $: currentCard =
     $currentStudySession!.window[$currentStudySession!.currentIndex];
@@ -36,7 +39,7 @@
       class="flex items-center justify-between px-4 py-2
         bg-surface-50-900-token border-b border-surface-500/30
         ">
-      <h1 class="text-2xl font-semibold">
+      <h1 class="text-xl font-semibold">
         {$currentDeck.info.title}
       </h1>
 
@@ -66,7 +69,24 @@
         <input
           on:keydown={e => {
             if (e.key === "Enter") {
-              // currentStudySession.progressCard();
+              const correctAnswer = areEqual(input, answer);
+
+              // Copy mode (after first attempt)
+              if (!correct && correctAnswer) {
+                currentStudySession.progressCard(false);
+                correct = true;
+              }
+
+              // First attempt
+              else {
+                if (correctAnswer) {
+                  currentStudySession.progressCard(true);
+                } else {
+                  correct = false;
+                }
+              }
+
+              // Reset the input
               input = "";
             }
           }}
@@ -90,10 +110,13 @@
           </p>
         {/if}
         <button
-          on:click={() => {}}
+          on:click={() => {
+            currentStudySession.progressCard(true);
+            correct = true;
+          }}
           class:invisible={correct}
           class="btn variant-soft-secondary w-fit rounded-lg px-4 py-2 mt-8">
-          Override
+          Override Correct
         </button>
       </section>
     </main>
