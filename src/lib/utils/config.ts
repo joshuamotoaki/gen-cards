@@ -25,7 +25,8 @@ export const studyVariables = createPersistedWritable<StudyVariables>(
   "studyVariables",
   {
     windowSize: 20,
-    repeatRatio: 0.9,
+    repeatRatioReview: 0.9,
+    repeatRatioNew: 0.1,
     repetitionSpacing: 4,
     baseRepetitionInHours: 1
   }

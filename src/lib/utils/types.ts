@@ -13,7 +13,8 @@ export type Theme =
 
 export type StudyVariables = {
   windowSize: number;
-  repeatRatio: number;
+  repeatRatioReview: number;
+  repeatRatioNew: number;
   repetitionSpacing: number;
   baseRepetitionInHours: number;
 };
