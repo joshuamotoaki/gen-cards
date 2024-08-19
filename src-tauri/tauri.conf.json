@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.joshuamotoaki.simplespacedcards",
+      "identifier": "com.joshuamotoaki.gencards",
       "longDescription": "",
       "macOS": {
         "entitlements": null,

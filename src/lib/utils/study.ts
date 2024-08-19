@@ -48,7 +48,7 @@ const createStudySession = () => {
   const schedule = (level: number, baseRepetition: number, spacing: number) => {
     const currentTime = new Date().getTime();
     const time = currentTime + baseRepetition * Math.pow(spacing, level - 1);
-    return new Date(time).toISOString();
+    return new Date(time).toDateString();
   };
 
   // Return the next card to add to the window, or null if no cards found
@@ -170,6 +170,10 @@ const createStudySession = () => {
       sortByScheduledAt(reviewQueue);
       sortByScheduledAt(reviewQueuePriority);
 
+      // Ensure reverse-id order
+      newQueue.reverse();
+      newQueuePriority.reverse();
+
       // Populate initial window
       const studyVars = get(studyVariables);
       if (!studyVars) throw new Error("Study variables not set");
@@ -186,6 +190,8 @@ const createStudySession = () => {
         if (!next) break;
         else window.push(next);
       }
+
+      console.log(window);
 
       store.set({
         correctCount: 0,

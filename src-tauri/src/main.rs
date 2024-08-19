@@ -14,17 +14,17 @@ fn main() {
                     title TEXT NOT NULL,
                     description TEXT NOT NULL,
                     card_count INTEGER,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    edited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    studied_at TIMESTAMP,
+                    created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
+                    edited_at INTEGER DEFAULT CURRENT_TIMESTAMP,
+                    studied_at INTEGER,
                     schema TEXT NOT NULL
                 );
 
                 CREATE TABLE cards (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     level INTEGER NOT NULL,
-                    scheduled_at TIMESTAMP,
-                    studied_at TIMESTAMP,
+                    scheduled_at INTEGER,
+                    studied_at INTEGER,
                     priority INTEGER,
                     fields TEXT NOT NULL,
                     deck_id INTEGER,
