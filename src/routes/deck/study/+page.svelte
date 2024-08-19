@@ -121,9 +121,10 @@
           on:click={() => {
             currentStudySession.progressCard(true);
             correct = true;
+            input = "";
           }}
           class:invisible={correct}
-          class="btn variant-soft-secondary w-fit rounded-lg px-4 py-2 mt-8">
+          class="btn variant-soft-secondary w-fit rounded-lg px-4 py-2 mt-8 duration-0">
           Override Correct
         </button>
       </section>
