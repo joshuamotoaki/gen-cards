@@ -21,7 +21,8 @@
       {props.card_count} card{props.card_count === 1 ? "" : "s"}
     </span>
     <span class="text-sm">
-      Last studied: {props.studied_at || "Never"}
+      Last studied: {new Date(props.studied_at || 0).toLocaleDateString() ||
+        "Never"}
     </span>
   </footer>
 </button>
