@@ -1,5 +1,5 @@
 import { get, writable } from "svelte/store";
-import type { Deck, DeckInfo } from "./types";
+import type { Deck, DeckInfo } from "./deck";
 import { db } from "./db";
 
 // All the deck infos.
