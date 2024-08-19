@@ -86,7 +86,7 @@
   const handleFileUpload = async (e: Event) => {
     // This ensures that the same file can be uploaded twice in a row
     const resetField = () => {
-      // @ts-ignore
+      // @ts-expect-error
       e.target.value = null;
     };
 

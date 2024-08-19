@@ -1,8 +1,7 @@
 <script lang="ts">
   import RecentDisplay from "$lib/components/RecentDisplay.svelte";
-  import { createNewDeck } from "$lib/utils/deck";
+  import { createNewDeck, type DeckInfo } from "$lib/utils/deck";
   import { deckCache, decks } from "$lib/utils/state";
-  import type { DeckInfo } from "$lib/utils/types";
   import { onMount } from "svelte";
 
   const NUMBER_OF_RECENT_DECKS = 6;

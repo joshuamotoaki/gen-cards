@@ -1,5 +1,5 @@
 import { get, writable } from "svelte/store";
-import type { Card } from "./types";
+import type { Card } from "./deck";
 import { currentDeck } from "./state";
 import { studyVariables } from "./config";
 

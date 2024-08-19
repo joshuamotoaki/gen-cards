@@ -8,11 +8,11 @@
   import {
     createNewDeck,
     gotoDeck,
-    refreshConflictingCards
+    refreshConflictingCards,
+    type DeckInfo
   } from "$lib/utils/deck";
   import { db } from "$lib/utils/db";
   import { goto } from "$app/navigation";
-  import type { DeckInfo } from "$lib/utils/types";
 
   const handler = new DataHandler($decks, { rowsPerPage: 10 });
   const rows = handler.getRows();

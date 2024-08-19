@@ -1,6 +1,6 @@
 import { get, writable } from "svelte/store";
 import Database, { type QueryResult } from "tauri-plugin-sql-api";
-import type { Card, CardDB, CardInsert, DeckInfo, DeckInfoDB } from "./types";
+import type { Card, CardDB, CardInsert, DeckInfo, DeckInfoDB } from "./deck";
 
 const createDB = () => {
   const store = writable<Database | null>(null);

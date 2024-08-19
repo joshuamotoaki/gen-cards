@@ -1,5 +1,4 @@
 import { writable } from "svelte/store";
-import type { StudyVariables, Theme } from "./types";
 
 const createPersistedWritable = <T>(key: string, initialValue: T) => {
   const store = writable<T>(
@@ -16,10 +15,30 @@ const createPersistedWritable = <T>(key: string, initialValue: T) => {
   };
 };
 
+export type Theme =
+  | "gengoko"
+  | "skeleton"
+  | "wintry"
+  | "modern"
+  | "rocket"
+  | "seafoam"
+  | "vintage"
+  | "hamlindigo"
+  | "gold-nouveau"
+  | "crimson";
+
 export const currentTheme = createPersistedWritable<Theme>(
   "currentTheme",
   "skeleton"
 );
+
+export type StudyVariables = {
+  windowSize: number;
+  repeatRatioReview: number;
+  repeatRatioNew: number;
+  repetitionSpacing: number;
+  baseRepetitionInHours: number;
+};
 
 export const studyVariables = createPersistedWritable<StudyVariables>(
   "studyVariables",

@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { gotoDeck } from "$lib/utils/deck";
-  import type { DeckInfo } from "$lib/utils/types";
+  import { gotoDeck, type DeckInfo } from "$lib/utils/deck";
 
   export let props: DeckInfo;
   export let variant: string = "variant-glass-surface";

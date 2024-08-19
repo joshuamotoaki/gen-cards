@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { StarIcon, StarSolidIcon, TrashIcon } from "./icons/icons";
+  import { db } from "$lib/utils/db";
+  import type { Card } from "$lib/utils/deck";
   import { createNewCard, removeCard, togglePriority } from "$lib/utils/deck";
   import { currentDeck } from "$lib/utils/state";
-  import { db } from "$lib/utils/db";
-  import type { Card } from "$lib/utils/types";
+  import { StarIcon, StarSolidIcon, TrashIcon } from "./icons/icons";
 
   export let card: Card;
   export let index: number;
