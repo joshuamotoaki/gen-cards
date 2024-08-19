@@ -267,6 +267,7 @@ const createDB = () => {
      */
     updateDeckInfo: async (deckInfo: DeckInfo) => {
       checkDB();
+      console.log(deckInfo);
       const res = get(store)?.execute(
         `
           UPDATE decks SET title = $1, description = $2, edited_at = $6, card_count = $3, schema = $5
@@ -349,7 +350,7 @@ const createDB = () => {
       const res = get(store)?.execute(
         `
           BEGIN TRANSACTION;
-          UPDATE card SET level = $1, scheduled_at = $2, studied_at = $3
+          UPDATE cards SET level = $1, scheduled_at = $2, studied_at = $3;
           UPDATE decks SET studied_at = $3 WHERE id = $4;
           COMMIT; 
         `,

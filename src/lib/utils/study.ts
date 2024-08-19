@@ -1,5 +1,5 @@
 import { get, writable } from "svelte/store";
-import type { Card } from "./deck";
+import { refreshDeck, type Card } from "./deck";
 import { currentDeck } from "./state";
 import { studyVariables } from "./config";
 import { db } from "./db";
@@ -216,13 +216,6 @@ const createStudySession = () => {
       const studyVars = get(studyVariables);
       if (!studyVars) throw new Error("Study variables not set");
 
-      currentDeck.update(deck => {
-        if (!deck) return deck;
-        deck.info.studied_at = new Date().getTime();
-        return deck;
-      });
-      await db.updateDeckInfo(deck.info);
-
       const currentCard = session.window[session.currentIndex];
       if (!result) currentCard.isCorrect = false;
 
@@ -272,10 +265,6 @@ const createStudySession = () => {
             studyVars.repetitionSpacing
           );
 
-          // Update studied_at to now
-          currentCard.card.studied_at = new Date().getTime();
-          await db.updateCard(currentCard.card);
-
           // Increment index
           const prevIndex = session.currentIndex;
           session.currentIndex =
@@ -315,6 +304,11 @@ const createStudySession = () => {
 
       // More sides need to be studied
       else session.relationshipIndex++;
+
+      // Update studied_at to now
+      currentCard.card.studied_at = new Date().getTime();
+      await db.updateCardStudy(currentCard.card);
+      await refreshDeck(deck.info.id);
 
       // Refresh session
       console.log(session);
