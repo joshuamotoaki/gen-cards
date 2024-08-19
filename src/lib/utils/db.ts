@@ -99,7 +99,7 @@ const createDB = () => {
       checkDB();
       const res = get(store)?.execute(
         `
-          INSERT INTO decks (title, description, card_count, schema) VALUES ($1, $2, $3, $4);
+          INSERT INTO decks (title, description, card_count, schema, created_at, edited_at) VALUES ($1, $2, $3, $4, $5, $5);
         `,
         [
           "My Deck",
@@ -114,7 +114,7 @@ const createDB = () => {
               }
             ]
           }),
-          JSON.stringify([])
+          new Date().getTime()
         ]
       );
       if (res === undefined) throw new Error("Failed to create deck");
@@ -135,7 +135,7 @@ const createDB = () => {
           BEGIN TRANSACTION;
           INSERT INTO cards (deck_id, level, scheduled_at, studied_at, priority, fields)
           VALUES ($1, $2, $3, $4, $5, $6);
-          UPDATE decks SET card_count = $7, edited_at = CURRENT_TIMESTAMP WHERE id = $1;
+          UPDATE decks SET card_count = $7, edited_at = $8 WHERE id = $1;
           COMMIT;
         `,
         [
@@ -145,7 +145,8 @@ const createDB = () => {
           card.studied_at,
           card.priority,
           JSON.stringify(card.fields),
-          cardCount
+          cardCount,
+          new Date().getTime()
         ]
       );
 
@@ -169,10 +170,10 @@ const createDB = () => {
           BEGIN TRANSACTION;
           INSERT INTO cards (deck_id, level, scheduled_at, studied_at, priority, fields)
           VALUES ${cards.map(card => `(${deckId}, ${card.level}, ${card.scheduled_at}, ${card.studied_at}, ${card.priority}, '${JSON.stringify(card.fields)}')`).join(",")};
-          UPDATE decks SET card_count = $1, edited_at = CURRENT_TIMESTAMP WHERE id = ${deckId};
+          UPDATE decks SET card_count = $1, edited_at = $2 WHERE id = ${deckId};
           COMMIT;
         `,
-        [cardCount]
+        [cardCount, new Date().getTime()]
       );
 
       if (res === undefined) throw new Error("Failed to create cards");
@@ -268,7 +269,7 @@ const createDB = () => {
       checkDB();
       const res = get(store)?.execute(
         `
-          UPDATE decks SET title = $1, description = $2, edited_at = CURRENT_TIMESTAMP, card_count = $3, schema = $5
+          UPDATE decks SET title = $1, description = $2, edited_at = $6, card_count = $3, schema = $5
           WHERE id = $4;
         `,
         [
@@ -276,7 +277,8 @@ const createDB = () => {
           deckInfo.description,
           deckInfo.card_count,
           deckInfo.id,
-          JSON.stringify(deckInfo.schema)
+          JSON.stringify(deckInfo.schema),
+          new Date().getTime()
         ]
       );
 
@@ -295,7 +297,7 @@ const createDB = () => {
           BEGIN TRANSACTION;
           UPDATE cards SET level = $1, scheduled_at = $2, priority = $3, fields = $4
           WHERE id = $5;
-          UPDATE decks SET edited_at = CURRENT_TIMESTAMP WHERE id = $6;
+          UPDATE decks SET edited_at = $7 WHERE id = $6;
           COMMIT;
         `,
         [
@@ -304,7 +306,8 @@ const createDB = () => {
           card.priority,
           JSON.stringify(card.fields),
           card.id,
-          card.deck_id
+          card.deck_id,
+          new Date().getTime()
         ]
       );
       if (res === undefined) throw new Error("Failed to update card");
@@ -328,9 +331,10 @@ const createDB = () => {
           `
             )
             .join("")}
-          UPDATE decks SET edited_at = CURRENT_TIMESTAMP WHERE id = ${cards[0].deck_id};
+          UPDATE decks SET edited_at = $1 WHERE id = ${cards[0].deck_id};
           COMMIT;
-        `
+        `,
+        [new Date().getTime()]
       );
       if (res === undefined) throw new Error("Failed to update cards");
       return res;
@@ -384,10 +388,10 @@ const createDB = () => {
         `
           BEGIN TRANSACTION;
           DELETE FROM cards WHERE id = $1;
-          UPDATE decks SET card_count = $2, edited_at = CURRENT_TIMESTAMP WHERE id = $3;
+          UPDATE decks SET card_count = $2, edited_at = $4 WHERE id = $3;
           COMMIT;
         `,
-        [cardId, cardCount, deckId]
+        [cardId, cardCount, deckId, new Date().getTime()]
       );
       if (res === undefined) throw new Error("Failed to delete card");
       return res;

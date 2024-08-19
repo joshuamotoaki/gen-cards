@@ -28,9 +28,9 @@ export type DeckInfoDB = {
   title: string;
   description: string;
   card_count: number;
-  created_at: string;
-  edited_at: string;
-  studied_at: string | null;
+  created_at: number;
+  edited_at: number;
+  studied_at: number | null;
   schema: string;
 };
 
@@ -39,17 +39,17 @@ export type DeckInfo = {
   title: string;
   card_count: number;
   description: string;
-  created_at: string;
-  edited_at: string;
-  studied_at: string | null;
+  created_at: number;
+  edited_at: number;
+  studied_at: number | null;
   schema: Schema;
 };
 
 export type CardInsert = {
   deck_id: number;
   level: number;
-  scheduled_at: string | null;
-  studied_at: string | null;
+  scheduled_at: number | null;
+  studied_at: number | null;
   priority: number;
   fields: {
     [key: string]: string;
@@ -60,8 +60,8 @@ export type CardDB = {
   id: number;
   deck_id: number;
   level: number;
-  scheduled_at: string | null;
-  studied_at: string | null;
+  scheduled_at: number | null;
+  studied_at: number | null;
   priority: number;
   fields: string;
 };
@@ -70,8 +70,8 @@ export type Card = {
   id: number;
   deck_id: number;
   level: number;
-  scheduled_at: string | null;
-  studied_at: string | null;
+  scheduled_at: number | null;
+  studied_at: number | null;
   priority: number;
   fields: {
     [key: string]: string;

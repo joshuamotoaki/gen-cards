@@ -48,7 +48,7 @@ const createStudySession = () => {
   const schedule = (level: number, baseRepetition: number, spacing: number) => {
     const currentTime = new Date().getTime();
     const time = currentTime + baseRepetition * Math.pow(spacing, level - 1);
-    return new Date(time).toDateString();
+    return new Date(time).getTime();
   };
 
   // Return the next card to add to the window, or null if no cards found
@@ -216,6 +216,13 @@ const createStudySession = () => {
       const studyVars = get(studyVariables);
       if (!studyVars) throw new Error("Study variables not set");
 
+      currentDeck.update(deck => {
+        if (!deck) return deck;
+        deck.info.studied_at = new Date().getTime();
+        return deck;
+      });
+      await db.updateDeckInfo(deck.info);
+
       const currentCard = session.window[session.currentIndex];
       if (!result) currentCard.isCorrect = false;
 
@@ -236,20 +243,26 @@ const createStudySession = () => {
           for (let i = 0; i < streakLen; i++)
             if (!currentCard.streak[i]) numErrors++;
 
-          // Handle level demotion/promotion depending on error count
-          switch (numErrors) {
-            case 0:
-              currentCard.card.level++;
-              break;
-            case 1:
-              // No level change
-              break;
-            case 2:
-              if (currentCard.card.level === 1) break;
-              currentCard.card.level--;
-              break;
-            default:
-              currentCard.card.level = 1;
+          // Don't increment level if a card is studied before its scheduled time
+          if (
+            !currentCard.card.scheduled_at ||
+            new Date().getTime() < currentCard.card.scheduled_at
+          ) {
+            // Handle level demotion/promotion depending on error count
+            switch (numErrors) {
+              case 0:
+                currentCard.card.level++;
+                break;
+              case 1:
+                // No level change
+                break;
+              case 2:
+                if (currentCard.card.level === 1) break;
+                currentCard.card.level--;
+                break;
+              default:
+                currentCard.card.level = 1;
+            }
           }
 
           // Schedule new due date
@@ -260,16 +273,8 @@ const createStudySession = () => {
           );
 
           // Update studied_at to now
-          currentCard.card.studied_at = new Date().toISOString();
-          currentDeck.update(deck => {
-            if (!deck) return deck;
-            deck.info.studied_at = new Date().toISOString();
-            return deck;
-          });
-
-          // Push to DB
+          currentCard.card.studied_at = new Date().getTime();
           await db.updateCard(currentCard.card);
-          await db.updateDeckInfo(deck.info);
 
           // Increment index
           const prevIndex = session.currentIndex;
@@ -313,6 +318,7 @@ const createStudySession = () => {
 
       // Refresh session
       console.log(session);
+      console.log(deck);
       store.set(session);
     }
   };

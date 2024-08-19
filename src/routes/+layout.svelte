@@ -13,6 +13,7 @@
   import AddField from "$lib/components/modals/AddField.svelte";
   import EditField from "$lib/components/modals/EditField.svelte";
   import ConfirmUpload from "$lib/components/modals/ConfirmUpload.svelte";
+  import { decks } from "$lib/utils/state";
 
   // Theme change
   $: {
@@ -36,6 +37,7 @@
     try {
       await db.init();
       await refreshAllDecks();
+      console.log($decks);
       isReady = true;
     } catch (e: unknown) {
       console.error("Error:", e);

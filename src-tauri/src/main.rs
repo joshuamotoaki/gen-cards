@@ -14,8 +14,8 @@ fn main() {
                     title TEXT NOT NULL,
                     description TEXT NOT NULL,
                     card_count INTEGER,
-                    created_at INTEGER DEFAULT CURRENT_TIMESTAMP,
-                    edited_at INTEGER DEFAULT CURRENT_TIMESTAMP,
+                    created_at INTEGER,
+                    edited_at INTEGER,
                     studied_at INTEGER,
                     schema TEXT NOT NULL
                 );
