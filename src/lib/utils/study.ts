@@ -222,6 +222,8 @@ const createStudySession = () => {
       const numRelationships = deck.info.schema.relationships.length;
       // All sides have been studied
       if (session.relationshipIndex === numRelationships - 1) {
+        if (currentCard.isCorrect) session.correctCount++;
+
         currentCard.streak.push(currentCard.isCorrect);
         currentCard.isCorrect = true;
 

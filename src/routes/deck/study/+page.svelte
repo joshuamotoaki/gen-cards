@@ -90,6 +90,7 @@
                 if (correctAnswer) {
                   currentStudySession.progressCard(true);
                 } else {
+                  $currentStudySession.wrongCount++;
                   correct = false;
                 }
               }
@@ -103,7 +104,7 @@
           spellcheck="false"
           class="focus:outline-none bg-transparent
                       pt-2 pb-1 resize-none w-full text-center
-                      border-b-2 text-lg
+                      border-b-2 text-xl
                       {correct ? 'border-surface-500/90' : 'border-warning-500'}
                       "
           type="text" />
@@ -121,6 +122,7 @@
           on:click={() => {
             currentStudySession.progressCard(true);
             correct = true;
+            $currentStudySession.wrongCount--;
             input = "";
           }}
           class:invisible={correct}
