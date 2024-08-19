@@ -2,13 +2,22 @@
   import { goto } from "$app/navigation";
   import BackIcon from "$lib/components/icons/BackIcon.svelte";
   import { currentDeck } from "$lib/utils/state";
+  import { currentStudySession } from "$lib/utils/study";
   import DeckWarning from "../../(dashboard)/deck/DeckWarning.svelte";
 
   let correct = true;
   let input = "";
+
+  // For footer display
+  $: totalCards = $currentStudySession
+    ? $currentStudySession.correctCount + $currentStudySession.wrongCount
+    : 0;
+  $: accuracy = $currentStudySession
+    ? Math.round(($currentStudySession.correctCount / totalCards) * 100) || 0
+    : 0;
 </script>
 
-{#if !$currentDeck}
+{#if !$currentDeck || !$currentStudySession}
   <DeckWarning />
 {:else}
   <div class="flex-1 h-screen flex flex-col">
@@ -76,9 +85,11 @@
       class="p-4 bg-surface-50-900-token border-t border-surface-500/30
     text-sm text-surface-800-100-token flex justify-between items-center">
       <div>
-        <p>5 cards completed</p>
+        <p>{totalCards} card{totalCards !== 1 ? "s" : ""} completed</p>
       </div>
-      <div>50% Accuracy (5/10)</div>
+      <div>
+        {accuracy}% Accuracy ({$currentStudySession.correctCount}/{totalCards})
+      </div>
     </footer>
   </div>
 {/if}
