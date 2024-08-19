@@ -2,6 +2,7 @@ import { get, writable } from "svelte/store";
 import type { Card } from "./deck";
 import { currentDeck } from "./state";
 import { studyVariables } from "./config";
+import { db } from "./db";
 
 export type CardInProgress = {
   card: Card;
@@ -30,6 +31,12 @@ export type StudySession = {
 
 const createStudySession = () => {
   const store = writable<StudySession | null>(null);
+
+  const schedule = (level: number, baseRepetition: number, spacing: number) => {
+    const currentTime = new Date().getTime();
+    const time = currentTime + baseRepetition * Math.pow(spacing, level - 1);
+    return new Date(time).toISOString();
+  };
 
   // Return the next card to add to the window, or null if no cards found
   // Note - Queues must be passed in so init() can work
@@ -187,6 +194,9 @@ const createStudySession = () => {
       const deck = get(currentDeck);
       if (!deck) return;
 
+      const studyVars = get(studyVariables);
+      if (!studyVars) throw new Error("Study variables not set");
+
       const currentCard = session.window[session.currentIndex];
       if (!result) currentCard.isCorrect = false;
 
@@ -223,9 +233,24 @@ const createStudySession = () => {
               currentCard.card.level = 1;
           }
 
-          // TODO - Schedule new due date
+          // Schedule new due date
+          currentCard.card.scheduled_at = schedule(
+            currentCard.card.level,
+            studyVars.baseRepetitionInHours,
+            studyVars.repetitionSpacing
+          );
 
-          // TODO - Push to DB
+          // Update studied_at to now
+          currentCard.card.studied_at = new Date().toISOString();
+          currentDeck.update(deck => {
+            if (!deck) return deck;
+            deck.info.studied_at = new Date().toISOString();
+            return deck;
+          });
+
+          // Push to DB
+          await db.updateCard(currentCard.card);
+          await db.updateDeckInfo(deck.info);
 
           // Increment index
           const prevIndex = session.currentIndex;
