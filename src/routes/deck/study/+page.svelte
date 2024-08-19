@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { goto } from "$app/navigation";
   import BackIcon from "$lib/components/icons/BackIcon.svelte";
   import { currentDeck } from "$lib/utils/state";
@@ -8,13 +8,24 @@
   let correct = true;
   let input = "";
 
+  $: console.log($currentStudySession);
+
+  $: currentCard =
+    $currentStudySession!.window[$currentStudySession!.currentIndex];
+
+  $: currentRelationship =
+    $currentDeck!.info.schema.relationships[
+      $currentStudySession!.relationshipIndex
+    ];
+
+  $: question = currentCard.card.fields[currentRelationship.from];
+  $: answer = currentCard.card.fields[currentRelationship.to];
+
   // For footer display
-  $: totalCards = $currentStudySession
-    ? $currentStudySession.correctCount + $currentStudySession.wrongCount
-    : 0;
-  $: accuracy = $currentStudySession
-    ? Math.round(($currentStudySession.correctCount / totalCards) * 100) || 0
-    : 0;
+  $: totalCards =
+    $currentStudySession!.correctCount + $currentStudySession!.wrongCount;
+  $: accuracy =
+    Math.round(($currentStudySession!.correctCount / totalCards) * 100) || 0;
 </script>
 
 {#if !$currentDeck || !$currentStudySession}
@@ -43,10 +54,10 @@
       <section>
         <div class="flex flex-col items-center">
           <h2 class="text-5xl">
-            {$currentDeck.cards[2].fields.Term}
+            {question}
           </h2>
           <h3 class="text-xl text-warning-500 mt-2" class:invisible={correct}>
-            {$currentDeck.cards[2].fields.Definition}
+            {answer}
           </h3>
         </div>
       </section>
@@ -55,7 +66,7 @@
         <input
           on:keydown={e => {
             if (e.key === "Enter") {
-              correct = !correct;
+              // currentStudySession.progressCard();
               input = "";
             }
           }}
@@ -71,11 +82,11 @@
 
         {#if correct}
           <p class="text-surface-500/90 text-center text-sm mt-2">
-            Type your answer
+            Type the {currentRelationship.to.toLowerCase()}
           </p>
         {:else}
           <p class="text-warning-500 text-center text-sm mt-2">
-            Copy the correct answer
+            Copy the {currentRelationship.from.toLowerCase()}
           </p>
         {/if}
         <button

@@ -9,40 +9,40 @@ export type CardInProgress = {
   isCorrect: boolean;
 };
 
+// Note - these "queues" are technically priority queues. However,
+// since there is the ability to mark a card as "priority", the naming
+// can get very confusing and verbose, hence just "queues".
+type StudyQueues = {
+  review: Card[];
+  reviewPriority: Card[];
+  new: Card[];
+  newPriority: Card[];
+};
+
 export type StudySession = {
   correctCount: number;
   wrongCount: number;
   window: CardInProgress[];
   currentIndex: number;
   relationshipIndex: number;
-
-  // Note - these "queues" are technically priority queues. However,
-  // since there is the ability to mark a card as "priority", the naming
-  // can get very confusing and verbose, hence just "queues".
-  queues: {
-    review: Card[];
-    reviewPriority: Card[];
-    new: Card[];
-    newPriority: Card[];
-  };
+  queues: StudyQueues;
 };
 
 const createStudySession = () => {
   const store = writable<StudySession | null>(null);
 
   // Return the next card to add to the window, or null if no cards found
-  const nextCard = (): Card | null => {
-    const session = get(store);
-    if (!session) return null;
+  // Note - Queues must be passed in so init() can work
+  const nextCard = (queues: StudyQueues): Card | null => {
     const deck = get(currentDeck);
     if (!deck) return null;
     const studyVars = get(studyVariables);
     if (!studyVars) throw new Error("Study variables not set");
 
-    const newQueue = session.queues.new;
-    const newQueuePriority = session.queues.newPriority;
-    const reviewQueue = session.queues.review;
-    const reviewQueuePriority = session.queues.reviewPriority;
+    const newQueue = queues.new;
+    const newQueuePriority = queues.newPriority;
+    const reviewQueue = queues.review;
+    const reviewQueuePriority = queues.reviewPriority;
 
     const currentTime = new Date().getTime();
 
@@ -154,9 +154,15 @@ const createStudySession = () => {
       const studyVars = get(studyVariables);
       if (!studyVars) throw new Error("Study variables not set");
 
+      const queues = {
+        review: reviewQueue,
+        reviewPriority: reviewQueuePriority,
+        new: newQueue,
+        newPriority: newQueuePriority
+      };
       const window: Card[] = [];
       for (let i = 0; i < studyVars.windowSize; i++) {
-        const next = nextCard();
+        const next = nextCard(queues);
         if (!next) break;
         else window.push(next);
       }
@@ -171,12 +177,7 @@ const createStudySession = () => {
         })),
         currentIndex: 0,
         relationshipIndex: 0,
-        queues: {
-          review: reviewQueue,
-          reviewPriority: reviewQueuePriority,
-          new: newQueue,
-          newPriority: newQueuePriority
-        }
+        queues
       });
     },
 
@@ -234,7 +235,7 @@ const createStudySession = () => {
           // TODO - Put old card back into a queue
 
           // Exchange card
-          const next = nextCard();
+          const next = nextCard(session.queues);
           if (!next) throw new Error("No next card");
           else
             session.window[prevIndex] = {
