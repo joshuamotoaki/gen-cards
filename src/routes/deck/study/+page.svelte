@@ -8,8 +8,16 @@
   let correct = true;
   let input = "";
 
-  const areEqual = (a: string, b: string): boolean => {
-    // TODO - Fill in
+  const areEqual = (input: string, answer: string): boolean => {
+    const potentialAnswers = answer.split("|");
+    const normInput = input.trim().toLowerCase();
+
+    for (const potentialAnswer of potentialAnswers) {
+      if (normInput === potentialAnswer.trim().toLowerCase()) {
+        return true;
+      }
+    }
+
     return false;
   };
 

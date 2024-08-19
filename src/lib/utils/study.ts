@@ -32,6 +32,19 @@ export type StudySession = {
 const createStudySession = () => {
   const store = writable<StudySession | null>(null);
 
+  const findQueueInsertIndex = (queue: Card[], card: Card) => {
+    let low = 0;
+    let high = queue.length - 1;
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      const midTime = new Date(queue[mid].scheduled_at || "").getTime();
+      const cardTime = new Date(card.scheduled_at || "").getTime();
+      if (midTime < cardTime) high = mid - 1;
+      else low = mid + 1;
+    }
+    return low;
+  };
+
   const schedule = (level: number, baseRepetition: number, spacing: number) => {
     const currentTime = new Date().getTime();
     const time = currentTime + baseRepetition * Math.pow(spacing, level - 1);
@@ -257,7 +270,21 @@ const createStudySession = () => {
           session.currentIndex =
             (session.currentIndex + 1) % session.window.length;
 
-          // TODO - Put old card back into a queue
+          // Put old card back into a reivew queue
+          if (currentCard.card.priority === 1) {
+            const index = findQueueInsertIndex(
+              session.queues.reviewPriority,
+              currentCard.card
+            );
+            session.queues.reviewPriority.splice(index, 0, currentCard.card);
+          } else {
+            const index = findQueueInsertIndex(
+              session.queues.review,
+              currentCard.card
+            );
+
+            session.queues.review.splice(index, 0, currentCard.card);
+          }
 
           // Exchange card
           const next = nextCard(session.queues);
@@ -277,6 +304,10 @@ const createStudySession = () => {
 
       // More sides need to be studied
       else session.relationshipIndex++;
+
+      // Refresh session
+      console.log(session);
+      store.set(session);
     }
   };
 };
