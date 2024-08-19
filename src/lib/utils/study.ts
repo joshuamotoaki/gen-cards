@@ -6,7 +6,7 @@ import { studyVariables } from "./config";
 export type CardInProgress = {
   card: Card;
   streak: boolean[];
-  relationshipIndex: number;
+  isCorrect: boolean;
 };
 
 export type StudySession = {
@@ -14,6 +14,7 @@ export type StudySession = {
   wrongCount: number;
   window: CardInProgress[];
   currentIndex: number;
+  relationshipIndex: number;
   queues: {
     review: Card[];
     reviewPriority: Card[];
@@ -153,9 +154,10 @@ const createStudySession = () => {
         window: window.map(card => ({
           card,
           streak: [],
-          relationshipIndex: 0
+          isCorrect: true
         })),
         currentIndex: 0,
+        relationshipIndex: 0,
         queues: {
           review: reviewQueue,
           reviewPriority: reviewQueuePriority,
@@ -163,6 +165,53 @@ const createStudySession = () => {
           newPriority: newQueuePriority
         }
       });
+    },
+
+    progressCard: async (result: boolean) => {
+      const session = get(store);
+      if (!session) return;
+      const deck = get(currentDeck);
+      if (!deck) return;
+
+      const currentCard = session.window[session.currentIndex];
+      if (!result) currentCard.isCorrect = false;
+
+      const numRelationships = deck.info.schema.relationships.length;
+      // All sides have been studied
+      if (session.relationshipIndex === numRelationships - 1) {
+        currentCard.streak.push(currentCard.isCorrect);
+        currentCard.isCorrect = true;
+
+        // Proceed if 2 subsequent corrects
+        const streakLen = currentCard.streak.length;
+        if (
+          streakLen >= 2 &&
+          currentCard.streak[streakLen - 1] &&
+          currentCard.streak[streakLen - 2]
+        ) {
+          let numErrors = 0;
+          for (let i = 0; i < streakLen; i++)
+            if (!currentCard.streak[i]) numErrors++;
+
+          // Handle level demotion/promotion depending on error count
+          switch (numErrors) {
+            case 0:
+              currentCard.card.level++;
+              break;
+            case 1:
+              // No level change
+              break;
+            case 2:
+              currentCard.card.level--;
+              break;
+            default:
+              currentCard.card.level = 0;
+          }
+        }
+      }
+
+      // More sides need to be studied
+      else session.relationshipIndex++;
     }
   };
 };
