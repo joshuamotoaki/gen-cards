@@ -12,6 +12,7 @@
   } from "$lib/components/icons/icons";
   import { togglePriority } from "$lib/utils/deck";
   import InfoIcon from "$lib/components/icons/InfoIcon.svelte";
+  import { currentStudySession } from "$lib/utils/study";
 
   const toastStore = getToastStore();
 
@@ -134,6 +135,7 @@
             class="card card-hover px-8 py-1 variant-filled-primary overflow-hidden"
             on:click={() => {
               if (isDeckError()) return;
+              currentStudySession.init();
               goto("/deck/study");
             }}>
             Study

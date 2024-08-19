@@ -74,13 +74,16 @@ const createStudySession = () => {
 
       for (let i = 0; i < studyVars.windowSize; i++) {
         // If a card is due in RQP
-        const lastElemRQP = reviewQueuePriority[reviewQueuePriority.length - 1];
-        const lastElemRQPTime = new Date(
-          lastElemRQP.scheduled_at || ""
-        ).getTime();
-        if (reviewQueuePriority.length && lastElemRQPTime < currentTime) {
-          window.push(reviewQueuePriority.pop()!);
-          continue;
+        if (reviewQueuePriority.length) {
+          const lastElemRQP =
+            reviewQueuePriority[reviewQueuePriority.length - 1];
+          const lastElemRQPTime = new Date(
+            lastElemRQP.scheduled_at || ""
+          ).getTime();
+          if (lastElemRQPTime < currentTime) {
+            window.push(reviewQueuePriority.pop()!);
+            continue;
+          }
         }
 
         // If a card is in NQP
@@ -90,20 +93,22 @@ const createStudySession = () => {
         }
 
         // If a card is due in RQ
-        const lastElemRQ = reviewQueue[reviewQueue.length - 1];
-        const lastElemRQTime = new Date(
-          lastElemRQ.scheduled_at || ""
-        ).getTime();
-        if (reviewQueue.length && lastElemRQTime < currentTime) {
-          if (newQueue.length) {
-            const rand = Math.random();
-            if (rand < studyVars.repeatRatioReview)
+        if (reviewQueue.length) {
+          const lastElemRQ = reviewQueue[reviewQueue.length - 1];
+          const lastElemRQTime = new Date(
+            lastElemRQ.scheduled_at || ""
+          ).getTime();
+          if (lastElemRQTime < currentTime) {
+            if (newQueue.length) {
+              const rand = Math.random();
+              if (rand < studyVars.repeatRatioReview)
+                window.push(reviewQueue.pop()!);
+              else window.push(newQueue.pop()!);
+            } else {
               window.push(reviewQueue.pop()!);
-            else window.push(newQueue.pop()!);
-          } else {
-            window.push(reviewQueue.pop()!);
+            }
+            continue;
           }
-          continue;
         }
 
         // If a card is in NQ
