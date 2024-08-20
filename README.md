@@ -1,4 +1,6 @@
-# GenCards
+<h1 align="center">
+  <img src="static/screenshots/logo.png" alt="GenCards Logo" width="80%">
+</h1>
 
 Open-source flashcards with a custom spaced-repetition advisor. Part of the Gengoko project.
 
@@ -38,3 +40,15 @@ While the app is currently functional (as a proof-of-concept), there is still qu
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## Screenshots
+
+<div align="center">
+<img src="static/screenshots/study.png" alt="Study page" width="80%">
+<p>Study Page</p>
+</div>
+
+<div align="center">
+<img src="static/screenshots/deckview.png" alt="Deck view" width="80%">
+<p>Deck View</p>
+</div>
