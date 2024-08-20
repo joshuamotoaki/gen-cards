@@ -328,8 +328,9 @@
                     </button>
                     <button
                       tabindex="-1"
-                      on:click={async () => {
+                      on:click={async e => {
                         if (!$currentDeck.info) return;
+                        editArr.splice(index, 1);
                         await removeCard($currentDeck, index);
                       }}
                       class="btn-icon btn-icon-sm text-surface-600-300-token
