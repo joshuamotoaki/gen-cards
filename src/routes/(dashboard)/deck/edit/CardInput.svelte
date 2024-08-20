@@ -29,12 +29,14 @@
     amounts: [10, 25, 50, 100]
   };
 
-  $: paginatedCards = $currentDeck?.cards
-    ? $currentDeck.cards.slice(
-        paginationSettings.page * paginationSettings.limit,
-        (paginationSettings.page + 1) * paginationSettings.limit
-      )
-    : [];
+  $: cards = $currentDeck ? $currentDeck.cards : [];
+
+  $: paginationSettings.size = cards.length;
+
+  $: paginatedCards = cards.slice(
+    paginationSettings.page * paginationSettings.limit,
+    (paginationSettings.page + 1) * paginationSettings.limit
+  );
 </script>
 
 {#if $currentDeck}
