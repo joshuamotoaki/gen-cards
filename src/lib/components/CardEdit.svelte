@@ -57,14 +57,6 @@
         <p class="text-surface-600-300-token font-semibold">
           {cardNumber}
         </p>
-        <!-- {#if conflictList.includes(index) && $conflictingCards}
-        <p class="text-warning-700-200-token">
-          Conflicts with card{$conflictingCards[index].length === 1
-            ? ""
-            : "s"}{" "}
-          {$conflictingCards[index].map(i => i + 1).join(", ")}
-        </p>
-      {/if} -->
       </div>
       <div class="flex items-center gap-2">
         <button
@@ -102,6 +94,10 @@
             <!-- TODO: Figure out how to dynamically change size -->
             <!-- TODO: Tabbing to the next card places cursor at the end-->
             <textarea
+              autocapitalize="off"
+              autocorrect="off"
+              autocomplete="off"
+              spellcheck="false"
               value={card.fields[field]}
               on:input={async e => {
                 await updateCard(index, field, e.currentTarget.value);

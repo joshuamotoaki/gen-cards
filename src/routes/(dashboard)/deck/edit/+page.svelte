@@ -3,7 +3,7 @@
   import { BackIcon, TrashIcon } from "$lib/components/icons/icons";
   import { db } from "$lib/utils/db";
   import { refreshAllDecks } from "$lib/utils/deck";
-  import { conflictingCards, currentDeck } from "$lib/utils/state";
+  import { currentDeck } from "$lib/utils/state";
   import { getModalStore, getToastStore } from "@skeletonlabs/skeleton";
   import DeckWarning from "../DeckWarning.svelte";
   import FileUpload from "./FileUpload.svelte";
@@ -25,7 +25,6 @@
           goto("/library");
           await db.deleteDeck($currentDeck.info.id);
           currentDeck.set(null);
-          conflictingCards.set(null);
           await refreshAllDecks();
           toastStore.trigger({
             message: "Deck successfully deleted.",

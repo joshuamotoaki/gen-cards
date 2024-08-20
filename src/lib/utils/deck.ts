@@ -1,13 +1,7 @@
 import { goto } from "$app/navigation";
 import { get } from "svelte/store";
 import { db } from "./db";
-import {
-  conflictingCards,
-  currentDeck,
-  deckCache,
-  decks,
-  prevRoute
-} from "./state";
+import { currentDeck, deckCache, decks, prevRoute } from "./state";
 
 //----------------------------------------------------------------------
 // Types
@@ -105,7 +99,6 @@ export const gotoDeck = async (info: DeckInfo, prev: string) => {
     });
   }
 
-  // refreshConflictingCards();
   prevRoute.set(prev);
   goto("/deck");
 };
@@ -135,39 +128,39 @@ export const refreshAllDecks = async () => {
   decks.set(await db.getAllDecks());
 };
 
-export const refreshConflictingCards = () => {
-  const deck = get(currentDeck);
-  if (deck === null) return;
-  const deckCards = deck.cards;
+// export const refreshConflictingCards = () => {
+//   const deck = get(currentDeck);
+//   if (deck === null) return;
+//   const deckCards = deck.cards;
 
-  // Create a hash map of fields to card indices
-  const hashMap = new Map<string, number[]>();
-  for (let i = 0; i < deckCards.length; i++) {
-    const card = deckCards[i];
+//   // Create a hash map of fields to card indices
+//   const hashMap = new Map<string, number[]>();
+//   for (let i = 0; i < deckCards.length; i++) {
+//     const card = deckCards[i];
 
-    // Concatenate all the fields into a single string
-    const fields = Object.values(card.fields);
+//     // Concatenate all the fields into a single string
+//     const fields = Object.values(card.fields);
 
-    // Skip cards with empty fields
-    if (fields.some(field => field === "")) continue;
+//     // Skip cards with empty fields
+//     if (fields.some(field => field === "")) continue;
 
-    // The delimiter is unlikely to appear in the fields
-    const combined = fields.join("&^チ@)($#름&*は@)!_ü#@&");
+//     // The delimiter is unlikely to appear in the fields
+//     const combined = fields.join("&^チ@)($#름&*は@)!_ü#@&");
 
-    // If the combined string already exists, add the index to the list
-    if (hashMap.has(combined)) hashMap.get(combined)!.push(i);
-    // Otherwise, create a new list with the index as the only element
-    else hashMap.set(combined, [i]);
-  }
+//     // If the combined string already exists, add the index to the list
+//     if (hashMap.has(combined)) hashMap.get(combined)!.push(i);
+//     // Otherwise, create a new list with the index as the only element
+//     else hashMap.set(combined, [i]);
+//   }
 
-  // This is trading off space for time
-  const conflicts: Record<number, number[]> = {};
-  for (const val of hashMap.values())
-    if (val.length > 1)
-      for (const index of val)
-        conflicts[index] = val.filter(i => i !== index).sort((a, b) => a - b);
-  conflictingCards.set(conflicts);
-};
+//   // This is trading off space for time
+//   const conflicts: Record<number, number[]> = {};
+//   for (const val of hashMap.values())
+//     if (val.length > 1)
+//       for (const index of val)
+//         conflicts[index] = val.filter(i => i !== index).sort((a, b) => a - b);
+//   conflictingCards.set(conflicts);
+// };
 
 //----------------------------------------------------------------------
 // Create
@@ -369,7 +362,6 @@ export const removeCard = async (deck: Deck, index: number) => {
   await db.deleteCard(oldCard[0].id, deck.cards.length, deck.info.id);
 
   await refreshDeck(deck.info.id);
-  refreshConflictingCards();
   currentDeck.set(deck);
 };
 

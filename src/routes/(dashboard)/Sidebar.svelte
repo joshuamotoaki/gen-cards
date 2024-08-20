@@ -4,7 +4,7 @@
   import { PlusIcon } from "$lib/components/icons/icons";
   import { db } from "$lib/utils/db";
   import { goto } from "$app/navigation";
-  import { conflictingCards, currentDeck, deckCache } from "$lib/utils/state";
+  import { currentDeck, deckCache } from "$lib/utils/state";
 </script>
 
 <aside
@@ -96,7 +96,6 @@
       on:click={async () => {
         await db.deleteEverything();
         await refreshAllDecks();
-        conflictingCards.set(null);
         currentDeck.set(null);
         deckCache.set({});
         goto("/");
