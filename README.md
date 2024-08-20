@@ -2,7 +2,7 @@
   <img src="static/screenshots/logo.png" alt="GenCards Logo" width="80%">
 </h1>
 
-Open-source flashcards with a custom spaced-repetition advisor. Part of the Gengoko project.
+Open-source, local flashcard system with a custom spaced repetition advisor. Part of the Gengoko project.
 
 ## Overview
 
