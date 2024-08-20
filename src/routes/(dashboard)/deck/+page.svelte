@@ -243,13 +243,39 @@
                 class="border border-surface-300-600-token rounded-container-token
               p-2 shadow-sm bg-surface-200-700-token">
                 <div
-                  class="border-b border-surface-500/30 flex items-center justify-between text-sm">
+                  class="border-b border-surface-500/30 text-sm
+                  grid grid-cols-[1fr_auto_1fr] gap-4 items-center pb-2 mb-2
+                  ">
                   <p class="font-semibold text-surface-600-300-token">
                     {paginationSettings.page * paginationSettings.limit +
                       index +
                       1}
                   </p>
-                  <div class="flex items-center gap-2">
+                  <div
+                    class="
+                    {card.scheduled_at &&
+                    card.scheduled_at < new Date().getTime() &&
+                    card.level > 0
+                      ? 'bg-primary-100-800-token'
+                      : 'bg-surface-300-600-token'}
+                    rounded-full px-2 py-1
+                    text-surface-700-200-token text-sm
+                    flex items-center gap-4">
+                    <p>
+                      {card.level === 0 ? "Not Studied" : "Level " + card.level}
+                    </p>
+                    {#if card.level > 0}
+                      <p>
+                        {card.scheduled_at
+                          ? "Scheduled for: " +
+                            new Date(card.scheduled_at).toLocaleDateString() +
+                            " " +
+                            new Date(card.scheduled_at).toLocaleTimeString()
+                          : "Not Scheduled"}
+                      </p>
+                    {/if}
+                  </div>
+                  <div class="flex items-center gap-2 justify-end">
                     <button
                       tabindex="-1"
                       class="btn-icon btn-icon-sm
@@ -270,7 +296,7 @@
                         editArr[index] = true;
                       }}
                       class="btn-icon btn-icon-sm text-surface-600-300-token
-                  hover:text-secondary-700-200-token">
+                    hover:text-secondary-700-200-token">
                       <EditIcon className="size-5" />
                     </button>
                   </div>

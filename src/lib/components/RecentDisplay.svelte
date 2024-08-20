@@ -10,9 +10,7 @@
   let yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
 
-  let lastStudiedString = lastStudied
-    ? lastStudied.toDateString()
-    : "Never studied";
+  let lastStudiedString = lastStudied ? lastStudied.toDateString() : "Never";
 
   if (lastStudied) {
     if (lastStudied.toDateString() === today.toDateString()) {
