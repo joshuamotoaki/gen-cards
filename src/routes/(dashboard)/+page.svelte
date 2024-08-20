@@ -35,7 +35,9 @@
   });
 </script>
 
-<div class="flex-1 p-4 overflow-y-auto">
+<div class="flex-1 p-4 overflow-y-auto space-y-6">
+  <h1 class="text-3xl font-semibold">Welcome to GenCards!</h1>
+
   <section class="w-full">
     <h2 class="text-2xl mb-2">Recent Decks</h2>
     {#if recentDecks.length > 0}
@@ -66,5 +68,10 @@
         New Deck
       </button>
     {/if}
+  </section>
+
+  <section class="w-full">
+    <h2 class="text-2xl mb-2">Stats</h2>
+    <p class="text-lg">Coming soon!</p>
   </section>
 </div>
