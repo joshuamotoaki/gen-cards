@@ -93,8 +93,7 @@ const createStudySession = () => {
     // If a card is due in RQ
     if (reviewQueue.length) {
       const lastElemRQ = reviewQueue[reviewQueue.length - 1];
-      const lastElemRQTime = new Date(lastElemRQ.scheduled_at || "").getTime();
-      if (lastElemRQTime < currentTime) {
+      if (lastElemRQ.scheduled_at && lastElemRQ.scheduled_at < currentTime) {
         if (newQueue.length) {
           const rand = Math.random();
           if (rand < studyVars.repeatRatioReview) return reviewQueue.pop()!;
@@ -109,12 +108,12 @@ const createStudySession = () => {
     if (newQueue.length) {
       if (reviewQueuePriority.length) {
         const rand = Math.random();
-        if (rand < studyVars.repeatRatioNew) return newQueue.pop()!;
-        else return reviewQueuePriority.pop()!;
+        if (rand < studyVars.repeatRatioNew) return reviewQueuePriority.pop()!;
+        else return newQueue.pop()!;
       } else if (reviewQueue.length) {
         const rand = Math.random();
-        if (rand < studyVars.repeatRatioNew) return newQueue.pop()!;
-        else return reviewQueue.pop()!;
+        if (rand < studyVars.repeatRatioNew) return reviewQueue.pop()!;
+        else return newQueue.pop()!;
       } else {
         return newQueue.pop()!;
       }
