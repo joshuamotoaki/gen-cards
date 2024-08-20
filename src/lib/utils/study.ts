@@ -45,9 +45,17 @@ const createStudySession = () => {
     return low;
   };
 
+  /**
+   * Schedule a card for review
+   * @param level Level of the card
+   * @param baseRepetition Base repetition (for level 1) in hours
+   * @param spacing Spacing factor
+   * @returns The time in milliseconds when the card is due
+   */
   const schedule = (level: number, baseRepetition: number, spacing: number) => {
     const currentTime = new Date().getTime();
-    const time = currentTime + baseRepetition * Math.pow(spacing, level - 1);
+    const br = baseRepetition * 60 * 60 * 1000;
+    const time = currentTime + br * Math.pow(spacing, level - 1);
     return new Date(time).getTime();
   };
 
