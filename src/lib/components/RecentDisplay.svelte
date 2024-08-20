@@ -3,6 +3,31 @@
 
   export let props: DeckInfo;
   export let variant: string = "variant-glass-surface";
+
+  // "today", "yesterday", up to "7" days ago, and then the date
+  let lastStudied = props.studied_at ? new Date(props.studied_at) : null;
+  let today = new Date();
+  let yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  let lastStudiedString = lastStudied
+    ? lastStudied.toDateString()
+    : "Never studied";
+
+  if (lastStudied) {
+    if (lastStudied.toDateString() === today.toDateString()) {
+      lastStudiedString = "Today";
+    } else if (lastStudied.toDateString() === yesterday.toDateString()) {
+      lastStudiedString = "Yesterday";
+    } else {
+      let diff = Math.floor(
+        (today.getTime() - lastStudied.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      if (diff <= 10) {
+        lastStudiedString = `${diff} days ago`;
+      }
+    }
+  }
 </script>
 
 <button
@@ -21,9 +46,7 @@
       {props.card_count} card{props.card_count === 1 ? "" : "s"}
     </span>
     <span class="text-sm">
-      Last studied: {props.studied_at
-        ? new Date(props.studied_at).toLocaleDateString()
-        : "Never"}
+      Last studied: {lastStudiedString}
     </span>
   </footer>
 </button>
