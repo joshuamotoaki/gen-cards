@@ -249,7 +249,7 @@ const createStudySession = () => {
           // Don't increment level if a card is studied before its scheduled time
           if (
             !currentCard.card.scheduled_at ||
-            new Date().getTime() < currentCard.card.scheduled_at
+            new Date().getTime() > currentCard.card.scheduled_at
           ) {
             // Handle level demotion/promotion depending on error count
             switch (numErrors) {
