@@ -22,15 +22,16 @@ GenCards is built using [Tauri](https://tauri.app/) -- a Rust-based framework fo
 
 ## Roadmap
 
-While the app is currently functional, there is still quite a bit of work to be done to make it production-ready:
+While the app is currently functional (as a proof-of-concept), there is still quite a bit of work to be done to make it production-ready:
 
+- [ ] Conflict detection for cards
+- [ ] Multi-answer support
 - [ ] Persist deck on refresh (or disable refreshing altogether)
 - [ ] Section in the settings to modify the parameters of the spaced advisor
 - [ ] Anki imports
 - [ ] Tags for cards
 - [ ] Better filtering in the card list
 - [ ] Improved UI
-- [ ] Conflict detection for cards
 - [ ] More detailed statistics
 - [ ] Better dashboard
 
