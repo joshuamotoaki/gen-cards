@@ -91,6 +91,17 @@
 
   let editArr = new Array($currentDeck?.cards.length).fill(false);
 
+  // Ex. 8/20/2024 12:00 PM
+  const formatDateTime = (date: number) => {
+    const day = new Date(date).toLocaleDateString();
+    const time = new Date(date).toLocaleTimeString();
+
+    const [hour, minute] = time.split(":").slice(0, 2);
+    const [ampm] = time.split(" ").slice(1);
+
+    return `${day} ${hour}:${minute} ${ampm}`;
+  };
+
   // Pagination and Search
 
   let searchInput = "";
@@ -265,12 +276,9 @@
                       {card.level === 0 ? "Not Studied" : "Level " + card.level}
                     </p>
                     {#if card.level > 0}
-                      <p>
+                      <p class="hidden md:block">
                         {card.scheduled_at
-                          ? "Scheduled for: " +
-                            new Date(card.scheduled_at).toLocaleDateString() +
-                            " " +
-                            new Date(card.scheduled_at).toLocaleTimeString()
+                          ? "Scheduled: " + formatDateTime(card.scheduled_at)
                           : "Not Scheduled"}
                       </p>
                     {/if}
