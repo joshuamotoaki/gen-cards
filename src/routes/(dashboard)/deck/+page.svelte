@@ -149,7 +149,7 @@
     <!-- Header Info -->
     <div class="mb-4 space-y-2">
       <div class="flex justify-between items-center">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 overflow-hidden">
           <button
             class="btn btn-icon"
             on:click={() => {
