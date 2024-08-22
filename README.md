@@ -18,6 +18,8 @@ For a full explanation of the spaced advisor, see this blog post (coming soon). 
 
 To install, go to the [releases page](https://github.com/joshuamotoaki/gen-cards/releases) and download the latest version for your operating system. Extract the files and run the executable.
 
+If you would like to build the application from the source code, first follow the [instructions](https://tauri.app/v1/guides/getting-started/prerequisites) on the Tauri website to install the necessary dependencies. Then, clone the repository and run `npm install` to install the necessary dependencies. Finally, run `npm run tauri build` to build the app.
+
 ## Technologies
 
 GenCards is built using [Tauri](https://tauri.app/) -- a Rust-based framework for building desktop applications with web frameworks. The UI is built using [Svelte](https://svelte.dev/) and [SkeletonUI](https://www.skeleton.dev/), and the app uses [SQLite](https://www.sqlite.org/index.html) for data storage.
