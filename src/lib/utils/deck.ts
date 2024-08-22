@@ -361,7 +361,7 @@ export const togglePriority = async (deck: Deck, index: number) => {
  */
 export const removeCard = async (deck: Deck, index: number) => {
   const oldCard = deck.cards.splice(index, 1);
-  await db.deleteCard(oldCard[0].id, deck.cards.length, deck.info.id);
+  await db.deleteCard(oldCard[0].id, deck.info.id, deck.cards.length);
 
   await refreshDeck(deck.info.id);
   currentDeck.set(deck);
