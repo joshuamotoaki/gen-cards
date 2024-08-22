@@ -295,11 +295,14 @@ export const updateFieldName = async (
   const oldName = deck.info.schema.fields[index];
   deck.info.schema.fields[index] = newName;
 
-  // Update the field name in all cards
-  deck.cards.forEach(card => {
-    card.fields[newName] = card.fields[oldName];
-    delete card.fields[oldName];
-  });
+  if (deck.cards.length > 0) {
+    // Update the field name in all cards
+    deck.cards.forEach(card => {
+      card.fields[newName] = card.fields[oldName];
+      delete card.fields[oldName];
+    });
+    await db.updateCards(deck.cards);
+  }
 
   // Update relationships
   deck.info.schema.relationships = deck.info.schema.relationships.map(rel => {
@@ -308,7 +311,6 @@ export const updateFieldName = async (
     return rel;
   });
 
-  await db.updateCards(deck.cards);
   await db.updateDeckInfo(deck.info);
 
   await refreshDeck(deck.info.id);
