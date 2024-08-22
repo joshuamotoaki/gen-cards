@@ -29,7 +29,7 @@ export type Theme =
 
 export const currentTheme = createPersistedWritable<Theme>(
   "currentTheme",
-  "skeleton"
+  "gengoko"
 );
 
 export type StudyVariables = {
