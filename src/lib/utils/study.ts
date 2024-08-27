@@ -309,6 +309,9 @@ const createStudySession = () => {
           session.currentIndex =
             (session.currentIndex + 1) % session.window.length;
         }
+
+        // Reset relationship index
+        session.relationshipIndex = 0;
       }
 
       // More sides need to be studied
