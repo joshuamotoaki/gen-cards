@@ -110,11 +110,11 @@
           type="text" />
 
         {#if correct}
-          <p class="text-surface-500/90 text-center text-sm mt-2">
+          <p class="text-surface-500 text-center mt-2">
             Type the {currentRelationship.to.toLowerCase()}
           </p>
         {:else}
-          <p class="text-warning-500 text-center text-sm mt-2">
+          <p class="text-warning-500 text-center mt-2">
             Copy the {currentRelationship.from.toLowerCase()}
           </p>
         {/if}
