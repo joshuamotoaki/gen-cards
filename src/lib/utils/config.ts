@@ -1,5 +1,15 @@
 import { writable } from "svelte/store";
 
+export type Route =
+  | "/"
+  | "/library"
+  | "/settings"
+  | "/deck"
+  | "/deck/edit"
+  | "/deck/study";
+
+export const currentRoute = writable<Route>("/");
+
 const createPersistedWritable = <T>(key: string, initialValue: T) => {
   const store = writable<T>(
     JSON.parse(localStorage.getItem(key) || JSON.stringify(initialValue))

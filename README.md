@@ -12,7 +12,7 @@ GenCards is designed around the concept of a **spaced advisor**. Instead of forc
 
 Additionally, GenCards requires text input instead of just click a button. This forces you to actively recall the information, and ensures you don't have to make any decisions about how well you know a card. This makes studying both more active and more efficient. You can also prioritize cards to tell the spaced advisor which cards are most important to you.
 
-For a full explanation of the spaced advisor, see this blog post (coming soon). For a technical overview of the process of building the app, see this blog post (coming soon).
+For a full explanation of the spaced advisor, see [this blog post](https://motoaki.dev/blog/spaced-repetition-advisor/). For a technical overview of the process of building the app, see [this blog post](https://motoaki.dev/blog/flashcard-app/).
 
 ## Installation
 
@@ -28,9 +28,9 @@ GenCards is built using [Tauri](https://tauri.app/) -- a Rust-based framework fo
 
 While the app is currently functional (as a proof-of-concept), there is still quite a bit of work to be done to make it production-ready:
 
+- [x] Persist deck on refresh (or disable refreshing altogether). Switched to a SPA
 - [ ] Conflict detection for cards
 - [ ] Multi-answer support
-- [ ] Persist deck on refresh (or disable refreshing altogether)
 - [ ] Section in the settings to modify the parameters of the spaced advisor
 - [ ] Anki imports
 - [ ] Tags for cards

@@ -3,7 +3,7 @@
   import type { Card } from "$lib/utils/deck";
   import { createNewCard, removeCard, togglePriority } from "$lib/utils/deck";
   import { currentDeck } from "$lib/utils/state";
-  import { StarIcon, StarSolidIcon, TrashIcon } from "./icons/icons";
+  import { StarIcon, StarSolidIcon, TrashIcon } from "../icons/icons";
 
   export let card: Card;
   export let cardNumber: number;

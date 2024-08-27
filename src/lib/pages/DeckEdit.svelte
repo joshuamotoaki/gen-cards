@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import { BackIcon, TrashIcon } from "$lib/components/icons/icons";
   import { db } from "$lib/utils/db";
   import { refreshAllDecks } from "$lib/utils/deck";
   import { currentDeck } from "$lib/utils/state";
   import { getModalStore, getToastStore } from "@skeletonlabs/skeleton";
-  import DeckWarning from "../DeckWarning.svelte";
-  import FileUpload from "./FileUpload.svelte";
-  import MetadatEdit from "./MetadatEdit.svelte";
-  import CardInput from "./CardInput.svelte";
+
+  import DeckWarning from "$lib/components/deck/DeckWarning.svelte";
+  import FileUpload from "$lib/components/deck/FileUpload.svelte";
+  import MetadatEdit from "$lib/components/deck/MetadatEdit.svelte";
+  import CardInput from "$lib/components/deck/CardInput.svelte";
+  import { currentRoute } from "$lib/utils/config";
 
   const toastStore = getToastStore();
   const modalStore = getModalStore();
@@ -22,7 +23,7 @@
       response: async confirm => {
         if (confirm) {
           if (!$currentDeck?.info) return;
-          goto("/library");
+          currentRoute.set("/library");
           await db.deleteDeck($currentDeck.info.id);
           currentDeck.set(null);
           await refreshAllDecks();
@@ -45,7 +46,7 @@
         <button
           class="btn btn-icon"
           on:click={() => {
-            goto("/deck");
+            currentRoute.set("/deck");
           }}>
           <BackIcon />
         </button>
@@ -56,13 +57,13 @@
           on:click={deleteDeck}
           id="delete-button"
           class="btn variant-filled-surface hover:variant-filled-warning
-          gap-1 btn-icon rounded-container-token">
+            gap-1 btn-icon rounded-container-token">
           <TrashIcon />
         </button>
         <button
           class="btn variant-filled-success"
           on:click={() => {
-            goto("/deck");
+            currentRoute.set("/deck");
           }}>
           Done
         </button>
@@ -81,7 +82,7 @@
         <button
           class="btn variant-filled-success"
           on:click={() => {
-            goto("/deck");
+            currentRoute.set("/deck");
           }}>
           Done
         </button>

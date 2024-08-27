@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import BackIcon from "$lib/components/icons/BackIcon.svelte";
   import { currentDeck } from "$lib/utils/state";
   import { currentStudySession } from "$lib/utils/study";
-  import DeckWarning from "../../(dashboard)/deck/DeckWarning.svelte";
+  import DeckWarning from "$lib/components/deck/DeckWarning.svelte";
+  import { currentRoute } from "$lib/utils/config";
 
   let correct = true;
   let input = "";
@@ -45,8 +45,8 @@
   <div class="flex-1 h-screen flex flex-col">
     <header
       class="flex items-center justify-between px-4 py-2
-        bg-surface-50-900-token border-b border-surface-500/30
-        ">
+          bg-surface-50-900-token border-b border-surface-500/30
+          ">
       <h1 class="text-xl font-semibold">
         {$currentDeck.info.title}
       </h1>
@@ -54,7 +54,7 @@
       <button
         class="btn btn-sm variant-soft-surface"
         on:click={() => {
-          goto("/deck");
+          currentRoute.set("/deck");
         }}>
         <BackIcon />
         <span> Exit </span>
@@ -103,10 +103,12 @@
           autocomplete="off"
           spellcheck="false"
           class="focus:outline-none bg-transparent
-                      pt-2 pb-1 resize-none w-full text-center
-                      border-b-2 text-xl
-                      {correct ? 'border-surface-500/90' : 'border-warning-500'}
-                      "
+                        pt-2 pb-1 resize-none w-full text-center
+                        border-b-2 text-xl
+                        {correct
+            ? 'border-surface-500/90'
+            : 'border-warning-500'}
+                        "
           type="text" />
 
         {#if correct}
@@ -134,7 +136,7 @@
 
     <footer
       class="p-4 bg-surface-50-900-token border-t border-surface-500/30
-    text-sm text-surface-800-100-token flex justify-between items-center">
+      text-sm text-surface-800-100-token flex justify-between items-center">
       <div>
         <p>{totalCards} card{totalCards !== 1 ? "s" : ""} completed</p>
       </div>
@@ -142,7 +144,7 @@
       {#if $currentDeck.info.schema.relationships.length > 1}
         <div
           class="bg-surface-300-600-token rounded-full px-4
-        text-surface-700-200-token text-sm">
+          text-surface-700-200-token text-sm">
           Side {$currentStudySession.relationshipIndex + 1} of {$currentDeck
             .info.schema.relationships.length}
         </div>

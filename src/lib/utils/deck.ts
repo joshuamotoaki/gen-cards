@@ -1,7 +1,7 @@
-import { goto } from "$app/navigation";
 import { get } from "svelte/store";
 import { db } from "./db";
 import { currentDeck, deckCache, decks, prevRoute } from "./state";
+import { currentRoute } from "./config";
 
 //----------------------------------------------------------------------
 // Types
@@ -86,7 +86,7 @@ export type Deck = {
  * @param row Information about the deck to go to
  * @param prev The previous route to go back to
  */
-export const gotoDeck = async (info: DeckInfo, prev: string) => {
+export const gotoDeck = async (info: DeckInfo, prev: "/" | "/library") => {
   // If in cache, set the current deck and return
   const cached: Deck | undefined = deckCache.getDeck(info.id);
   if (cached !== undefined) {
@@ -100,7 +100,7 @@ export const gotoDeck = async (info: DeckInfo, prev: string) => {
   }
 
   prevRoute.set(prev);
-  goto("/deck");
+  currentRoute.set("/deck");
 };
 
 /**
@@ -180,7 +180,7 @@ export const createNewDeck = async () => {
     cards: []
   });
 
-  goto("/deck/edit");
+  currentRoute.set("/deck/edit");
 };
 
 /**

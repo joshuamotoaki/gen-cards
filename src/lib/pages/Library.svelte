@@ -7,7 +7,6 @@
   import { currentDeck, deckCache, decks, prevRoute } from "$lib/utils/state";
   import { createNewDeck, gotoDeck, type DeckInfo } from "$lib/utils/deck";
   import { db } from "$lib/utils/db";
-  import { goto } from "$app/navigation";
 
   const handler = new DataHandler($decks, { rowsPerPage: 10 });
   const rows = handler.getRows();
