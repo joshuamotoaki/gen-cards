@@ -18,6 +18,11 @@
       return;
     }
 
+    // Push pagination to the last page
+    paginationSettings.page = Math.floor(
+      $currentDeck.cards.length / paginationSettings.limit
+    );
+
     await createNewCard($currentDeck);
   };
 
@@ -50,7 +55,6 @@
         <!-- Visual Container -->
         <CardEdit
           {card}
-          {index}
           cardNumber={paginationSettings.page * paginationSettings.limit +
             index +
             1} />
