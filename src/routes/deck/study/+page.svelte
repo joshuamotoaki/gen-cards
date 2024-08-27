@@ -138,6 +138,15 @@
       <div>
         <p>{totalCards} card{totalCards !== 1 ? "s" : ""} completed</p>
       </div>
+
+      {#if $currentDeck.info.schema.relationships.length > 1}
+        <div
+          class="bg-surface-300-600-token rounded-full px-4
+        text-surface-700-200-token text-sm">
+          Side {$currentStudySession.relationshipIndex + 1} of {$currentDeck
+            .info.schema.relationships.length}
+        </div>
+      {/if}
       <div>
         {accuracy}% Accuracy ({$currentStudySession.correctCount}/{totalCards})
       </div>
