@@ -259,7 +259,7 @@ const createStudySession = () => {
                 // No level change
                 break;
               case 2:
-                if (currentCard.card.level === 1) break;
+                if (currentCard.card.level <= 1) break;
                 currentCard.card.level--;
                 break;
               default:
