@@ -5,10 +5,11 @@
   import { refreshAllDecks } from "$lib/utils/deck";
   import { currentDeck } from "$lib/utils/state";
   import { getModalStore, getToastStore } from "@skeletonlabs/skeleton";
-  import DeckWarning from "../DeckWarning.svelte";
-  import FileUpload from "./FileUpload.svelte";
-  import MetadatEdit from "./MetadatEdit.svelte";
-  import CardInput from "./CardInput.svelte";
+
+  import DeckWarning from "$lib/components/deck/DeckWarning.svelte";
+  import FileUpload from "$lib/components/deck/FileUpload.svelte";
+  import MetadatEdit from "$lib/components/deck/MetadatEdit.svelte";
+  import CardInput from "$lib/components/deck/CardInput.svelte";
 
   const toastStore = getToastStore();
   const modalStore = getModalStore();
@@ -56,7 +57,7 @@
           on:click={deleteDeck}
           id="delete-button"
           class="btn variant-filled-surface hover:variant-filled-warning
-          gap-1 btn-icon rounded-container-token">
+            gap-1 btn-icon rounded-container-token">
           <TrashIcon />
         </button>
         <button

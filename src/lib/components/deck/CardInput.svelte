@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CardEdit from "$lib/components/CardEdit.svelte";
+  import CardEdit from "$lib/components/deck/CardEdit.svelte";
   import { PlusIcon } from "$lib/components/icons/icons";
   import { createNewCard } from "$lib/utils/deck";
 

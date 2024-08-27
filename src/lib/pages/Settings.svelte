@@ -25,91 +25,91 @@
     <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-2">
       <button
         class="card card-hover
-                    {$currentTheme === 'gengoko'
+                      {$currentTheme === 'gengoko'
           ? 'from-[#DA2602] to-[#ed9121] text-white'
           : 'from-red-200 to-orange-200 text-black'}
-                    "
+                      "
         on:click={() => currentTheme.set("gengoko")}>
         ⭐ Gengoko
       </button>
       <button
         class="card card-hover
-                        {$currentTheme === 'skeleton'
+                          {$currentTheme === 'skeleton'
           ? 'from-gray-600 to-blue-600 text-white'
           : 'from-gray-200 to-blue-200 text-black'}
-                        "
+                          "
         on:click={() => currentTheme.set("skeleton")}>
         💀 Skeleton
       </button>
       <button
         class="card card-hover
-                        {$currentTheme === 'wintry'
+                          {$currentTheme === 'wintry'
           ? 'from-blue-600 to-blue-400 text-white'
           : 'from-blue-200 to-white text-black'}
-                        "
+                          "
         on:click={() => currentTheme.set("wintry")}>
         🌨️ Wintry
       </button>
       <button
         class="card card-hover
-                        {$currentTheme === 'modern'
+                          {$currentTheme === 'modern'
           ? 'from-pink-600 to-indigo-600 text-white'
           : 'from-pink-200 to-indigo-200 text-black'}
-                        "
+                          "
         on:click={() => currentTheme.set("modern")}>
         🤖 Modern
       </button>
       <button
         class="card card-hover
-                        {$currentTheme === 'rocket'
+                          {$currentTheme === 'rocket'
           ? 'from-red-600 to-blue-600 text-white'
           : 'from-red-200 to-blue-200 text-black'}
-                        "
+                          "
         on:click={() => currentTheme.set("rocket")}>
         🚀 Rocket
       </button>
       <button
         class="card card-hover
-                        {$currentTheme === 'seafoam'
+                          {$currentTheme === 'seafoam'
           ? 'from-cyan-600 to-blue-600 text-white'
           : 'from-cyan-200 to-blue-200 text-black'}
-                        "
+                          "
         on:click={() => currentTheme.set("seafoam")}>
         🧜‍♀️ Seafoam
       </button>
       <button
         class="card card-hover
-                        {$currentTheme === 'vintage'
+                          {$currentTheme === 'vintage'
           ? 'from-amber-600 to-orange-600 text-white'
           : 'from-amber-200 to-orange-200 text-black'}
-                        "
+                          "
         on:click={() => currentTheme.set("vintage")}>
         📺 Vintage
       </button>
       <button
         class="card card-hover
-                        {$currentTheme === 'hamlindigo'
+                          {$currentTheme === 'hamlindigo'
           ? 'from-indigo-600 to-purple-600 text-white'
           : 'from-indigo-200 to-purple-200 text-black'}
-                        "
+                          "
         on:click={() => currentTheme.set("hamlindigo")}>
         👔 Hamlindigo
       </button>
       <button
         class="card card-hover
-                        {$currentTheme === 'gold-nouveau'
+                          {$currentTheme === 'gold-nouveau'
           ? 'from-yellow-600 to-red-600 text-white'
           : 'from-yellow-200 to-red-200 text-black'}
-                        "
+                          "
         on:click={() => currentTheme.set("gold-nouveau")}>
         💫 Gold Nouveau
       </button>
       <button
         class="card card-hover
-                        {$currentTheme === 'crimson'
+                          {$currentTheme === 'crimson'
           ? 'from-red-600 to-pink-600 text-white'
           : 'from-red-200 to-pink-200 text-black'}
-                        "
+                          "
         on:click={() => currentTheme.set("crimson")}>
         ⭕ Crimson
       </button>

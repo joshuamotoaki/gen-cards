@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation";
   import { currentDeck, prevRoute } from "$lib/utils/state";
   import { getToastStore, Paginator } from "@skeletonlabs/skeleton";
-  import DeckWarning from "./DeckWarning.svelte";
+  import DeckWarning from "$lib/components/deck/DeckWarning.svelte";
   import {
     EditIcon,
     SearchIcon,
@@ -252,11 +252,11 @@
               <!-- ! VIEW -->
               <article
                 class="border border-surface-300-600-token rounded-container-token
-              p-2 shadow-sm bg-surface-200-700-token">
+                p-2 shadow-sm bg-surface-200-700-token">
                 <div
                   class="border-b border-surface-500/30 text-sm
-                  grid grid-cols-[1fr_auto_1fr] gap-4 items-center pb-2 mb-2
-                  ">
+                    grid grid-cols-[1fr_auto_1fr] gap-4 items-center pb-2 mb-2
+                    ">
                   <p class="font-semibold text-surface-600-300-token">
                     {paginationSettings.page * paginationSettings.limit +
                       index +
@@ -264,14 +264,14 @@
                   </p>
                   <div
                     class="
-                    {card.scheduled_at &&
+                      {card.scheduled_at &&
                     card.scheduled_at < new Date().getTime() &&
                     card.level > 0
                       ? 'bg-primary-100-800-token'
                       : 'bg-surface-300-600-token'}
-                    rounded-full px-2 py-1
-                    text-surface-700-200-token text-sm
-                    flex items-center gap-4">
+                      rounded-full px-2 py-1
+                      text-surface-700-200-token text-sm
+                      flex items-center gap-4">
                     <p>
                       {card.level === 0 ? "Not Studied" : "Level " + card.level}
                     </p>
@@ -287,10 +287,10 @@
                     <button
                       tabindex="-1"
                       class="btn-icon btn-icon-sm
-                          {card.priority === 1
+                            {card.priority === 1
                         ? 'text-primary-700-200-token'
                         : 'text-surface-600-300-token hover:text-primary-700-200-token'}
-                          "
+                            "
                       on:click={() => togglePriority($currentDeck, index)}>
                       {#if card.priority === 1}
                         <StarSolidIcon className="size-5" />
@@ -304,7 +304,7 @@
                         editArr[index] = true;
                       }}
                       class="btn-icon btn-icon-sm text-surface-600-300-token
-                    hover:text-secondary-700-200-token">
+                      hover:text-secondary-700-200-token">
                       <EditIcon className="size-5" />
                     </button>
                   </div>
@@ -314,8 +314,8 @@
                     <div>
                       <p
                         class="flex items-center select-text cursor-text
-                    {index !== 0 && 'border-surface-400-500-token'}
-                  ">
+                      {index !== 0 && 'border-surface-400-500-token'}
+                    ">
                         {card.fields[field]}
                       </p>
                       <p class="text-sm text-surface-600-300-token">
@@ -329,15 +329,15 @@
               <!-- ! EDIT -->
               <article
                 class="flex-1 shadow-sm border
-                  bg-surface-200-700-token rounded-container-token p-4
-                  {Object.values(card.fields).some(field => field === '')
+                    bg-surface-200-700-token rounded-container-token p-4
+                    {Object.values(card.fields).some(field => field === '')
                   ? 'border-warning-300-600-token'
                   : 'border-surface-300-600-token'}
-                  ">
+                    ">
                 <!-- Card Actions -->
                 <div
                   class="border-b-2 border-surface-300-600-token
-                        flex justify-between items-center text-sm pb-1 mb-2">
+                          flex justify-between items-center text-sm pb-1 mb-2">
                   <div class="flex items-center gap-4">
                     <p class="text-surface-600-300-token font-semibold">
                       {paginationSettings.page * paginationSettings.limit +
@@ -349,10 +349,10 @@
                     <button
                       tabindex="-1"
                       class="btn-icon btn-icon-sm
-                          {card.priority === 1
+                            {card.priority === 1
                         ? 'text-primary-700-200-token'
                         : 'text-surface-600-300-token hover:text-primary-700-200-token'}
-                          "
+                            "
                       on:click={() => togglePriority($currentDeck, index)}>
                       {#if card.priority === 1}
                         <StarSolidIcon className="size-5" />
@@ -368,7 +368,7 @@
                         await removeCard($currentDeck, index);
                       }}
                       class="btn-icon btn-icon-sm text-surface-600-300-token
-                          hover:text-warning-700-200-token">
+                            hover:text-warning-700-200-token">
                       <TrashIcon className="size-5" />
                     </button>
                     <button
@@ -377,7 +377,7 @@
                         editArr[index] = false;
                       }}
                       class="btn-icon btn-icon-sm text-surface-600-300-token
-                          hover:text-success-700-200-token">
+                            hover:text-success-700-200-token">
                       <CheckIcon className="size-5" />
                     </button>
                   </div>
@@ -411,9 +411,9 @@
                           title={field + index}
                           rows="1"
                           class="focus:outline-none bg-transparent
-                              pt-2 pb-1 resize-none w-full
-                              border-b-2 border-surface-700-200-token
-                              focus:border-primary-500-400-token"
+                                pt-2 pb-1 resize-none w-full
+                                border-b-2 border-surface-700-200-token
+                                focus:border-primary-500-400-token"
                           placeholder={"Enter " + field} />
                         <span class="text-sm text-surface-600-300-token">
                           {field}
