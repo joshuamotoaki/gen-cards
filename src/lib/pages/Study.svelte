@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import BackIcon from "$lib/components/icons/BackIcon.svelte";
   import { currentDeck } from "$lib/utils/state";
   import { currentStudySession } from "$lib/utils/study";
   import DeckWarning from "$lib/components/deck/DeckWarning.svelte";
+  import { currentRoute } from "$lib/utils/config";
 
   let correct = true;
   let input = "";
@@ -54,7 +54,7 @@
       <button
         class="btn btn-sm variant-soft-surface"
         on:click={() => {
-          goto("/deck");
+          currentRoute.set("/deck");
         }}>
         <BackIcon />
         <span> Exit </span>

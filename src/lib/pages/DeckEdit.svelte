@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import { BackIcon, TrashIcon } from "$lib/components/icons/icons";
   import { db } from "$lib/utils/db";
   import { refreshAllDecks } from "$lib/utils/deck";
@@ -10,6 +9,7 @@
   import FileUpload from "$lib/components/deck/FileUpload.svelte";
   import MetadatEdit from "$lib/components/deck/MetadatEdit.svelte";
   import CardInput from "$lib/components/deck/CardInput.svelte";
+  import { currentRoute } from "$lib/utils/config";
 
   const toastStore = getToastStore();
   const modalStore = getModalStore();
@@ -23,7 +23,7 @@
       response: async confirm => {
         if (confirm) {
           if (!$currentDeck?.info) return;
-          goto("/library");
+          currentRoute.set("/library");
           await db.deleteDeck($currentDeck.info.id);
           currentDeck.set(null);
           await refreshAllDecks();
@@ -46,7 +46,7 @@
         <button
           class="btn btn-icon"
           on:click={() => {
-            goto("/deck");
+            currentRoute.set("/deck");
           }}>
           <BackIcon />
         </button>
@@ -63,7 +63,7 @@
         <button
           class="btn variant-filled-success"
           on:click={() => {
-            goto("/deck");
+            currentRoute.set("/deck");
           }}>
           Done
         </button>
@@ -82,7 +82,7 @@
         <button
           class="btn variant-filled-success"
           on:click={() => {
-            goto("/deck");
+            currentRoute.set("/deck");
           }}>
           Done
         </button>

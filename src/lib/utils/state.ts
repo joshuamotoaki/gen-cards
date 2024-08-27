@@ -15,7 +15,7 @@ export const currentDeck = writable<Deck | null>(null);
 export const fieldsToAdd = writable<Record<string, string>[] | null>(null);
 
 // The previous route (used for handling back button).
-export const prevRoute = writable<string | null>(null);
+export const prevRoute = writable<"/library" | "/" | null>(null);
 
 const createDeckCache = () => {
   const store = writable<Record<number, Deck>>({});

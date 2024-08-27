@@ -1,5 +1,5 @@
 <script>
-  import { goto } from "$app/navigation";
+  import { currentRoute } from "$lib/utils/config";
 </script>
 
 <div class="p-4">
@@ -8,7 +8,7 @@
   <button
     class="btn variant-filled-warning gap-2"
     on:click={() => {
-      goto("/");
+      currentRoute.set("/");
     }}>
     <svg
       xmlns="http://www.w3.org/2000/svg"

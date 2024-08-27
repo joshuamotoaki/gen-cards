@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import BackIcon from "$lib/components/icons/BackIcon.svelte";
+  import { currentRoute } from "$lib/utils/config";
 </script>
 
 <svelte:head>
@@ -18,7 +19,10 @@
       {$page.status}
       {$page.error?.message}
     </h2>
-    <a class="btn btn-lg variant-filled-warning" href="/">
+    <a
+      on:click={() => currentRoute.set("/")}
+      class="btn btn-lg variant-filled-warning"
+      href="/">
       <BackIcon />
       <span> Go to Dashboard </span>
     </a>

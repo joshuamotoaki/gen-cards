@@ -1,23 +1,25 @@
 <script lang="ts">
-  import { page } from "$app/stores";
   import { createNewDeck } from "$lib/utils/deck";
   import { PlusIcon } from "$lib/components/icons/icons";
+  import { currentRoute } from "$lib/utils/config";
 </script>
 
 <aside
   class="h-full p-4 flex justify-between
     flex-col w-1/5 min-w-48 bg-surface-50-900-token border-r border-surface-500/30">
   <div class="space-y-4">
-    <a href="/" class="flex items-center gap-2 w-12">
+    <button
+      on:click={() => currentRoute.set("/")}
+      class="flex items-center gap-2 w-12">
       <img src="/logo.webp" class="h-8 w-8" alt="GenCards Logo" />
       <h1 class="text-2xl font-light">GenCards</h1>
-    </a>
+    </button>
 
     <nav class="space-y-1">
-      <a
-        href="/"
+      <button
+        on:click={() => currentRoute.set("/")}
         class="btn link-button
-                    {$page.url.pathname === '/'
+                    {$currentRoute === '/'
           ? 'bg-primary-500/60'
           : 'hover:bg-primary-500/10'}
                 ">
@@ -34,12 +36,12 @@
             d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
         </svg>
         Dashboard
-      </a>
-      <a
-        href="/library"
+      </button>
+      <button
+        on:click={() => currentRoute.set("/library")}
         class="btn link-button
-                {$page.url.pathname.startsWith('/library') ||
-        $page.url.pathname.startsWith('/deck')
+                {$currentRoute.startsWith('/library') ||
+        $currentRoute.startsWith('/deck')
           ? 'bg-primary-500/60'
           : 'hover:bg-primary-500/10'}
             ">
@@ -57,11 +59,11 @@
         </svg>
 
         Library
-      </a>
-      <a
-        href="/settings"
+      </button>
+      <button
+        on:click={() => currentRoute.set("/settings")}
         class="btn link-button
-            {$page.url.pathname.startsWith('/settings')
+            {$currentRoute.startsWith('/settings')
           ? 'bg-primary-500/60'
           : 'hover:bg-primary-500/10'}
         ">
@@ -82,7 +84,7 @@
             d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
         </svg>
         Settings
-      </a>
+      </button>
     </nav>
   </div>
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import { currentDeck, prevRoute } from "$lib/utils/state";
   import { getToastStore, Paginator } from "@skeletonlabs/skeleton";
   import DeckWarning from "$lib/components/deck/DeckWarning.svelte";
@@ -16,6 +15,7 @@
   import { currentStudySession } from "$lib/utils/study";
   import { db } from "$lib/utils/db";
   import CheckIcon from "$lib/components/icons/CheckIcon.svelte";
+  import { currentRoute } from "$lib/utils/config";
 
   const toastStore = getToastStore();
 
@@ -154,8 +154,8 @@
             class="btn btn-icon"
             on:click={() => {
               currentDeck.set(null);
-              if ($prevRoute) goto($prevRoute);
-              else goto("/library");
+              if ($prevRoute) currentRoute.set($prevRoute);
+              else currentRoute.set("/library");
               prevRoute.set(null);
             }}>
             <BackIcon />
@@ -170,7 +170,9 @@
           <button class="btn btn-icon">
             <InfoIcon />
           </button>
-          <button class="btn btn-icon" on:click={() => goto("/deck/edit")}>
+          <button
+            class="btn btn-icon"
+            on:click={() => currentRoute.set("/deck/edit")}>
             <EditIcon />
           </button>
           <button
@@ -178,7 +180,7 @@
             on:click={() => {
               if (isDeckError()) return;
               currentStudySession.init();
-              goto("/deck/study");
+              currentRoute.set("/deck/study");
             }}>
             Study
           </button>
@@ -435,7 +437,7 @@
 
           <button
             class="w-full btn gap-2 variant-filled-secondary"
-            on:click={() => goto("/deck/edit")}>
+            on:click={() => currentRoute.set("/deck/edit")}>
             <EditIcon />
             Edit Cards
           </button>
