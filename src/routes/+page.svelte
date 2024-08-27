@@ -1,23 +1,23 @@
 <script lang="ts">
   import Sidebar from "$lib/components/Sidebar.svelte";
+  import { currentRoute, type Route } from "$lib/utils/config";
 
   // Routes
-  import Dashboard from "$lib/pages/Dashboard.svelte";
-  import Library from "$lib/pages/Library.svelte";
-  import Settings from "$lib/pages/Settings.svelte";
-  import DeckView from "$lib/pages/DeckView.svelte";
-  import DeckEdit from "$lib/pages/DeckEdit.svelte";
-  import Study from "$lib/pages/Study.svelte";
-  import { currentRoute, type Route } from "$lib/utils/config";
-  import Error from "./+error.svelte";
+  import DashboardPage from "$lib/pages/DashboardPage.svelte";
+  import LibraryPage from "$lib/pages/LibraryPage.svelte";
+  import SettingsPage from "$lib/pages/SettingsPage.svelte";
+  import DeckViewPage from "$lib/pages/DeckViewPage.svelte";
+  import DeckEditPage from "$lib/pages/DeckEditPage.svelte";
+  import StudyPage from "$lib/pages/StudyPage.svelte";
+  import ErrorPage from "./+error.svelte";
 
   const router: Record<Route, any> = {
-    "/": Dashboard,
-    "/library": Library,
-    "/settings": Settings,
-    "/deck": DeckView,
-    "/deck/edit": DeckEdit,
-    "/deck/study": Study
+    "/": DashboardPage,
+    "/library": LibraryPage,
+    "/settings": SettingsPage,
+    "/deck": DeckViewPage,
+    "/deck/edit": DeckEditPage,
+    "/deck/study": StudyPage
   };
 
   const hideSidebar = ["/deck/study"];
@@ -31,6 +31,6 @@
   {#if $currentRoute in router}
     <svelte:component this={router[$currentRoute]} />
   {:else}
-    <Error />
+    <ErrorPage />
   {/if}
 </div>

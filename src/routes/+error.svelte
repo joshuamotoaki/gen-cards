@@ -1,5 +1,5 @@
 <script>
-  import Error from "$lib/pages/Error.svelte";
+  import ErrorPage from "$lib/pages/ErrorPage.svelte";
 </script>
 
-<Error />
+<ErrorPage />
