@@ -19,10 +19,14 @@
     "/deck/edit": DeckEdit,
     "/deck/study": Study
   };
+
+  const hideSidebar = ["/deck/study"];
 </script>
 
 <div class="flex h-screen overflow-hidden">
-  <Sidebar />
+  {#if !hideSidebar.includes($currentRoute)}
+    <Sidebar />
+  {/if}
 
   {#if $currentRoute in router}
     <svelte:component this={router[$currentRoute]} />
