@@ -6,7 +6,6 @@
   import { StarIcon, StarSolidIcon, TrashIcon } from "./icons/icons";
 
   export let card: Card;
-  export let index: number;
   export let cardNumber: number;
 
   const updateCard = async (index: number, field: string, value: string) => {
@@ -66,7 +65,7 @@
             ? 'text-primary-700-200-token'
             : 'text-surface-600-300-token hover:text-primary-700-200-token'}
                   "
-          on:click={() => togglePriority($currentDeck, index)}>
+          on:click={() => togglePriority($currentDeck, cardNumber - 1)}>
           {#if card.priority === 1}
             <StarSolidIcon className="size-5" />
           {:else}
@@ -77,7 +76,7 @@
           tabindex="-1"
           on:click={async () => {
             if (!$currentDeck.info) return;
-            await removeCard($currentDeck, index);
+            await removeCard($currentDeck, cardNumber - 1);
           }}
           class="btn-icon btn-icon-sm text-surface-600-300-token
                   hover:text-warning-700-200-token">
@@ -100,14 +99,14 @@
               spellcheck="false"
               value={card.fields[field]}
               on:input={async e => {
-                await updateCard(index, field, e.currentTarget.value);
+                await updateCard(cardNumber - 1, field, e.currentTarget.value);
               }}
               on:keydown={e => {
                 if (e.key === "Tab") {
-                  autoCreateNewCard(field, index);
+                  autoCreateNewCard(field, cardNumber - 1);
                 }
               }}
-              title={field + index}
+              title={field + (cardNumber - 1)}
               rows="1"
               class="focus:outline-none bg-transparent
                       pt-2 pb-1 resize-none w-full

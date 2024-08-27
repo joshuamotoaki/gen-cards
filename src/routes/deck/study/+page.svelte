@@ -110,11 +110,11 @@
           type="text" />
 
         {#if correct}
-          <p class="text-surface-500/90 text-center text-sm mt-2">
+          <p class="text-surface-500 text-center mt-2">
             Type the {currentRelationship.to.toLowerCase()}
           </p>
         {:else}
-          <p class="text-warning-500 text-center text-sm mt-2">
+          <p class="text-warning-500 text-center mt-2">
             Copy the {currentRelationship.from.toLowerCase()}
           </p>
         {/if}
@@ -138,6 +138,15 @@
       <div>
         <p>{totalCards} card{totalCards !== 1 ? "s" : ""} completed</p>
       </div>
+
+      {#if $currentDeck.info.schema.relationships.length > 1}
+        <div
+          class="bg-surface-300-600-token rounded-full px-4
+        text-surface-700-200-token text-sm">
+          Side {$currentStudySession.relationshipIndex + 1} of {$currentDeck
+            .info.schema.relationships.length}
+        </div>
+      {/if}
       <div>
         {accuracy}% Accuracy ({$currentStudySession.correctCount}/{totalCards})
       </div>
