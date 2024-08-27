@@ -61,14 +61,17 @@
       </button>
     </header>
 
-    <main class="p-4 flex items-center justify-center flex-col flex-1">
+    <main
+      class="p-4 flex items-center justify-center flex-col flex-1 select-text">
       <section>
         <div class="flex flex-col items-center">
           <h2 class="text-5xl">
             {question}
           </h2>
           <h3 class="text-xl text-warning-500 mt-2" class:invisible={correct}>
-            {answer}
+            {#each Object.keys(currentCard.card.fields).filter(x => x !== currentRelationship.from) as field}
+              {field}: {currentCard.card.fields[field]} {"  "}
+            {/each}
           </h3>
         </div>
       </section>
@@ -113,11 +116,11 @@
 
         {#if correct}
           <p class="text-surface-500 text-center mt-2">
-            Type the {currentRelationship.to.toLowerCase()}
+            Type the {currentRelationship.to}
           </p>
         {:else}
           <p class="text-warning-500 text-center mt-2">
-            Copy the {currentRelationship.from.toLowerCase()}
+            Copy the {currentRelationship.to}
           </p>
         {/if}
         <button
