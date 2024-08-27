@@ -12,7 +12,7 @@ GenCards is designed around the concept of a **spaced advisor**. Instead of forc
 
 Additionally, GenCards requires text input instead of just click a button. This forces you to actively recall the information, and ensures you don't have to make any decisions about how well you know a card. This makes studying both more active and more efficient. You can also prioritize cards to tell the spaced advisor which cards are most important to you.
 
-For a full explanation of the spaced advisor, see this blog post (coming soon). For a technical overview of the process of building the app, see this blog post (coming soon).
+For a full explanation of the spaced advisor, see [this blog post](https://motoaki.dev/blog/spaced-repetition-advisor/). For a technical overview of the process of building the app, see [this blog post](https://motoaki.dev/blog/flashcard-app/).
 
 ## Installation
 
