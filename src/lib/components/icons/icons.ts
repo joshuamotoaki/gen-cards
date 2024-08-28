@@ -13,3 +13,4 @@ export { default as StarIcon } from "./StarIcon.svelte";
 export { default as StarSolidIcon } from "./StarSolidIcon.svelte";
 export { default as TrashIcon } from "./TrashIcon.svelte";
 export { default as UploadIcon } from "./UploadIcon.svelte";
+export { default as WarningIcon } from "./WarningIcon.svelte";
