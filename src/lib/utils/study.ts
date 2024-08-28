@@ -247,7 +247,50 @@ const createStudySession = () => {
 
         // Proceed if 2 subsequent corrects
         const streakLen = currentCard.streak.length;
-        if (
+
+        if (streakLen === 1 && currentCard.streak[0]) {
+          if (
+            !currentCard.card.scheduled_at ||
+            new Date().getTime() > currentCard.card.scheduled_at
+          ) {
+            if (currentCard.card.level === 0) currentCard.card.level = 4;
+            else currentCard.card.level++;
+
+            // Schedule new due date
+            currentCard.card.scheduled_at = schedule(
+              currentCard.card.level,
+              studyVars.baseRepetitionInHours,
+              studyVars.repetitionSpacing
+            );
+          }
+
+          // Put old card back into a review queue
+          if (currentCard.card.priority === 1) {
+            const index = findQueueInsertIndex(
+              session.queues.reviewPriority,
+              currentCard.card
+            );
+            session.queues.reviewPriority.splice(index, 0, currentCard.card);
+          } else {
+            const index = findQueueInsertIndex(
+              session.queues.review,
+              currentCard.card
+            );
+
+            session.queues.review.splice(index, 0, currentCard.card);
+          }
+
+          // Exchange card
+          const next = nextCard(session.queues);
+          if (!next) throw new Error("No next card");
+          else
+            session.window[prevIndex] = {
+              card: next,
+              streak: [],
+              isCorrect: true,
+              relationshipIndex: 0
+            };
+        } else if (
           streakLen >= 2 &&
           currentCard.streak[streakLen - 1] &&
           currentCard.streak[streakLen - 2]
