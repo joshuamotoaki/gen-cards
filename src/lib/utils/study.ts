@@ -276,14 +276,14 @@ const createStudySession = () => {
               default:
                 currentCard.card.level = 1;
             }
-          }
 
-          // Schedule new due date
-          currentCard.card.scheduled_at = schedule(
-            currentCard.card.level,
-            studyVars.baseRepetitionInHours,
-            studyVars.repetitionSpacing
-          );
+            // Schedule new due date
+            currentCard.card.scheduled_at = schedule(
+              currentCard.card.level,
+              studyVars.baseRepetitionInHours,
+              studyVars.repetitionSpacing
+            );
+          }
 
           // Put old card back into a review queue
           if (currentCard.card.priority === 1) {
