@@ -360,6 +360,25 @@ const createDB = () => {
       return res;
     },
 
+    /**
+     * Reset all of the study progress for all cards in a deck.
+     * @param deckId ID of the deck to reset
+     */
+    resetDeck: async (deckId: number): Promise<QueryResult> => {
+      checkDB();
+      const res = get(store)?.execute(
+        `
+          BEGIN TRANSACTION;
+          UPDATE cards SET level = 0, scheduled_at = NULL, studied_at = NULL WHERE deck_id = $1;
+          UPDATE decks SET studied_at = NULL WHERE id = $1;
+          COMMIT;
+        `,
+        [deckId]
+      );
+      if (res === undefined) throw new Error("Failed to reset deck");
+      return res;
+    },
+
     // ! Delete
 
     /**
