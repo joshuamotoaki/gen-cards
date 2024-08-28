@@ -81,14 +81,14 @@
         <button
           on:click={resetDeck}
           id="warning-button"
-          class="btn variant-filled-surface hover:variant-filled-error
+          class="btn variant-filled-surface hover:variant-filled-warning
           gap-1 btn-icon rounded-container-token">
           <WarningIcon />
         </button>
         <button
           on:click={deleteDeck}
           id="delete-button"
-          class="btn variant-filled-surface hover:variant-filled-warning
+          class="btn variant-filled-surface hover:variant-filled-error
           gap-1 btn-icon rounded-container-token">
           <TrashIcon />
         </button>
