@@ -350,11 +350,11 @@ const createDB = () => {
       const res = get(store)?.execute(
         `
           BEGIN TRANSACTION;
-          UPDATE cards SET level = $1, scheduled_at = $2, studied_at = $3;
+          UPDATE cards SET level = $1, scheduled_at = $2, studied_at = $3 WHERE id = $5;
           UPDATE decks SET studied_at = $3 WHERE id = $4;
           COMMIT; 
         `,
-        [card.level, card.scheduled_at, card.studied_at, card.deck_id]
+        [card.level, card.scheduled_at, card.studied_at, card.deck_id, card.id]
       );
       if (res === undefined) throw new Error("Failed to update deck cards");
       return res;
