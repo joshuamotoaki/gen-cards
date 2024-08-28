@@ -248,6 +248,8 @@ export const createNewCardsFromUpload = async (
     return card;
   });
 
+  console.log(newCards);
+
   await db.createCards(deckId, newCards, deck.cards.length + newCards.length);
   deck.cards = await db.getDeckCards(deckId);
   await refreshDeck(deckId);

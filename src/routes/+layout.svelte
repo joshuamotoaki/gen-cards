@@ -37,7 +37,6 @@
     try {
       await db.init();
       await refreshAllDecks();
-      console.log($decks);
       isReady = true;
     } catch (e: unknown) {
       console.error("Error:", e);

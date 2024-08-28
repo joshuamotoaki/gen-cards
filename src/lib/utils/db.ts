@@ -169,11 +169,15 @@ const createDB = () => {
         `
           BEGIN TRANSACTION;
           INSERT INTO cards (deck_id, level, scheduled_at, studied_at, priority, fields)
-          VALUES ${cards.map(card => `(${deckId}, ${card.level}, ${card.scheduled_at}, ${card.studied_at}, ${card.priority}, '${JSON.stringify(card.fields)}')`).join(",")};
+          VALUES ${cards.map((card, i) => `(${deckId}, ${card.level}, ${card.scheduled_at}, ${card.studied_at}, ${card.priority}, $${i + 3})`).join(",")};
           UPDATE decks SET card_count = $1, edited_at = $2 WHERE id = ${deckId};
           COMMIT;
         `,
-        [cardCount, new Date().getTime()]
+        [
+          cardCount,
+          new Date().getTime(),
+          ...cards.map(card => JSON.stringify(card.fields))
+        ]
       );
 
       if (res === undefined) throw new Error("Failed to create cards");
