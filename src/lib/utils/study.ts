@@ -8,6 +8,7 @@ export type CardInProgress = {
   card: Card;
   streak: boolean[];
   isCorrect: boolean;
+  relationshipIndex: number;
 };
 
 // Note - these "queues" are technically priority queues. However,
@@ -25,7 +26,6 @@ export type StudySession = {
   wrongCount: number;
   window: CardInProgress[];
   currentIndex: number;
-  relationshipIndex: number;
   queues: StudyQueues;
 };
 
@@ -198,18 +198,16 @@ const createStudySession = () => {
         else window.push(next);
       }
 
-      console.log(window);
-
       store.set({
         correctCount: 0,
         wrongCount: 0,
         window: window.map(card => ({
           card,
           streak: [],
-          isCorrect: true
+          isCorrect: true,
+          relationshipIndex: 0
         })),
         currentIndex: 0,
-        relationshipIndex: 0,
         queues
       });
     },
@@ -226,11 +224,24 @@ const createStudySession = () => {
       const currentCard = session.window[session.currentIndex];
       if (!result) currentCard.isCorrect = false;
 
+      // Increment index
+      const prevIndex = session.currentIndex;
+      if (session.currentIndex === session.window.length - 1) {
+        // Shuffle window
+        const winCopy = session.window.slice();
+        for (let i = winCopy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [winCopy[i], winCopy[j]] = [winCopy[j], winCopy[i]];
+        }
+        session.window = winCopy;
+        session.currentIndex = 0;
+      } else {
+        session.currentIndex++;
+      }
+
       const numRelationships = deck.info.schema.relationships.length;
       // All sides have been studied
-      if (session.relationshipIndex === numRelationships - 1) {
-        if (currentCard.isCorrect) session.correctCount++;
-
+      if (currentCard.relationshipIndex === numRelationships - 1) {
         currentCard.streak.push(currentCard.isCorrect);
         currentCard.isCorrect = true;
 
@@ -274,12 +285,7 @@ const createStudySession = () => {
             studyVars.repetitionSpacing
           );
 
-          // Increment index
-          const prevIndex = session.currentIndex;
-          session.currentIndex =
-            (session.currentIndex + 1) % session.window.length;
-
-          // Put old card back into a reivew queue
+          // Put old card back into a review queue
           if (currentCard.card.priority === 1) {
             const index = findQueueInsertIndex(
               session.queues.reviewPriority,
@@ -302,20 +308,17 @@ const createStudySession = () => {
             session.window[prevIndex] = {
               card: next,
               streak: [],
-              isCorrect: true
+              isCorrect: true,
+              relationshipIndex: 0
             };
-        } else {
-          // Increment index
-          session.currentIndex =
-            (session.currentIndex + 1) % session.window.length;
         }
 
         // Reset relationship index
-        session.relationshipIndex = 0;
+        currentCard.relationshipIndex = 0;
+      } else {
+        // Move to next relationship if correct
+        if (currentCard.isCorrect) currentCard.relationshipIndex++;
       }
-
-      // More sides need to be studied
-      else session.relationshipIndex++;
 
       // Update studied_at to now
       currentCard.card.studied_at = new Date().getTime();
@@ -323,8 +326,6 @@ const createStudySession = () => {
       await refreshDeck(deck.info.id);
 
       // Refresh session
-      console.log(session);
-      console.log(deck);
       store.set(session);
     }
   };

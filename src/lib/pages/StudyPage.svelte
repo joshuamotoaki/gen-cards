@@ -25,9 +25,7 @@
     $currentStudySession!.window[$currentStudySession!.currentIndex];
 
   $: currentRelationship =
-    $currentDeck!.info.schema.relationships[
-      $currentStudySession!.relationshipIndex
-    ];
+    $currentDeck!.info.schema.relationships[currentCard.relationshipIndex];
 
   $: question = currentCard.card.fields[currentRelationship.from];
   $: answer = currentCard.card.fields[currentRelationship.to];
@@ -92,6 +90,7 @@
               else {
                 if (correctAnswer) {
                   currentStudySession.progressCard(true);
+                  $currentStudySession.correctCount++;
                 } else {
                   $currentStudySession.wrongCount++;
                   correct = false;
@@ -148,8 +147,8 @@
         <div
           class="bg-surface-300-600-token rounded-full px-4
           text-surface-700-200-token text-sm">
-          Side {$currentStudySession.relationshipIndex + 1} of {$currentDeck
-            .info.schema.relationships.length}
+          Side {currentCard.relationshipIndex + 1} of {$currentDeck.info.schema
+            .relationships.length}
         </div>
       {/if}
       <div>
