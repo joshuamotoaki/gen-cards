@@ -2,7 +2,7 @@
   import { BackIcon, TrashIcon } from "$lib/components/icons/icons";
   import { db } from "$lib/utils/db";
   import { refreshAllDecks, refreshDeck } from "$lib/utils/deck";
-  import { currentDeck } from "$lib/utils/state";
+  import { currentDeck, decks } from "$lib/utils/state";
   import { getModalStore, getToastStore } from "@skeletonlabs/skeleton";
 
   import DeckWarning from "$lib/components/deck/DeckWarning.svelte";
@@ -27,8 +27,8 @@
           await db.resetDeck($currentDeck.info.id);
           await refreshDeck($currentDeck.info.id);
           currentDeck.set({
-            cards: await db.getDeckCards($currentDeck.info.id),
-            info: $currentDeck.info
+            info: $currentDeck.info,
+            cards: await db.getDeckCards($currentDeck.info.id)
           });
           toastStore.trigger({
             message: "Deck successfully reset.",

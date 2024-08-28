@@ -90,7 +90,10 @@ export const gotoDeck = async (info: DeckInfo, prev: "/" | "/library") => {
   // If in cache, set the current deck and return
   const cached: Deck | undefined = deckCache.getDeck(info.id);
   if (cached !== undefined) {
-    currentDeck.set(cached);
+    currentDeck.set({
+      info: info,
+      cards: cached.cards
+    });
   } else {
     const deckCards = await db.getDeckCards(info.id);
     currentDeck.set({
@@ -99,6 +102,7 @@ export const gotoDeck = async (info: DeckInfo, prev: "/" | "/library") => {
     });
   }
 
+  deckCache.set({});
   prevRoute.set(prev);
   currentRoute.set("/deck");
 };
@@ -119,6 +123,11 @@ export const refreshDeck = async (deckId: number) => {
 
     return decks;
   });
+
+  const deck = get(currentDeck);
+  if (deck !== null && deck.info.id === deckId) {
+    deck.info = deckInfo;
+  }
 };
 
 /**
