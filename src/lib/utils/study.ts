@@ -225,7 +225,6 @@ const createStudySession = () => {
       if (!result) currentCard.isCorrect = false;
 
       // Increment index
-      const prevIndex = session.currentIndex;
       if (session.currentIndex === session.window.length - 1) {
         // Shuffle window
         const winCopy = session.window.slice();
@@ -239,15 +238,20 @@ const createStudySession = () => {
         session.currentIndex++;
       }
 
+      // Set so that correct card can be exchanged
+      const prevIndex = session.window.findIndex(
+        card => card.card.id === currentCard.card.id
+      );
+
       const numRelationships = deck.info.schema.relationships.length;
       // All sides have been studied
       if (currentCard.relationshipIndex === numRelationships - 1) {
         currentCard.streak.push(currentCard.isCorrect);
         currentCard.isCorrect = true;
 
-        // Proceed if 2 subsequent corrects
         const streakLen = currentCard.streak.length;
 
+        // Automatically promote card if correct on first try
         if (streakLen === 1 && currentCard.streak[0]) {
           if (
             !currentCard.card.scheduled_at ||
@@ -290,6 +294,8 @@ const createStudySession = () => {
               isCorrect: true,
               relationshipIndex: 0
             };
+
+          // Proceed if 2 subsequent corrects
         } else if (
           streakLen >= 2 &&
           currentCard.streak[streakLen - 1] &&
@@ -305,19 +311,22 @@ const createStudySession = () => {
             new Date().getTime() > currentCard.card.scheduled_at
           ) {
             // Handle level demotion/promotion depending on error count
-            switch (numErrors) {
-              case 0:
-                currentCard.card.level++;
-                break;
-              case 1:
-                // No level change
-                break;
-              case 2:
-                if (currentCard.card.level <= 1) break;
-                currentCard.card.level--;
-                break;
-              default:
-                currentCard.card.level = 1;
+            if (currentCard.card.level === 0) currentCard.card.level++;
+            else {
+              switch (numErrors) {
+                case 0:
+                  currentCard.card.level++;
+                  break;
+                case 1:
+                  // No level change
+                  break;
+                case 2:
+                  if (currentCard.card.level <= 1) break;
+                  currentCard.card.level--;
+                  break;
+                default:
+                  currentCard.card.level = 1;
+              }
             }
 
             // Schedule new due date
