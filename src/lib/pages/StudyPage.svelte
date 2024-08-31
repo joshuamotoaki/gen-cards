@@ -143,14 +143,25 @@
         <p>{totalCards} card{totalCards !== 1 ? "s" : ""} completed</p>
       </div>
 
-      {#if $currentDeck.info.schema.relationships.length > 1}
-        <div
-          class="bg-surface-300-600-token rounded-full px-4
-          text-surface-700-200-token text-sm">
-          Side {currentCard.relationshipIndex + 1} of {$currentDeck.info.schema
-            .relationships.length}
-        </div>
-      {/if}
+      <div
+        class="bg-surface-300-600-token rounded-full px-4
+      text-surface-700-200-token text-sm space-x-4">
+        {#if $currentDeck.info.schema.relationships.length > 1}
+          <span>
+            Side {currentCard.relationshipIndex + 1} of {$currentDeck.info
+              .schema.relationships.length}
+          </span>
+        {/if}
+
+        <span>
+          Level {currentCard.card.level}
+        </span>
+
+        <span>
+          Rep
+          {currentCard.streak.length + 1}
+        </span>
+      </div>
       <div>
         {accuracy}% Accuracy ({$currentStudySession.correctCount}/{totalCards})
       </div>
