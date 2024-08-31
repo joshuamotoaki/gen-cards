@@ -81,9 +81,11 @@
               const correctAnswer = areEqual(input, answer);
 
               // Copy mode (after first attempt)
-              if (!correct && correctAnswer) {
-                currentStudySession.progressCard(false);
-                correct = true;
+              if (!correct) {
+                if (correctAnswer) {
+                  currentStudySession.progressCard(false);
+                  correct = true;
+                }
               }
 
               // First attempt
