@@ -369,7 +369,7 @@ const createStudySession = () => {
         currentCard.relationshipIndex = 0;
       } else {
         // Move to next relationship if correct
-        if (currentCard.isCorrect) currentCard.relationshipIndex++;
+        if (result) currentCard.relationshipIndex++;
       }
 
       // Update studied_at to now
